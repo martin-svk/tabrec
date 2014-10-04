@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "TabCommender",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "TabCommender provides sensible recommendation based on how You use tabs in Google Chrome.",
+    "description": "The description of the application"
+  }
+}

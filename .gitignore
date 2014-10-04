@@ -1,13 +1,8 @@
-# Created by https://www.gitignore.io
-
-### vim ###
-[._]*.s[a-w][a-z]
-[._]s[a-w][a-z]
-*.un~
-Session.vim
-.netrwhist
-*~
-
-
-### Sass ###
+node_modules
+temp
+.tmp
+dist
 .sass-cache
+app/bower_components
+test/bower_components
+package
