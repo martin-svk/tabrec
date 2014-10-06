@@ -4,7 +4,7 @@
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "Simple tab recommeder.",
+    "message": "Personalized tab actions recommender based on your browser use.",
     "description": "The description of the application"
   }
 }
