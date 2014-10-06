@@ -1,4 +1,4 @@
-// Generated on 2014-10-04 using generator-chrome-extension 0.2.10
+// Generated on 2014-10-06 using generator-chrome-extension 0.2.10
 'use strict';
 
 // # Globbing
@@ -38,10 +38,6 @@ module.exports = function (grunt) {
         options: {
           livereload: true
         }
-      },
-      compass: {
-        files: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
-        tasks: ['compass:chrome']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -161,45 +157,12 @@ module.exports = function (grunt) {
       }
     },
 
-     // Compiles Sass to CSS and generates necessary files if requested
-    compass: {
-      options: {
-        sassDir: '<%= config.app %>/styles',
-        cssDir: '<%= config.dist %>/styles',
-        generatedImagesDir: '<%= config.dist %>/images/generated',
-        imagesDir: '<%= config.app %>/images',
-        javascriptsDir: '<%= config.app %>/scripts',
-        fontsDir: '<%= config.app %>/styles/fonts',
-        importPath: '<%= config.app %>/bower_components',
-        httpImagesPath: '/images',
-        httpGeneratedImagesPath: '/images/generated',
-        httpFontsPath: '/styles/fonts',
-        relativeAssets: false,
-        assetCacheBuster: false
-      },
-      chrome: {
-        options: {
-          cssDir: '<%= config.app %>/styles',
-          generatedImagesDir: '<%= config.app %>/images/generated',
-          debugInfo: true
-        }
-      },
-      dist: {
-      },
-      test: {
-      }
-    },
-
     // Automatically inject Bower components into the HTML file
     bowerInstall: {
       app: {
         src: [
           '<%= config.app %>/*.html'
         ]
-      },
-      sass: {
-        src: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
-        ignorePath: '<%= config.app %>/bower_components/'
       }
     },
 
@@ -318,17 +281,14 @@ module.exports = function (grunt) {
     concurrent: {
       chrome: [
         'coffee:chrome',
-        'compass:chrome',
       ],
       dist: [
         'coffee:dist',
-        'compass:dist',
         'imagemin',
         'svgmin'
       ],
       test: [
         'coffee:test',
-        'compass:test',
       ]
     },
 
@@ -355,7 +315,7 @@ module.exports = function (grunt) {
         options: {
           archive: function() {
             var manifest = grunt.file.readJSON('app/manifest.json');
-            return 'package/TabCommender-' + manifest.version + '.zip';
+            return 'package/Tabrec-' + manifest.version + '.zip';
           }
         },
         files: [{
