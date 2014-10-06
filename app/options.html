@@ -10,7 +10,22 @@
         <!-- endbuild -->
     </head>
     <body>
-        <h1>'Allo, 'Allo!</h1>
+        <div id="container" class="container">
+            <h3>TabCommender settings</h3>
+
+            <form role="form">
+                <div class="form-group">
+                    <label for="user-level-select">User level</label>
+                    <select class="form-control" id="user-level-select">
+                        <option>Beginner</option>
+                        <option>Advanced</option>
+                        <option>Expert</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg">Save</button>
+            </form>
+        </div>
 
         <!-- build:js scripts/vendor.js -->
         <!-- bower:js -->
