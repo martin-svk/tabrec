@@ -4,6 +4,4 @@
     return console.log('previousVersion', details.previousVersion);
   });
 
-  console.log('TabCommender console log');
-
 }).call(this);
