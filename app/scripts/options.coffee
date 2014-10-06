@@ -1,3 +1,10 @@
-'use strict';
+'use strict'
 
-console.log('\'Allo \'Allo! Option')
+# Save options method
+SaveOptions = ->
+    console.log("Settings saved.")
+
+# On save button submit
+$("#save-options").click ->
+  SaveOptions()
+

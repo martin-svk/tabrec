@@ -27,7 +27,6 @@
         "tabs",
         "history",
         "management",
-        "http://*/*",
-        "https://*/*"
+        "storage"
     ]
 }

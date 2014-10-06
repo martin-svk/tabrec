@@ -1,5 +1,13 @@
 (function() {
   'use strict';
-  console.log('\'Allo \'Allo! Option');
+  var SaveOptions;
+
+  SaveOptions = function() {
+    return console.log("Settings saved.");
+  };
+
+  $("#save-options").click(function() {
+    return SaveOptions();
+  });
 
 }).call(this);
