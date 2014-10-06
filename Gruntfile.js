@@ -296,7 +296,7 @@ module.exports = function (grunt) {
     chromeManifest: {
       dist: {
         options: {
-          buildnumber: true,
+          buildnumber: false,
           background: {
             target: 'scripts/background.js',
             exclude: [
