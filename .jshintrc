@@ -18,9 +18,8 @@
   "strict": true,
   "trailing": true,
   "smarttabs": true,
+  "jquery": true,
   "globals" : {
-    "chrome": true,
-    "$": false,
-    "jQuery": false
+    "chrome": true
   }
 }
