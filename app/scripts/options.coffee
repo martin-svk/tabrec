@@ -2,9 +2,9 @@
 
 # Save options method
 SaveOptions = ->
-    console.log("Settings saved.")
+  console.log('Settings saved.')
 
 # On save button submit
-$("#save-options").click ->
-  SaveOptions()
+$('#save-options').click ->
+  new SaveOptions()
 
