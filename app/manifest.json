@@ -19,7 +19,8 @@
             "19": "images/icon_active.png",
             "38": "images/icon-38.png"
         },
-        "default_title": "Tabrec"
+        "default_title": "Tabrec",
+        "default_popup": "popup.html"
     },
     "options_page": "options.html",
     "permissions": [
