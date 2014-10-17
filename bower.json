@@ -1,0 +1,14 @@
+{
+  "name": "TabRec",
+  "version": "0.0.1",
+  "homepage": "https://github.com/martin-svk/master-thesis-extension",
+  "authors": [
+    "Martin Toma <martin.toma.svk@gmail.com>"
+  ],
+  "description": "Tab actions recommendations provider.",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "jquery": "~2.1.1"
+  }
+}
