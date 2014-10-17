@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Tabrec",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Personalized tab actions recommender based on your browser use.",
+    "description": "The description of the application"
+  }
+}

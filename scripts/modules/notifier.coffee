@@ -1,5 +1,5 @@
 'use strict'
 
-class Notifier
-  notify = () ->
+class @Notifier
+  notify: () ->
     console.log('Notifying...')
