@@ -2,4 +2,4 @@
 
 class @Notifier
   notify: () ->
-    console.log('Notifying...')
+    console.log('Notifying aaaa...')

@@ -2,7 +2,7 @@
 
 class @Recognizer
   recognize: () ->
-    console.log('zavolal metodu z recognizera')
+    console.log('zavolal z recognizera')
 
 class @BasicRecognizer
   basic: () ->

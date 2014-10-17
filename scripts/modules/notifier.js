@@ -5,7 +5,7 @@
     function Notifier() {}
 
     Notifier.prototype.notify = function() {
-      return console.log('Notifying...');
+      return console.log('Notifying aaaa...');
     };
 
     return Notifier;

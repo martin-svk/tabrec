@@ -5,7 +5,7 @@
     function Recognizer() {}
 
     Recognizer.prototype.recognize = function() {
-      return console.log('zavolal metodu z recognizera');
+      return console.log('zavolal z recognizera');
     };
 
     return Recognizer;
