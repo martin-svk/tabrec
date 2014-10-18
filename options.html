@@ -13,7 +13,7 @@
                 <footer id="footer-text">Tab actions recommender for Google Chrome</footer>
             </div>
 
-            <h4>1. Choose You experience level.</h4>
+            <h4>1. Choose Your experience level.</h4>
             <section id="exp-level-text">
                 To provide the most accurate recommendation, we need to know how you use the browser.
                 In select box below, select the option which You think describes the most Your experience
@@ -24,9 +24,9 @@
                     <label for="user-level-select" class="col-sm-2 control-label">Experience level:</label>
                     <div class="col-sm-10">
                         <select class="form-control" id="user-level-select">
-                            <option>Beginner</option>
-                            <option>Advanced</option>
-                            <option>Expert</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="expert">Expert</option>
                         </select>
                     </div>
                 </div>
@@ -36,20 +36,20 @@
             <ul>
                 <li>
                     The <b>Interactive</b> mode means that You will always have
-                    to choose if You want or dont want to execute recommended action.
+                    to choose if You want or do not want to execute recommended action.
                 </li>
                 <li>
                     The <b>Semi interactive</b> mode will give You a chance to stop the execution of
                     recommendation (for about 2 seconds). Otherwise it will execute the recommendation.
                 </li>
                 <li>
-                    <b>Agressive</b> mode enables us to execute the recommended action without Your approval.
+                    <b>Aggressive</b> mode enables us to execute the recommended action without Your approval.
                     This options provides best user-experience when working correctly.
                 </li>
             </ul>
             <section>
                 We recommend to set the <b>Semi-interactive</b> mode first and later (when more data about Your
-                browser usage will be available to this extension) use the agressive mode.
+                browser usage will be available to this extension) use the aggressive mode.
             </section>
             <form role="form">
                 <div class="form-group">
@@ -58,7 +58,7 @@
                         <select class="form-control" id="rec-mode-select">
                             <option value="interactive">Interactive</option>
                             <option value="semi-interactive">Semi-interactive</option>
-                            <option value="agressive">Agressive</option>
+                            <option value="aggressive">Aggressive</option>
                         </select>
                     </div>
                 </div>
