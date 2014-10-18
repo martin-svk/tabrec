@@ -1,19 +1,27 @@
 <!doctype html>
 <html>
     <head>
+        <!-- CSS includes -->
         <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="styles/main.css" rel="stylesheet">
         <link href="styles/options.css" rel="stylesheet">
     </head>
     <body>
-        <div id="container" class="container">
+        <div class="container">
             <div class="page-header">
-                <h3>TabRec settings</h3>
+                <h3><b>TabRec</b> settings</h3>
+                <footer id="footer-text">Tab actions recommender for Google Chrome</footer>
             </div>
 
+            <h4>1. Choose You experience level.</h4>
+            <section id="exp-level-text">
+                To provide the most accurate recommendation, we need to know how you use the browser.
+                In select box below, select the option which You think describes the most Your experience
+                in browser usage.
+            </section>
             <form role="form">
                 <div class="form-group">
-                    <label for="user-level-select" class="col-sm-2 control-label">User level</label>
+                    <label for="user-level-select" class="col-sm-2 control-label">Experience level:</label>
                     <div class="col-sm-10">
                         <select class="form-control" id="user-level-select">
                             <option>Beginner</option>
@@ -22,11 +30,51 @@
                         </select>
                     </div>
                 </div>
-
-                <button type="submit" id="save-options" class="btn btn-primary">Save settings</button>
             </form>
-        </div>
 
+            <h4>2. Choose the default recommendation mode.</h4>
+            <ul>
+                <li>
+                    The <b>Interactive</b> mode means that You will always have
+                    to choose if You want or dont want to execute recommended action.
+                </li>
+                <li>
+                    The <b>Semi interactive</b> mode will give You a chance to stop the execution of
+                    recommendation (for about 2 seconds). Otherwise it will execute the recommendation.
+                </li>
+                <li>
+                    <b>Agressive</b> mode enables us to execute the recommended action without Your approval.
+                    This options provides best user-experience when working correctly.
+                </li>
+            </ul>
+            <section>
+                We recommend to set the <b>Semi-interactive</b> mode first and later (when more data about Your
+                browser usage will be available to this extension) use the agressive mode.
+            </section>
+            <form role="form">
+                <div class="form-group">
+                    <label for="rec-mode-select" class="col-sm-2 control-label">Recommendation mode:</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="rec-mode-select">
+                            <option value="interactive">Interactive</option>
+                            <option value="semi-interactive">Semi-interactive</option>
+                            <option value="agressive">Agressive</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+            <hr />
+            <div class="row options-buttons">
+                <div class="pull-right">
+                    <button type="submit" id="save-settings" class="btn btn-primary">Save settings</button>
+                </div>
+                <div class="pull-left">
+                    <button type="submit" id="reset-settings" class="btn btn-danger">Reset settings</button>
+                </div>
+            </div>
+        </div>
+        <!-- JS includes -->
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="scripts/options.js"></script>
