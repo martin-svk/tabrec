@@ -30,7 +30,7 @@
       'user_level': userLevel,
       'rec_mode': recMode
     }, function() {
-      return alert('Settings saved');
+      return swal('Success!', 'Your settings has been saved!', 'success');
     });
   };
 

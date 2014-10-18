@@ -23,7 +23,7 @@ SaveOptions = () ->
   chrome.storage.sync.set
     'user_level': userLevel
     'rec_mode': recMode, ->
-      alert 'Settings saved'
+      swal('Success!', 'Your settings has been saved!', 'success')
 
 # On save button submit
 $('#save-settings').click ->
