@@ -4,8 +4,8 @@
   this.Notifier = (function() {
     function Notifier() {}
 
-    Notifier.prototype.notify = function() {
-      return console.log('Notifying aaaa...');
+    Notifier.prototype.notify = function(message) {
+      return console.log("Notifiyng: " + message);
     };
 
     return Notifier;

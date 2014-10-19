@@ -1,5 +1,12 @@
 'use strict'
 
+# ======================================
+# @author Martin Toma
+#
+# Contains logic to show specific
+# notification in chrome user interface.
+# ======================================
+
 class @Notifier
-  notify: () ->
-    console.log('Notifying aaaa...')
+  notify: (message) ->
+    console.log("Notifiyng: #{message}")

@@ -1,9 +1,13 @@
 'use strict'
 
+# ======================================
+# @author Martin Toma
+#
+# Contains logic to recognize
+# tab usage patterns and call
+# appropriate recommender class.
+# ======================================
+
 class @Recognizer
   recognize: () ->
-    console.log('zavolal z recognizera')
-
-class @BasicRecognizer
-  basic: () ->
-    console.log('zavolal basic recognizera')
+    console.log('Recognizer started...')

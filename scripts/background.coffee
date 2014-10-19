@@ -1,8 +1,15 @@
 'use strict'
 
-notifier = new Notifier
+# ======================================
+# @author Martin Toma
+#
+# Main background script.
+# Will initiate whole application,
+# instantiate recognizers, etc.
+# ======================================
+
 rec = new Recognizer
-bas = new BasicRecognizer
-notifier.notify()
+notifier = new Notifier
+
 rec.recognize()
-bas.basic()
+notifier.notify("Something happened!")

@@ -5,21 +5,10 @@
     function Recognizer() {}
 
     Recognizer.prototype.recognize = function() {
-      return console.log('zavolal z recognizera');
+      return console.log('Recognizer started...');
     };
 
     return Recognizer;
-
-  })();
-
-  this.BasicRecognizer = (function() {
-    function BasicRecognizer() {}
-
-    BasicRecognizer.prototype.basic = function() {
-      return console.log('zavolal basic recognizera');
-    };
-
-    return BasicRecognizer;
 
   })();
 
