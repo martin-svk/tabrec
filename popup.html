@@ -7,14 +7,25 @@
         <link href="styles/popup.css" rel="stylesheet">
     </head>
     <body>
-        <div class="page-header">
-            <h4>TabRec status</h4>
+        <div class="container">
+            <header>
+                <div class="page-header">
+                    <h4 id="">TabRec</h4>
+                </div>
+            </header>
+
+            <div id="stats">
+                <ul>
+                    <li>Total recommendations:</li>
+                    <li>Accepted:</li>
+                    <li>Canceled:</li>
+                </ul>
+            </div>
+
+            <footer>
+                <p>TabRec recommender</p>
+            </footer>
         </div>
-
-        <input type="checkbox" id="tabrec-status">
-            <label for="tabrec-status">Real-time recommendation</label>
-        </input>
-
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="scripts/popup.js"></script>
