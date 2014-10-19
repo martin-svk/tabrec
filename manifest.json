@@ -25,9 +25,12 @@
     },
     "options_page": "options.html",
     "permissions": [
-        "tabs",
+        "alarms",
         "history",
-        "management",
-        "storage"
+        "identity",
+        "notifications",
+        "storage",
+        "tabCapture",
+        "tabs"
     ]
 }
