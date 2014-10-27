@@ -10,8 +10,10 @@
     "default_locale": "en",
     "background": {
         "scripts": [
+            "bower_components/jquery/dist/jquery.min.js",
             "scripts/modules/notifier.js",
             "scripts/modules/recognizer.js",
+            "scripts/modules/logger.js",
             "scripts/background.js"
         ]
     },
@@ -32,5 +34,8 @@
         "storage",
         "tabCapture",
         "tabs"
+    ],
+    "permissions": [
+        "http://tabber.fiit.stuba.sk/*"
     ]
 }
