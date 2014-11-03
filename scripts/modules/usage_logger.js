@@ -23,14 +23,12 @@
     cache_usage_log = function(log) {
       console.log("Caching usage log: Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
       cache.push(log);
-      console.log("Cache size: " + cache.length);
       if (cache.length > 999) {
         return post_usage_logs();
       }
     };
 
     post_usage_logs = function() {
-      console.log("!!! Posting usage logs.");
       _conn.post_usage_logs(cache);
       return cache.length = 0;
     };
