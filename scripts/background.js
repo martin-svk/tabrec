@@ -3,7 +3,7 @@
   'use strict';
   var API_URL, connection, logger, usage_logger;
 
-  API_URL = 'http://tabber.fiit.stuba.sk';
+  API_URL = 'http://localhost:9292';
 
   connection = new Connection(API_URL);
 
