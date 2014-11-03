@@ -23,7 +23,7 @@
     cache_usage_log = function(log) {
       console.log("Caching usage log: Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
       cache.push(log);
-      if (cache.length > 9) {
+      if (cache.length > 99) {
         return post_usage_logs();
       }
     };
