@@ -9,6 +9,7 @@
 # ======================================
 
 API_URL = 'http://tabber.fiit.stuba.sk'
+#API_URL = 'http://localhost:9292'
 
 connection = new Connection(API_URL)
 usage_logger = new UsageLogger(connection)

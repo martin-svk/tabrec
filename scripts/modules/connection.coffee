@@ -19,7 +19,7 @@ class @Connection
     get_collection(@url, 'events')
 
   post_usage_logs: (data) ->
-    post_collection(data)
+    post_collection(@url, data, 'usage_logs')
 
   # Private methods
 
@@ -42,5 +42,10 @@ class @Connection
         for event in data
           console.log("#{event['name']}")
 
-  post_collection = (data) ->
-    console.log("Posting collection of #{data.length} items.")
+  post_collection = (url, data, resource) ->
+    $.ajax "#{url}/#{resource}",
+      type: 'POST'
+      dataType: 'json'
+      data: { data: data }
+      success: (data, textStatus, jqXHR) ->
+        console.log("Status: #{textStatus}")

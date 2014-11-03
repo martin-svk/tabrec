@@ -38,6 +38,7 @@
         "tabs"
     ],
     "permissions": [
-        "http://tabber.fiit.stuba.sk/*"
+        "http://tabber.fiit.stuba.sk/*",
+        "http://localhost:9292/*"
     ]
 }

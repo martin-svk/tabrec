@@ -17,7 +17,7 @@
     };
 
     Connection.prototype.post_usage_logs = function(data) {
-      return post_collection(data);
+      return post_collection(this.url, data, 'usage_logs');
     };
 
     get_member = function(url, resource, id) {
@@ -52,8 +52,17 @@
       });
     };
 
-    post_collection = function(data) {
-      return console.log("Posting collection of " + data.length + " items.");
+    post_collection = function(url, data, resource) {
+      return $.ajax("" + url + "/" + resource, {
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          data: data
+        },
+        success: function(data, textStatus, jqXHR) {
+          return console.log("Status: " + textStatus);
+        }
+      });
     };
 
     return Connection;

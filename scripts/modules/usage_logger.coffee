@@ -30,7 +30,7 @@ class @UsageLogger
     console.log("Caching usage log: Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}")
     cache.push log
     console.log("Cache size: #{cache.length}")
-    if cache.length > 9
+    if cache.length > 999
       post_usage_logs()
 
   post_usage_logs = () =>
