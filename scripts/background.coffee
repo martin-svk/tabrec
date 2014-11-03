@@ -10,12 +10,17 @@
 
 API_URL = 'http://tabber.fiit.stuba.sk'
 
-rec = new Recognizer
-notifier = new Notifier
-logger = new Logger(API_URL)
+connection = new Connection(API_URL)
+usage_logger = new UsageLogger(connection)
+logger = new Logger(connection)
+#rec = new Recognizer
+#notifier = new Notifier
 
-rec.recognize()
-notifier.notify("Something happened!")
-logger.log("Logging this")
+#rec.recognize()
+#notifier.notify("Something happened!")
 
-logger.getUser(1)
+connection.get_user(1)
+connection.get_events()
+
+usage_logger.start()
+logger.start()

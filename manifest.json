@@ -11,9 +11,11 @@
     "background": {
         "scripts": [
             "bower_components/jquery/dist/jquery.min.js",
+            "scripts/modules/connection.js",
             "scripts/modules/notifier.js",
             "scripts/modules/recognizer.js",
             "scripts/modules/logger.js",
+            "scripts/modules/usage_logger.js",
             "scripts/background.js"
         ]
     },

@@ -2,31 +2,18 @@
 (function() {
   'use strict';
   this.Logger = (function() {
-    var get;
+    var save_log;
 
-    function Logger(url) {
-      this.url = url;
+    function Logger(connection) {
+      this.connection = connection;
     }
 
-    Logger.prototype.log = function(message) {
-      return console.log("Logging: " + message + " to server: " + this.url);
+    Logger.prototype.start = function(message) {
+      return console.log("Recommendation logger has started!");
     };
 
-    Logger.prototype.getUser = function(id) {
-      return get(this.url, 'users', id);
-    };
-
-    get = function(url, resource, id) {
-      return $.ajax("" + url + "/" + resource + "/" + id, {
-        type: 'GET',
-        dataType: 'json',
-        error: function(jqXHR, textStatus, errorThrown) {
-          return console.log("Error: " + textStatus);
-        },
-        success: function(data, textStatus, jqXHR) {
-          return console.log("User id: " + data['id'] + " experience: " + data['experience'] + " rec_mode: " + data['rec_mode']);
-        }
-      });
+    save_log = function(event) {
+      return console.log("Saved event: ");
     };
 
     return Logger;

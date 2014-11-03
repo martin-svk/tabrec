@@ -3,29 +3,21 @@
 # ======================================
 # @author Martin Toma
 #
-# Contains logic to show specific
-# notification in chrome user interface.
+# This class is used to log information
+# about provided recommendations and
+# its resutions (accept/reject).
+# It interacts with Log table in API.
 # ======================================
 
 class @Logger
-  constructor: (@url) ->
+  constructor: (@connection) ->
 
   # Public methods
 
-  log: (message) ->
-    console.log("Logging: #{message} to server: #{@url}")
-
-  getUser: (id) ->
-    get(@url, 'users', id)
+  start: (message) ->
+    console.log("Recommendation logger has started!")
 
   # Private methods
 
-  get = (url, resource, id) =>
-    $.ajax "#{url}/#{resource}/#{id}",
-        type: 'GET'
-        dataType: 'json'
-        error: (jqXHR, textStatus, errorThrown) ->
-            console.log("Error: #{textStatus}")
-        success: (data, textStatus, jqXHR) ->
-            console.log("User id: #{data['id']} experience: #{data['experience']} rec_mode: #{data['rec_mode']}")
-
+  save_log = (event) ->
+    console.log("Saved event: #{}")
