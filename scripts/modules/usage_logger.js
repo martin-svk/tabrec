@@ -2,14 +2,17 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, post_usage_logs, tab_activated, tab_created, tab_removed;
+    var cache, cache_usage_log, post_usage_logs, tab_activated, tab_created, tab_removed, _conn;
+
+    _conn = null;
 
     function UsageLogger(connection) {
       this.connection = connection;
+      _conn = this.connection;
     }
 
     UsageLogger.prototype.start = function() {
-      console.log("Usage logger has started! Conn: " + this.connection.url);
+      console.log("Usage logger has started!");
       chrome.tabs.onCreated.addListener(tab_created);
       chrome.tabs.onRemoved.addListener(tab_removed);
       return chrome.tabs.onActivated.addListener(tab_activated);
@@ -28,6 +31,7 @@
 
     post_usage_logs = function() {
       console.log("!!! Posting usage logs.");
+      _conn.post_usage_logs(cache);
       return cache.length = 0;
     };
 

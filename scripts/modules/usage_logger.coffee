@@ -9,19 +9,23 @@
 # ======================================
 
 class @UsageLogger
+  _conn = null
+
   constructor: (@connection) ->
+    _conn = @connection
 
   # Public methods
 
   start: () ->
-    console.log("Usage logger has started! Conn: #{@connection.url}")
+    console.log("Usage logger has started!")
     chrome.tabs.onCreated.addListener(tab_created)
     chrome.tabs.onRemoved.addListener(tab_removed)
     chrome.tabs.onActivated.addListener(tab_activated)
 
-  # Private methods
+  # Private vars
   cache = []
 
+  # Private functions
   cache_usage_log = (log) ->
     console.log("Caching usage log: Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}")
     cache.push log
@@ -31,10 +35,7 @@ class @UsageLogger
 
   post_usage_logs = () =>
     console.log("!!! Posting usage logs.")
-    # TODO: how to access @connection from private method?
-    # Or how call instance method from private method?
-    # @connection.post_usage_logs(cache)
-    # Clear the cache
+    _conn.post_usage_logs(cache)
     cache.length = 0
 
   # Event handlers
