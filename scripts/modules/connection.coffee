@@ -8,7 +8,10 @@
 # ======================================
 
 class @Connection
-  constructor: (@url) ->
+  _dbg = false
+
+  constructor: (@url, @debug_mode) ->
+    _dbg = @debug_mode
 
   # Public methods
 
@@ -48,4 +51,4 @@ class @Connection
       dataType: 'json'
       data: { data: data }
       success: (data, textStatus, jqXHR) ->
-        console.log("Status: #{textStatus}")
+        console.log("Status: #{textStatus}") if _dbg

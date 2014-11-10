@@ -2,10 +2,14 @@
 (function() {
   'use strict';
   this.Connection = (function() {
-    var get_collection, get_member, post_collection;
+    var get_collection, get_member, post_collection, _dbg;
 
-    function Connection(url) {
+    _dbg = false;
+
+    function Connection(url, debug_mode) {
       this.url = url;
+      this.debug_mode = debug_mode;
+      _dbg = this.debug_mode;
     }
 
     Connection.prototype.get_user = function(id) {
@@ -60,7 +64,9 @@
           data: data
         },
         success: function(data, textStatus, jqXHR) {
-          return console.log("Status: " + textStatus);
+          if (_dbg) {
+            return console.log("Status: " + textStatus);
+          }
         }
       });
     };
