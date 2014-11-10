@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, get_current_ts, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, _batch_size, _conn, _dbg;
+    var cache, cache_usage_log, get_current_ts, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg;
 
     _conn = null;
 
@@ -28,7 +28,8 @@
       chrome.tabs.onActivated.addListener(tab_activated);
       chrome.tabs.onMoved.addListener(tab_moved);
       chrome.tabs.onAttached.addListener(tab_attached);
-      return chrome.tabs.onDetached.addListener(tab_detached);
+      chrome.tabs.onDetached.addListener(tab_detached);
+      return chrome.tabs.onUpdated.addListener(tab_updated);
     };
 
     cache = [];
@@ -57,7 +58,8 @@
         timestamp: get_current_ts(),
         event: 'TAB_CREATED',
         window_id: tab.windowId,
-        tab_id: tab.id
+        tab_id: tab.id,
+        url: tab.url
       });
     };
 
@@ -71,11 +73,14 @@
     };
 
     tab_activated = function(active_info) {
-      return cache_usage_log({
-        timestamp: get_current_ts(),
-        event: 'TAB_ACTIVATED',
-        window_id: active_info.windowId,
-        tab_id: active_info.tabId
+      return chrome.tabs.get(active_info.tabId, function(tab) {
+        return cache_usage_log({
+          timestamp: get_current_ts(),
+          event: 'TAB_ACTIVATED',
+          window_id: active_info.windowId,
+          tab_id: active_info.tabId,
+          url: tab.url
+        });
       });
     };
 
@@ -108,6 +113,18 @@
         tab_id: tab_id,
         index_from: detach_info.oldPosition
       });
+    };
+
+    tab_updated = function(tab_id, change_info, tab) {
+      if (change_info.status === 'complete') {
+        return cache_usage_log({
+          timestamp: get_current_ts(),
+          event: 'TAB_UPDATED',
+          url: tab.url,
+          window_id: tab.windowId,
+          tab_id: tab.id
+        });
+      }
     };
 
     return UsageLogger;

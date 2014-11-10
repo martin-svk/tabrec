@@ -18,7 +18,9 @@ class @UsageLogger
     _dbg = @debug_mode
     _batch_size = @batch_size
 
+  # ===================================
   # Public methods
+  # ===================================
 
   start: () ->
     console.log("Usage logger has started!") if _dbg
@@ -28,11 +30,17 @@ class @UsageLogger
     chrome.tabs.onMoved.addListener(tab_moved)
     chrome.tabs.onAttached.addListener(tab_attached)
     chrome.tabs.onDetached.addListener(tab_detached)
+    chrome.tabs.onUpdated.addListener(tab_updated)
 
+  # ===================================
   # Private vars
+  # ===================================
   cache = []
 
+  # ===================================
   # Private functions
+  # ===================================
+
   cache_usage_log = (log) ->
     console.log("Caching usage log: Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if _dbg
     cache.push log
@@ -46,7 +54,9 @@ class @UsageLogger
   get_current_ts = () ->
     (new Date()).getTime() / 1000 | 0
 
+  # ===================================
   # Event handlers
+  # ===================================
 
   tab_created = (tab) ->
     cache_usage_log({
@@ -54,6 +64,7 @@ class @UsageLogger
       event: 'TAB_CREATED'
       window_id: tab.windowId
       tab_id: tab.id
+      url: tab.url
     })
 
   tab_removed = (tab_id, remove_info) ->
@@ -65,12 +76,14 @@ class @UsageLogger
     })
 
   tab_activated = (active_info) ->
-    cache_usage_log({
-      timestamp: get_current_ts()
-      event: 'TAB_ACTIVATED'
-      window_id: active_info.windowId
-      tab_id: active_info.tabId
-    })
+    chrome.tabs.get active_info.tabId, (tab) ->
+      cache_usage_log({
+        timestamp: get_current_ts()
+        event: 'TAB_ACTIVATED'
+        window_id: active_info.windowId
+        tab_id: active_info.tabId
+        url: tab.url
+      })
 
   tab_moved = (tab_id, move_info) ->
     cache_usage_log({
@@ -99,3 +112,13 @@ class @UsageLogger
       tab_id: tab_id
       index_from: detach_info.oldPosition
     })
+
+  tab_updated = (tab_id, change_info, tab) ->
+    if change_info.status == 'complete'
+      cache_usage_log({
+        timestamp: get_current_ts()
+        event: 'TAB_UPDATED'
+        url: tab.url
+        window_id: tab.windowId
+        tab_id: tab.id
+      })
