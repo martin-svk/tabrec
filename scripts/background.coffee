@@ -8,20 +8,15 @@
 # instantiate recognizers, etc.
 # ======================================
 
-API_URL = 'http://tabber.fiit.stuba.sk'
-#API_URL = 'http://localhost:9292'
+# Defining constants
+#API_URL = 'http://tabber.fiit.stuba.sk'
+API_URL = 'http://localhost:9292'
+DEBUG_MODE = true
+BATCH_SIZE = 10
 
-connection = new Connection(API_URL)
-usage_logger = new UsageLogger(connection)
-logger = new Logger(connection)
-#rec = new Recognizer
-#notifier = new Notifier
+# Modules initialization
+connection = new Connection(API_URL, DEBUG_MODE)
+usage_logger = new UsageLogger(connection, BATCH_SIZE, DEBUG_MODE)
 
-#rec.recognize()
-#notifier.notify("Something happened!")
-
-connection.get_user(1)
-connection.get_events()
-
+# Modules running
 usage_logger.start()
-logger.start()
