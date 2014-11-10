@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, post_usage_logs, tab_activated, tab_created, tab_moved, tab_removed, _batch_size, _conn, _dbg;
+    var cache, cache_usage_log, get_current_ts, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, _batch_size, _conn, _dbg;
 
     _conn = null;
 
@@ -26,7 +26,9 @@
       chrome.tabs.onCreated.addListener(tab_created);
       chrome.tabs.onRemoved.addListener(tab_removed);
       chrome.tabs.onActivated.addListener(tab_activated);
-      return chrome.tabs.onMoved.addListener(tab_moved);
+      chrome.tabs.onMoved.addListener(tab_moved);
+      chrome.tabs.onAttached.addListener(tab_attached);
+      return chrome.tabs.onDetached.addListener(tab_detached);
     };
 
     cache = [];
@@ -46,9 +48,13 @@
       return cache.length = 0;
     };
 
+    get_current_ts = function() {
+      return (new Date()).getTime() / 1000 | 0;
+    };
+
     tab_created = function(tab) {
       return cache_usage_log({
-        timestamp: (new Date()).getTime() / 1000 | 0,
+        timestamp: get_current_ts(),
         event: 'TAB_CREATED',
         window_id: tab.windowId,
         tab_id: tab.id
@@ -57,7 +63,7 @@
 
     tab_removed = function(tab_id, remove_info) {
       return cache_usage_log({
-        timestamp: (new Date()).getTime() / 1000 | 0,
+        timestamp: get_current_ts(),
         event: 'TAB_REMOVED',
         window_id: remove_info.windowId,
         tab_id: tab_id
@@ -66,7 +72,7 @@
 
     tab_activated = function(active_info) {
       return cache_usage_log({
-        timestamp: (new Date()).getTime() / 1000 | 0,
+        timestamp: get_current_ts(),
         event: 'TAB_ACTIVATED',
         window_id: active_info.windowId,
         tab_id: active_info.tabId
@@ -75,12 +81,32 @@
 
     tab_moved = function(tab_id, move_info) {
       return cache_usage_log({
-        timestamp: (new Date()).getTime() / 1000 | 0,
+        timestamp: get_current_ts(),
         event: 'TAB_MOVED',
         window_id: move_info.windowId,
         tab_id: tab_id,
         index_from: move_info.fromIndex,
         index_to: move_info.toIndex
+      });
+    };
+
+    tab_attached = function(tab_id, attach_info) {
+      return cache_usage_log({
+        timestamp: get_current_ts(),
+        event: 'TAB_ATTACHED',
+        window_id: attach_info.newWindowId,
+        tab_id: tab_id,
+        index_to: attach_info.newPosition
+      });
+    };
+
+    tab_detached = function(tab_id, detach_info) {
+      return cache_usage_log({
+        timestamp: get_current_ts(),
+        event: 'TAB_DETACHED',
+        window_id: detach_info.oldWindowId,
+        tab_id: tab_id,
+        index_from: detach_info.oldPosition
       });
     };
 
