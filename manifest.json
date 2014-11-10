@@ -35,9 +35,7 @@
         "notifications",
         "storage",
         "tabCapture",
-        "tabs"
-    ],
-    "permissions": [
+        "tabs",
         "http://tabber.fiit.stuba.sk/*",
         "http://localhost:9292/*"
     ]
