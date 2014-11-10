@@ -9,10 +9,10 @@
 # ======================================
 
 # Defining constants
-#API_URL = 'http://tabber.fiit.stuba.sk'
-API_URL = 'http://localhost:9292'
-DEBUG_MODE = true
-BATCH_SIZE = 10
+API_URL = 'http://tabber.fiit.stuba.sk'
+#API_URL = 'http://localhost:9292'
+DEBUG_MODE = false
+BATCH_SIZE = 50
 
 # Modules initialization
 connection = new Connection(API_URL, DEBUG_MODE)
