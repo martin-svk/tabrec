@@ -10,26 +10,31 @@
 
 class @UsageLogger
   _conn = null
+  _dbg = false
+  _batch_size = 100
 
-  constructor: (@connection) ->
+  constructor: (@connection, @batch_size, @debug_mode) ->
     _conn = @connection
+    _dbg = @debug_mode
+    _batch_size = @batch_size
 
   # Public methods
 
   start: () ->
-    console.log("Usage logger has started!")
+    console.log("Usage logger has started!") if _dbg
     chrome.tabs.onCreated.addListener(tab_created)
     chrome.tabs.onRemoved.addListener(tab_removed)
     chrome.tabs.onActivated.addListener(tab_activated)
+    chrome.tabs.onMoved.addListener(tab_moved)
 
   # Private vars
   cache = []
 
   # Private functions
   cache_usage_log = (log) ->
-    console.log("Caching usage log: Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}")
+    console.log("Caching usage log: Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if _dbg
     cache.push log
-    if cache.length > 99
+    if cache.length >= _batch_size
       post_usage_logs()
 
   post_usage_logs = () =>
@@ -40,22 +45,35 @@ class @UsageLogger
 
   tab_created = (tab) ->
     cache_usage_log({
+      timestamp: (new Date()).getTime() / 1000 | 0
+      event: 'TAB_CREATED'
+      window_id: tab.windowId
       tab_id: tab.id
-      event: 'TAB_CREATE'
-      timestamp: new Date().getTime()
     })
 
   tab_removed = (tab_id, remove_info) ->
     cache_usage_log({
+      timestamp: (new Date()).getTime() / 1000 | 0
+      event: 'TAB_REMOVED'
+      window_id: remove_info.windowId
       tab_id: tab_id
-      event: 'TAB_REMOVE'
-      timestamp: new Date().getTime()
     })
 
   tab_activated = (active_info) ->
     cache_usage_log({
+      timestamp: (new Date()).getTime() / 1000 | 0
+      event: 'TAB_ACTIVATED'
+      window_id: active_info.windowId
       tab_id: active_info.tabId
-      event: 'TAB_ACTIVATE'
-      timestamp: new Date().getTime()
+    })
+
+  tab_moved = (tab_id, move_info) ->
+    cache_usage_log({
+      timestamp: (new Date()).getTime() / 1000 | 0
+      event: 'TAB_MOVED'
+      window_id: move_info.windowId
+      tab_id: tab_id
+      index_from: move_info.fromIndex
+      index_to: move_info.toIndex
     })
 

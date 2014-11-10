@@ -2,17 +2,27 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, post_usage_logs, tab_activated, tab_created, tab_removed, _conn;
+    var cache, cache_usage_log, post_usage_logs, tab_activated, tab_created, tab_removed, _batch_size, _conn, _dbg;
 
     _conn = null;
 
-    function UsageLogger(connection) {
+    _dbg = false;
+
+    _batch_size = 100;
+
+    function UsageLogger(connection, batch_size, debug_mode) {
       this.connection = connection;
+      this.batch_size = batch_size;
+      this.debug_mode = debug_mode;
       _conn = this.connection;
+      _dbg = this.debug_mode;
+      _batch_size = this.batch_size;
     }
 
     UsageLogger.prototype.start = function() {
-      console.log("Usage logger has started!");
+      if (_dbg) {
+        console.log("Usage logger has started!");
+      }
       chrome.tabs.onCreated.addListener(tab_created);
       chrome.tabs.onRemoved.addListener(tab_removed);
       return chrome.tabs.onActivated.addListener(tab_activated);
@@ -21,9 +31,11 @@
     cache = [];
 
     cache_usage_log = function(log) {
-      console.log("Caching usage log: Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
+      if (_dbg) {
+        console.log("Caching usage log: Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
+      }
       cache.push(log);
-      if (cache.length > 99) {
+      if (cache.length >= _batch_size) {
         return post_usage_logs();
       }
     };
@@ -37,7 +49,7 @@
       return cache_usage_log({
         tab_id: tab.id,
         event: 'TAB_CREATE',
-        timestamp: new Date().getTime()
+        timestamp: (new Date()).getTime() / 1000 | 0
       });
     };
 
@@ -45,7 +57,7 @@
       return cache_usage_log({
         tab_id: tab_id,
         event: 'TAB_REMOVE',
-        timestamp: new Date().getTime()
+        timestamp: (new Date()).getTime() / 1000 | 0
       });
     };
 
@@ -53,7 +65,7 @@
       return cache_usage_log({
         tab_id: active_info.tabId,
         event: 'TAB_ACTIVATE',
-        timestamp: new Date().getTime()
+        timestamp: (new Date()).getTime() / 1000 | 0
       });
     };
 
