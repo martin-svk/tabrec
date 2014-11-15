@@ -7,7 +7,7 @@
 # a unique user UUID
 # ======================================
 
-class @StorageManager
+class @UUID
 
   # ===================================
   # Public methods
