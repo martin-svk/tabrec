@@ -9,9 +9,6 @@
   };
 
   LoadOptions = function() {
-    var savedLevel, savedMode;
-    savedLevel = null;
-    savedMode = null;
     return chrome.storage.sync.get(['user_level', 'rec_mode'], function(result) {
       if (result.user_level && result.rec_mode) {
         $('#user-level-select').val(result.user_level);

@@ -7,8 +7,6 @@ ResetOptions = () ->
 
 # Load options from chrome storage
 LoadOptions = () ->
-  savedLevel = null
-  savedMode = null
   chrome.storage.sync.get ['user_level', 'rec_mode'], (result) ->
     if result.user_level and result.rec_mode
       $('#user-level-select').val(result.user_level)

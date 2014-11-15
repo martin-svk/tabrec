@@ -3,21 +3,28 @@
 # ======================================
 # @author Martin Toma
 #
-# This class is used to interact with
-# chrome storage API, it is also used
-# to get a unique user UUID
+# This class is used to get
+# a unique user UUID
 # ======================================
 
-class @UUID
+class @Indentifier
 
   # ===================================
   # Public methods
   # ===================================
 
-  load_or_generate: () ->
+  load_or_generate_id: () ->
     # Load user id from storage or generate new UUID
-    console.log("Getting user id")
-    return 123456
+    uid = chrome.storage.sync.get ['user_id'], (result) ->
+      result.user_id
+
+    if uid
+      return uid
+    else
+      uid = generate_uuid()
+      chrome.storage.sync.set
+        'user_id': uid
+      return uid
 
   # ===================================
   # Private methods

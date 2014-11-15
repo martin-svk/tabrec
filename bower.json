@@ -11,6 +11,7 @@
   "dependencies": {
     "jquery": "~2.1.1",
     "bootstrap": "~3.2.0",
-    "sweetalert": "~0.2.0"
+    "sweetalert": "~0.2.0",
+    "uuid": "~2.0.1"
   }
 }
