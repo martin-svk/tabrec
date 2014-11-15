@@ -12,11 +12,13 @@ class @UsageLogger
   _conn = null
   _dbg = false
   _batch_size = 100
+  _uid = null
 
-  constructor: (@connection, @batch_size, @debug_mode) ->
+  constructor: (@connection, @batch_size, @user_id, @debug_mode) ->
     _conn = @connection
     _dbg = @debug_mode
     _batch_size = @batch_size
+    _uid = @user_id
 
   # ===================================
   # Public methods

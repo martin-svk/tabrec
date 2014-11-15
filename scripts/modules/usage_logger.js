@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, get_current_ts, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg;
+    var cache, cache_usage_log, get_current_ts, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg, _uid;
 
     _conn = null;
 
@@ -10,13 +10,17 @@
 
     _batch_size = 100;
 
-    function UsageLogger(connection, batch_size, debug_mode) {
+    _uid = null;
+
+    function UsageLogger(connection, batch_size, user_id, debug_mode) {
       this.connection = connection;
       this.batch_size = batch_size;
+      this.user_id = user_id;
       this.debug_mode = debug_mode;
       _conn = this.connection;
       _dbg = this.debug_mode;
       _batch_size = this.batch_size;
+      _uid = this.user_id;
     }
 
     UsageLogger.prototype.start = function() {

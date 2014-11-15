@@ -11,6 +11,7 @@
     "background": {
         "scripts": [
             "bower_components/jquery/dist/jquery.min.js",
+            "scripts/modules/storage_manager.js",
             "scripts/modules/connection.js",
             "scripts/modules/notifier.js",
             "scripts/modules/recognizer.js",
