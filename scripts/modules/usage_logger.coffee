@@ -36,6 +36,7 @@ class @UsageLogger
   # Private vars
   # ===================================
   cache = []
+  last_post_time= new Date().getTime()
 
   # ===================================
   # Private functions
@@ -44,15 +45,17 @@ class @UsageLogger
   cache_usage_log = (log) ->
     console.log("Caching usage log: Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if _dbg
     cache.push log
-    if cache.length >= _batch_size
+    if (cache.length >= _batch_size) || (get_current_ts() - last_post_time > (3 * 60 * 1000))
       post_usage_logs()
 
   post_usage_logs = () ->
     _conn.post_usage_logs(cache)
     cache.length = 0
+    last_post_time = get_current_ts()
+
 
   get_current_ts = () ->
-    (new Date()).getTime() / 1000 | 0
+    new Date().getTime()
 
   # ===================================
   # Event handlers

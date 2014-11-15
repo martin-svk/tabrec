@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, get_current_ts, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg;
+    var cache, cache_usage_log, get_current_ts, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg;
 
     _conn = null;
 
@@ -34,23 +34,26 @@
 
     cache = [];
 
+    last_post_time = new Date().getTime();
+
     cache_usage_log = function(log) {
       if (_dbg) {
         console.log("Caching usage log: Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
       }
       cache.push(log);
-      if (cache.length >= _batch_size) {
+      if ((cache.length >= _batch_size) || (get_current_ts() - last_post_time > (3 * 60 * 1000))) {
         return post_usage_logs();
       }
     };
 
     post_usage_logs = function() {
       _conn.post_usage_logs(cache);
-      return cache.length = 0;
+      cache.length = 0;
+      return last_post_time = get_current_ts();
     };
 
     get_current_ts = function() {
-      return (new Date()).getTime() / 1000 | 0;
+      return new Date().getTime();
     };
 
     tab_created = function(tab) {
