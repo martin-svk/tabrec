@@ -8,19 +8,13 @@
 # to get a unique user UUID
 # ======================================
 
-class @StorageManager
+class @UUID
 
   # ===================================
   # Public methods
   # ===================================
 
-  load: () ->
-    console.log("Loading from storage")
-
-  save: () ->
-    console.log("Saving to storage")
-
-  get_user_id: () ->
+  load_or_generate: () ->
     # Load user id from storage or generate new UUID
     console.log("Getting user id")
     return 123456
