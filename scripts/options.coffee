@@ -1,21 +1,21 @@
 'use strict'
 
 # Reset options method
-ResetOptions = () ->
+reset_options = () ->
   $('#user-level-select').val('beginner')
   $('#rec-mode-select').val('semi-interactive')
 
 # Load options from chrome storage
-LoadOptions = () ->
+load_options = () ->
   chrome.storage.sync.get ['user_level', 'rec_mode'], (result) ->
     if result.user_level and result.rec_mode
       $('#user-level-select').val(result.user_level)
       $('#rec-mode-select').val(result.rec_mode)
     else
-      ResetOptions()
+      reset_options()
 
 # Save options method
-SaveOptions = () ->
+save_option = () ->
   userLevel = $('#user-level-select').val()
   recMode = $('#rec-mode-select').val()
   chrome.storage.sync.set
@@ -25,12 +25,12 @@ SaveOptions = () ->
 
 # On save button submit
 $('#save-settings').click ->
-  SaveOptions()
+  save_option()
 
 # On reset button click
 $('#reset-settings').click ->
-  ResetOptions()
+  reset_options()
 
 # Load saved options when options page open
 $(document).ready ->
-  LoadOptions()
+  load_options()
