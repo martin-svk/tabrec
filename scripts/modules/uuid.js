@@ -6,7 +6,7 @@
 
     function UUID() {}
 
-    UUID.prototype.ensure_uuid_in_storage = function() {
+    UUID.prototype.ensure_in_storage = function() {
       return chrome.storage.sync.get(['user_id'], function(result) {
         if (!result.user_id) {
           return chrome.storage.sync.set({

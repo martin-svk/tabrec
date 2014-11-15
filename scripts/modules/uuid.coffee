@@ -13,7 +13,7 @@ class @UUID
   # Public methods
   # ===================================
 
-  ensure_uuid_in_storage: () ->
+  ensure_in_storage: () ->
     # Load user id from storage or generate new UUID
     chrome.storage.sync.get ['user_id'], (result) ->
       unless result.user_id
