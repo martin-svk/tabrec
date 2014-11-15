@@ -12,7 +12,7 @@
       if (id) {
         return id;
       } else {
-        id = uuid.v4();
+        id = UUID.create(4);
         chrome.storage.sync.set({
           'user_id': id
         });
