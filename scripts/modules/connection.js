@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Connection = (function() {
-    var get_collection, get_member, post_collection, _dbg;
+    var get_collection, get_member, post_collection, post_member, _dbg;
 
     _dbg = false;
 
@@ -16,8 +16,8 @@
       return get_member(this.url, 'users', id);
     };
 
-    Connection.prototype.get_events = function() {
-      return get_collection(this.url, 'events');
+    Connection.prototype.create_user = function(data) {
+      return post_member(this.url, data, 'users');
     };
 
     Connection.prototype.post_usage_logs = function(data) {
@@ -52,6 +52,21 @@
             _results.push(console.log("" + event['name']));
           }
           return _results;
+        }
+      });
+    };
+
+    post_member = function(url, data, resource) {
+      return $.ajax("" + url + "/" + resource, {
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          user: data
+        },
+        success: function(data, textStatus, jqXHR) {
+          if (_dbg) {
+            return console.log("Status: " + textStatus);
+          }
         }
       });
     };

@@ -2,20 +2,27 @@
 (function() {
   'use strict';
   this.User = (function() {
-    var generate_uuid;
+    var create_if_not_exists, create_user, generate_uuid, _conn;
 
-    function User() {}
+    _conn = null;
+
+    function User(connection) {
+      this.connection = connection;
+      _conn = this.connection;
+    }
 
     User.prototype.in_context = function(callback) {
       return chrome.storage.sync.get(['user_id'], function(result) {
         var new_id;
         if (result.user_id) {
-          return callback(result.user_id);
+          callback(result.user_id);
+          return create_if_not_exists(_conn, result.user_id);
         } else {
           new_id = generate_uuid();
           return chrome.storage.sync.set({
             'user_id': new_id
           }, function() {
+            create_user(_conn, new_id);
             return callback(new_id);
           });
         }
@@ -28,6 +35,22 @@
         r = Math.random() * 16 | 0;
         v = c === 'x' ? r : r & 0x3 | 0x8;
         return v.toString(16);
+      });
+    };
+
+    create_if_not_exists = function(conn, id) {
+      return conn.get_user(id, function(user) {
+        if (!user) {
+          return create_user(conn, id);
+        }
+      });
+    };
+
+    create_user = function(conn, id) {
+      return conn.create_user({
+        id: id,
+        rec_mode: 'aggressive',
+        experience: 'advanced'
       });
     };
 

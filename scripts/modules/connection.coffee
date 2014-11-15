@@ -18,8 +18,8 @@ class @Connection
   get_user: (id) ->
     get_member(@url, 'users', id)
 
-  get_events: ->
-    get_collection(@url, 'events')
+  create_user: (data) ->
+    post_member(@url, data, 'users')
 
   post_usage_logs: (data) ->
     post_collection(@url, data, 'usage_logs')
@@ -44,6 +44,14 @@ class @Connection
       success: (data, textStatus, jqXHR) ->
         for event in data
           console.log("#{event['name']}")
+
+  post_member = (url, data, resource) ->
+    $.ajax "#{url}/#{resource}",
+      type: 'POST'
+      dataType: 'json'
+      data: { user: data }
+      success: (data, textStatus, jqXHR) ->
+        console.log("Status: #{textStatus}") if _dbg
 
   post_collection = (url, data, resource) ->
     $.ajax "#{url}/#{resource}",

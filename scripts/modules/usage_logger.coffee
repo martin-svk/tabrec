@@ -19,7 +19,6 @@ class @UsageLogger
     _dbg = @debug_mode
     _batch_size = @batch_size
     _uid = @user_id
-    console.log("ID: #{_uid}")
 
   # ===================================
   # Public methods

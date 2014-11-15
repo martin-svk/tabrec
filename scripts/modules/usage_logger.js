@@ -21,7 +21,6 @@
       _dbg = this.debug_mode;
       _batch_size = this.batch_size;
       _uid = this.user_id;
-      console.log("ID: " + _uid);
     }
 
     UsageLogger.prototype.start = function() {
