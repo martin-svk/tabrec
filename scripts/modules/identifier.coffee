@@ -7,28 +7,21 @@
 # a unique user UUID
 # ======================================
 
-class @Indentifier
+class @Identifier
 
   # ===================================
   # Public methods
   # ===================================
 
-  load_or_generate_id: () ->
+  get_or_generate_id: () ->
     # Load user id from storage or generate new UUID
-    uid = chrome.storage.sync.get ['user_id'], (result) ->
+    id = chrome.storage.sync.get ['user_id'], (result) ->
       result.user_id
 
-    if uid
-      return uid
+    if id
+      return id
     else
-      uid = generate_uuid()
+      id = uuid.v4()
       chrome.storage.sync.set
-        'user_id': uid
-      return uid
-
-  # ===================================
-  # Private methods
-  # ===================================
-
-  generate_uuid = () ->
-    console.log("Generating uuid")
+        'user_id': id
+      return id
