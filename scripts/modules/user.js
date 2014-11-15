@@ -15,8 +15,8 @@
       return chrome.storage.sync.get(['user_id'], function(result) {
         var new_id;
         if (result.user_id) {
-          callback(result.user_id);
-          return create_if_not_exists(_conn, result.user_id);
+          create_if_not_exists(_conn, result.user_id);
+          return callback(result.user_id);
         } else {
           new_id = generate_uuid();
           return chrome.storage.sync.set({

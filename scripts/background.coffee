@@ -19,13 +19,9 @@ BATCH_SIZE = 50
 # ======================================
 connection = new Connection(API_URL, DEBUG_MODE)
 
-user = new User
-user.in_context(connection, (user_id) ->
+user = new User(connection)
+user.in_context((user_id) ->
   # Modules initialization
-  # ======================================
   usage_logger = new UsageLogger(connection, BATCH_SIZE, user_id, DEBUG_MODE)
-
-  # Modules running
-  # ======================================
   usage_logger.start()
 )

@@ -11,9 +11,9 @@
 
   connection = new Connection(API_URL, DEBUG_MODE);
 
-  user = new User;
+  user = new User(connection);
 
-  user.in_context(connection, function(user_id) {
+  user.in_context(function(user_id) {
     var usage_logger;
     usage_logger = new UsageLogger(connection, BATCH_SIZE, user_id, DEBUG_MODE);
     return usage_logger.start();

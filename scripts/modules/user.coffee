@@ -21,8 +21,8 @@ class @User
     # Load user id from storage or generate new UUID
     chrome.storage.sync.get ['user_id'], (result) ->
       if result.user_id
-        callback(result.user_id)
         create_if_not_exists(_conn, result.user_id)
+        callback(result.user_id)
       else
         new_id = generate_uuid()
         chrome.storage.sync.set

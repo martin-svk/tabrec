@@ -15,8 +15,8 @@ class @Connection
 
   # Public methods
 
-  get_user: (id) ->
-    get_member(@url, 'users', id)
+  get_user: (id, callback) ->
+    get_member(@url, 'users', id, callback)
 
   create_user: (data) ->
     post_member(@url, data, 'users')
@@ -26,14 +26,14 @@ class @Connection
 
   # Private methods
 
-  get_member = (url, resource, id) ->
+  get_member = (url, resource, id, callback) ->
     $.ajax "#{url}/#{resource}/#{id}",
       type: 'GET'
       dataType: 'json'
       error: (jqXHR, textStatus, errorThrown) ->
-        console.log("Error: #{textStatus}")
+        callback(null)
       success: (data, textStatus, jqXHR) ->
-        console.log("User id: #{data['id']} experience: #{data['experience']} rec_mode: #{data['rec_mode']}")
+        callback(data)
 
   get_collection = (url, resource) ->
     $.ajax "#{url}/#{resource}",

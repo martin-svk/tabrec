@@ -12,8 +12,8 @@
       _dbg = this.debug_mode;
     }
 
-    Connection.prototype.get_user = function(id) {
-      return get_member(this.url, 'users', id);
+    Connection.prototype.get_user = function(id, callback) {
+      return get_member(this.url, 'users', id, callback);
     };
 
     Connection.prototype.create_user = function(data) {
@@ -24,15 +24,15 @@
       return post_collection(this.url, data, 'usage_logs');
     };
 
-    get_member = function(url, resource, id) {
+    get_member = function(url, resource, id, callback) {
       return $.ajax("" + url + "/" + resource + "/" + id, {
         type: 'GET',
         dataType: 'json',
         error: function(jqXHR, textStatus, errorThrown) {
-          return console.log("Error: " + textStatus);
+          return callback(null);
         },
         success: function(data, textStatus, jqXHR) {
-          return console.log("User id: " + data['id'] + " experience: " + data['experience'] + " rec_mode: " + data['rec_mode']);
+          return callback(data);
         }
       });
     };
