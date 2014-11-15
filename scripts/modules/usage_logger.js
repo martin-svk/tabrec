@@ -62,6 +62,7 @@
 
     tab_created = function(tab) {
       return cache_usage_log({
+        user_id: _uid,
         timestamp: get_current_ts(),
         event: 'TAB_CREATED',
         window_id: tab.windowId,
@@ -72,6 +73,7 @@
 
     tab_removed = function(tab_id, remove_info) {
       return cache_usage_log({
+        user_id: _uid,
         timestamp: get_current_ts(),
         event: 'TAB_REMOVED',
         window_id: remove_info.windowId,
@@ -82,6 +84,7 @@
     tab_activated = function(active_info) {
       return chrome.tabs.get(active_info.tabId, function(tab) {
         return cache_usage_log({
+          user_id: _uid,
           timestamp: get_current_ts(),
           event: 'TAB_ACTIVATED',
           window_id: active_info.windowId,
@@ -93,6 +96,7 @@
 
     tab_moved = function(tab_id, move_info) {
       return cache_usage_log({
+        user_id: _uid,
         timestamp: get_current_ts(),
         event: 'TAB_MOVED',
         window_id: move_info.windowId,
@@ -104,6 +108,7 @@
 
     tab_attached = function(tab_id, attach_info) {
       return cache_usage_log({
+        user_id: _uid,
         timestamp: get_current_ts(),
         event: 'TAB_ATTACHED',
         window_id: attach_info.newWindowId,
@@ -114,6 +119,7 @@
 
     tab_detached = function(tab_id, detach_info) {
       return cache_usage_log({
+        user_id: _uid,
         timestamp: get_current_ts(),
         event: 'TAB_DETACHED',
         window_id: detach_info.oldWindowId,
@@ -125,6 +131,7 @@
     tab_updated = function(tab_id, change_info, tab) {
       if (change_info.status === 'complete') {
         return cache_usage_log({
+          user_id: _uid,
           timestamp: get_current_ts(),
           event: 'TAB_UPDATED',
           url: tab.url,

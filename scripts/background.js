@@ -13,6 +13,8 @@
 
   USER_ID = identifier.get_or_generate_id();
 
+  console.log("User id: " + USER_ID);
+
   connection = new Connection(API_URL, DEBUG_MODE);
 
   usage_logger = new UsageLogger(connection, BATCH_SIZE, USER_ID, DEBUG_MODE);

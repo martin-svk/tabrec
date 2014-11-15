@@ -65,6 +65,7 @@ class @UsageLogger
 
   tab_created = (tab) ->
     cache_usage_log({
+      user_id: _uid
       timestamp: get_current_ts()
       event: 'TAB_CREATED'
       window_id: tab.windowId
@@ -74,6 +75,7 @@ class @UsageLogger
 
   tab_removed = (tab_id, remove_info) ->
     cache_usage_log({
+      user_id: _uid
       timestamp: get_current_ts()
       event: 'TAB_REMOVED'
       window_id: remove_info.windowId
@@ -83,6 +85,7 @@ class @UsageLogger
   tab_activated = (active_info) ->
     chrome.tabs.get active_info.tabId, (tab) ->
       cache_usage_log({
+        user_id: _uid
         timestamp: get_current_ts()
         event: 'TAB_ACTIVATED'
         window_id: active_info.windowId
@@ -92,6 +95,7 @@ class @UsageLogger
 
   tab_moved = (tab_id, move_info) ->
     cache_usage_log({
+      user_id: _uid
       timestamp: get_current_ts()
       event: 'TAB_MOVED'
       window_id: move_info.windowId
@@ -102,6 +106,7 @@ class @UsageLogger
 
   tab_attached = (tab_id, attach_info) ->
     cache_usage_log({
+      user_id: _uid
       timestamp: get_current_ts()
       event: 'TAB_ATTACHED'
       window_id: attach_info.newWindowId
@@ -111,6 +116,7 @@ class @UsageLogger
 
   tab_detached = (tab_id, detach_info) ->
     cache_usage_log({
+      user_id: _uid
       timestamp: get_current_ts()
       event: 'TAB_DETACHED'
       window_id: detach_info.oldWindowId
@@ -121,6 +127,7 @@ class @UsageLogger
   tab_updated = (tab_id, change_info, tab) ->
     if change_info.status == 'complete'
       cache_usage_log({
+        user_id: _uid
         timestamp: get_current_ts()
         event: 'TAB_UPDATED'
         url: tab.url
