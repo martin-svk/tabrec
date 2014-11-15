@@ -50,7 +50,7 @@
       return conn.create_user({
         id: id,
         rec_mode: 'aggressive',
-        experience: 'advanced'
+        experience: 'beginner'
       });
     };
 
