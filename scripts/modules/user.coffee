@@ -52,5 +52,3 @@ class @User
       rec_mode: 'aggressive'
       experience: 'advanced'
     })
-
-
