@@ -11,7 +11,6 @@
     "background": {
         "scripts": [
             "bower_components/jquery/dist/jquery.min.js",
-            "bower_components/uuid-js/lib/uuid.js",
             "scripts/modules/identifier.js",
             "scripts/modules/connection.js",
             "scripts/modules/notifier.js",

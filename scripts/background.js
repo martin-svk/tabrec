@@ -13,7 +13,7 @@
 
   USER_ID = identifier.get_or_generate_id();
 
-  console.log("User id: " + USER_ID);
+  console.log("Returned id: " + USER_ID);
 
   connection = new Connection(API_URL, DEBUG_MODE);
 
