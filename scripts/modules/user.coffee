@@ -7,18 +7,22 @@
 # a unique user UUID
 # ======================================
 
-class @UUID
+class @User
 
   # ===================================
   # Public methods
   # ===================================
 
-  ensure_in_storage: () ->
+  in_context: (callback) ->
     # Load user id from storage or generate new UUID
     chrome.storage.sync.get ['user_id'], (result) ->
-      unless result.user_id
+      if result.user_id
+        callback(result.user_id)
+      else
+        new_id = generate_uuid()
         chrome.storage.sync.set
-          'user_id': generate_uuid()
+          'user_id': new_id, ->
+            callback(new_id)
 
   # ===================================
   # Private methods

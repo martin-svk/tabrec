@@ -12,11 +12,14 @@ class @UsageLogger
   _conn = null
   _dbg = false
   _batch_size = 100
+  _uid = null
 
-  constructor: (@connection, @batch_size, @debug_mode) ->
+  constructor: (@connection, @batch_size, @user_id, @debug_mode) ->
     _conn = @connection
     _dbg = @debug_mode
     _batch_size = @batch_size
+    _uid = @user_id
+    console.log("ID: #{_uid}")
 
   # ===================================
   # Public methods
@@ -43,7 +46,7 @@ class @UsageLogger
   # ===================================
 
   cache_usage_log = (log) ->
-    console.log("Caching usage log: Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if _dbg
+    console.log("Caching usage log: User id: #{log.user_id}, Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if _dbg
     cache.push log
     if (cache.length >= _batch_size) || (get_current_ts() - last_post_time > (3 * 60 * 1000))
       post_usage_logs()

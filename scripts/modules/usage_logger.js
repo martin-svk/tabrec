@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, get_current_ts, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg;
+    var cache, cache_usage_log, get_current_ts, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg, _uid;
 
     _conn = null;
 
@@ -10,13 +10,18 @@
 
     _batch_size = 100;
 
-    function UsageLogger(connection, batch_size, debug_mode) {
+    _uid = null;
+
+    function UsageLogger(connection, batch_size, user_id, debug_mode) {
       this.connection = connection;
       this.batch_size = batch_size;
+      this.user_id = user_id;
       this.debug_mode = debug_mode;
       _conn = this.connection;
       _dbg = this.debug_mode;
       _batch_size = this.batch_size;
+      _uid = this.user_id;
+      console.log("ID: " + _uid);
     }
 
     UsageLogger.prototype.start = function() {
@@ -38,7 +43,7 @@
 
     cache_usage_log = function(log) {
       if (_dbg) {
-        console.log("Caching usage log: Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
+        console.log("Caching usage log: User id: " + log.user_id + ", Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
       }
       cache.push(log);
       if ((cache.length >= _batch_size) || (get_current_ts() - last_post_time > (3 * 60 * 1000))) {

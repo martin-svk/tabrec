@@ -15,16 +15,17 @@ API_URL = 'http://localhost:9292'
 DEBUG_MODE = true
 BATCH_SIZE = 50
 
-# User id generation
+# Run entire session in unique user context
 # ======================================
-uuid = new UUID
-uuid.ensure_in_storage()
 
-# Modules initialization
-# ======================================
-connection = new Connection(API_URL, DEBUG_MODE)
-usage_logger = new UsageLogger(connection, BATCH_SIZE, DEBUG_MODE)
+user = new User
+user.in_context( (user_id) ->
+  # Modules initialization
+  # ======================================
+  connection = new Connection(API_URL, DEBUG_MODE)
+  usage_logger = new UsageLogger(connection, BATCH_SIZE, user_id, DEBUG_MODE)
 
-# Modules running
-# ======================================
-usage_logger.start()
+  # Modules running
+  # ======================================
+  usage_logger.start()
+)
