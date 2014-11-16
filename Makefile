@@ -2,7 +2,7 @@ all:
 	./bin/compile.sh
 
 release:
-	./scripts/build.sh
+	./bin/build.sh
 
 clean:
 	rm -r dist*
