@@ -49,8 +49,8 @@
     create_user = function(conn, id) {
       return conn.create_user({
         id: id,
-        rec_mode: 'aggressive',
-        experience: 'beginner'
+        rec_mode: 'default',
+        experience: 'default'
       });
     };
 

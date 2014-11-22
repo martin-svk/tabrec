@@ -49,6 +49,6 @@ class @User
   create_user = (conn, id) ->
     conn.create_user({
       id: id
-      rec_mode: 'aggressive'
-      experience: 'beginner'
+      rec_mode: 'default'
+      experience: 'default'
     })
