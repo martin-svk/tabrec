@@ -14,6 +14,8 @@ class @UsageLogger
   _batch_size = 100
   _uid = null
   _sid = null
+  _parser = document.createElement('a')
+  _sha1 = new Sha1()
 
   constructor: (@connection, @batch_size, @user_id, @session_id, @debug_mode) ->
     _conn = @connection
@@ -61,20 +63,39 @@ class @UsageLogger
   get_current_ts = () ->
     new Date().getTime()
 
+  non_localhost = (protocol) ->
+    if protocol == "http:" || protocol == "https:"
+      true
+    else
+      false
+
   # ===================================
   # Event handlers
   # ===================================
 
   tab_created = (tab) ->
-    cache_usage_log({
-      user_id: _uid
-      session_id: _sid
-      timestamp: get_current_ts()
-      event: 'TAB_CREATED'
-      window_id: tab.windowId
-      tab_id: tab.id
-      url: tab.url
-    })
+
+    # URL splitting and hashing
+    _parser.href = tab.url
+    _protocol = _parser.protocol
+
+    if non_localhost(_protocol)
+      _domain = _parser.hostname
+      _path = _parser.pathname
+      console.log("Domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
+
+      # Creating data object to POST
+      cache_usage_log({
+        user_id: _uid
+        session_id: _sid
+        timestamp: get_current_ts()
+        event: 'TAB_CREATED'
+        window_id: tab.windowId
+        tab_id: tab.id
+        url: _sha1.process(tab.url)
+        domain: _sha1.process(_domain)
+        path: _sha1.process(_path)
+      })
 
   tab_removed = (tab_id, remove_info) ->
     cache_usage_log({
@@ -95,7 +116,6 @@ class @UsageLogger
         event: 'TAB_ACTIVATED'
         window_id: active_info.windowId
         tab_id: active_info.tabId
-        url: tab.url
       })
 
   tab_moved = (tab_id, move_info) ->
@@ -134,12 +154,25 @@ class @UsageLogger
 
   tab_updated = (tab_id, change_info, tab) ->
     if change_info.status == 'complete'
-      cache_usage_log({
-        user_id: _uid
-        session_id: _sid
-        timestamp: get_current_ts()
-        event: 'TAB_UPDATED'
-        url: tab.url
-        window_id: tab.windowId
-        tab_id: tab.id
-      })
+
+      # URL splitting and hashing
+      _parser.href = tab.url
+      _protocol = _parser.protocol
+
+      if non_localhost(_protocol)
+        _domain = _parser.hostname
+        _path = _parser.pathname
+        console.log("Domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
+
+        # Creating data object to POST
+        cache_usage_log({
+          user_id: _uid
+          session_id: _sid
+          timestamp: get_current_ts()
+          event: 'TAB_UPDATED'
+          window_id: tab.windowId
+          tab_id: tab.id
+          url: _sha1.process(tab.url)
+          domain: _sha1.process(_domain)
+          path: _sha1.process(_path)
+        })
