@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, get_current_ts, last_post_time, non_localhost, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg, _parser, _sha1, _sid, _uid;
+    var cache, cache_usage_log, get_current_ts, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg, _parser, _sha1, _sid, _uid;
 
     _conn = null;
 
@@ -68,36 +68,25 @@
       return new Date().getTime();
     };
 
-    non_localhost = function(protocol) {
-      if (protocol === "http:" || protocol === "https:") {
-        return true;
-      } else {
-        return false;
-      }
-    };
-
     tab_created = function(tab) {
-      var _domain, _path, _protocol;
+      var _domain, _path;
       _parser.href = tab.url;
-      _protocol = _parser.protocol;
-      if (non_localhost(_protocol)) {
-        _domain = _parser.hostname;
-        _path = _parser.pathname;
-        if (_dbg) {
-          console.log("Domain: " + _domain + " path: " + _path + " url: " + _parser.href);
-        }
-        return cache_usage_log({
-          user_id: _uid,
-          session_id: _sid,
-          timestamp: get_current_ts(),
-          event: 'TAB_CREATED',
-          window_id: tab.windowId,
-          tab_id: tab.id,
-          url: _sha1.process(tab.url),
-          domain: _sha1.process(_domain),
-          path: _sha1.process(_path)
-        });
+      _domain = _parser.hostname;
+      _path = _parser.pathname;
+      if (_dbg) {
+        console.log("Domain: " + _domain + " path: " + _path + " url: " + _parser.href);
       }
+      return cache_usage_log({
+        user_id: _uid,
+        session_id: _sid,
+        timestamp: get_current_ts(),
+        event: 'TAB_CREATED',
+        window_id: tab.windowId,
+        tab_id: tab.id,
+        url: _sha1.process(tab.url),
+        domain: _sha1.process(_domain),
+        path: _sha1.process(_path)
+      });
     };
 
     tab_removed = function(tab_id, remove_info) {
@@ -162,28 +151,25 @@
     };
 
     tab_updated = function(tab_id, change_info, tab) {
-      var _domain, _path, _protocol;
+      var _domain, _path;
       if (change_info.status === 'complete') {
         _parser.href = tab.url;
-        _protocol = _parser.protocol;
-        if (non_localhost(_protocol)) {
-          _domain = _parser.hostname;
-          _path = _parser.pathname;
-          if (_dbg) {
-            console.log("Domain: " + _domain + " path: " + _path + " url: " + _parser.href);
-          }
-          return cache_usage_log({
-            user_id: _uid,
-            session_id: _sid,
-            timestamp: get_current_ts(),
-            event: 'TAB_UPDATED',
-            window_id: tab.windowId,
-            tab_id: tab.id,
-            url: _sha1.process(tab.url),
-            domain: _sha1.process(_domain),
-            path: _sha1.process(_path)
-          });
+        _domain = _parser.hostname;
+        _path = _parser.pathname;
+        if (_dbg) {
+          console.log("Domain: " + _domain + " path: " + _path + " url: " + _parser.href);
         }
+        return cache_usage_log({
+          user_id: _uid,
+          session_id: _sid,
+          timestamp: get_current_ts(),
+          event: 'TAB_UPDATED',
+          window_id: tab.windowId,
+          tab_id: tab.id,
+          url: _sha1.process(tab.url),
+          domain: _sha1.process(_domain),
+          path: _sha1.process(_path)
+        });
       }
     };
 

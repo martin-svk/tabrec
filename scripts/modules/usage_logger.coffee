@@ -63,12 +63,6 @@ class @UsageLogger
   get_current_ts = () ->
     new Date().getTime()
 
-  non_localhost = (protocol) ->
-    if protocol == "http:" || protocol == "https:"
-      true
-    else
-      false
-
   # ===================================
   # Event handlers
   # ===================================
@@ -77,25 +71,22 @@ class @UsageLogger
 
     # URL splitting and hashing
     _parser.href = tab.url
-    _protocol = _parser.protocol
+    _domain = _parser.hostname
+    _path = _parser.pathname
+    console.log("Domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
 
-    if non_localhost(_protocol)
-      _domain = _parser.hostname
-      _path = _parser.pathname
-      console.log("Domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
-
-      # Creating data object to POST
-      cache_usage_log({
-        user_id: _uid
-        session_id: _sid
-        timestamp: get_current_ts()
-        event: 'TAB_CREATED'
-        window_id: tab.windowId
-        tab_id: tab.id
-        url: _sha1.process(tab.url)
-        domain: _sha1.process(_domain)
-        path: _sha1.process(_path)
-      })
+    # Creating data object to POST
+    cache_usage_log({
+      user_id: _uid
+      session_id: _sid
+      timestamp: get_current_ts()
+      event: 'TAB_CREATED'
+      window_id: tab.windowId
+      tab_id: tab.id
+      url: _sha1.process(tab.url)
+      domain: _sha1.process(_domain)
+      path: _sha1.process(_path)
+    })
 
   tab_removed = (tab_id, remove_info) ->
     cache_usage_log({
@@ -157,22 +148,19 @@ class @UsageLogger
 
       # URL splitting and hashing
       _parser.href = tab.url
-      _protocol = _parser.protocol
+      _domain = _parser.hostname
+      _path = _parser.pathname
+      console.log("Domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
 
-      if non_localhost(_protocol)
-        _domain = _parser.hostname
-        _path = _parser.pathname
-        console.log("Domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
-
-        # Creating data object to POST
-        cache_usage_log({
-          user_id: _uid
-          session_id: _sid
-          timestamp: get_current_ts()
-          event: 'TAB_UPDATED'
-          window_id: tab.windowId
-          tab_id: tab.id
-          url: _sha1.process(tab.url)
-          domain: _sha1.process(_domain)
-          path: _sha1.process(_path)
-        })
+      # Creating data object to POST
+      cache_usage_log({
+        user_id: _uid
+        session_id: _sid
+        timestamp: get_current_ts()
+        event: 'TAB_UPDATED'
+        window_id: tab.windowId
+        tab_id: tab.id
+        url: _sha1.process(tab.url)
+        domain: _sha1.process(_domain)
+        path: _sha1.process(_path)
+      })
