@@ -13,9 +13,9 @@
 
   user = new User(connection);
 
-  user.in_context(function(user_id) {
+  user.in_context(function(user_id, session_id) {
     var usage_logger;
-    usage_logger = new UsageLogger(connection, BATCH_SIZE, user_id, DEBUG_MODE);
+    usage_logger = new UsageLogger(connection, BATCH_SIZE, user_id, session_id, DEBUG_MODE);
     return usage_logger.start();
   });
 
