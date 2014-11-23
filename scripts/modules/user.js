@@ -13,17 +13,18 @@
 
     User.prototype.in_context = function(callback) {
       return chrome.storage.sync.get(['user_id'], function(result) {
-        var new_id;
+        var new_id, session_id;
+        session_id = generate_uuid();
         if (result.user_id) {
           create_if_not_exists(_conn, result.user_id);
-          return callback(result.user_id);
+          return callback(result.user_id, session_id);
         } else {
           new_id = generate_uuid();
           return chrome.storage.sync.set({
             'user_id': new_id
           }, function() {
             create_user(_conn, new_id);
-            return callback(new_id);
+            return callback(new_id, session_id);
           });
         }
       });

@@ -17,18 +17,20 @@ class @User
   # Public methods
   # ===================================
 
+  # In context of user and session ids
   in_context: (callback) ->
     # Load user id from storage or generate new UUID
     chrome.storage.sync.get ['user_id'], (result) ->
+      session_id = generate_uuid()
       if result.user_id
         create_if_not_exists(_conn, result.user_id)
-        callback(result.user_id)
+        callback(result.user_id, session_id)
       else
         new_id = generate_uuid()
         chrome.storage.sync.set
           'user_id': new_id, ->
             create_user(_conn, new_id)
-            callback(new_id)
+            callback(new_id, session_id)
 
   # ===================================
   # Private methods

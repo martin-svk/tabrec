@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, get_current_ts, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg, _uid;
+    var cache, cache_usage_log, get_current_ts, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg, _sid, _uid;
 
     _conn = null;
 
@@ -12,15 +12,19 @@
 
     _uid = null;
 
-    function UsageLogger(connection, batch_size, user_id, debug_mode) {
+    _sid = null;
+
+    function UsageLogger(connection, batch_size, user_id, session_id, debug_mode) {
       this.connection = connection;
       this.batch_size = batch_size;
       this.user_id = user_id;
+      this.session_id = session_id;
       this.debug_mode = debug_mode;
       _conn = this.connection;
       _dbg = this.debug_mode;
       _batch_size = this.batch_size;
       _uid = this.user_id;
+      _sid = this.session_id;
     }
 
     UsageLogger.prototype.start = function() {
@@ -63,6 +67,7 @@
     tab_created = function(tab) {
       return cache_usage_log({
         user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_CREATED',
         window_id: tab.windowId,
@@ -74,6 +79,7 @@
     tab_removed = function(tab_id, remove_info) {
       return cache_usage_log({
         user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_REMOVED',
         window_id: remove_info.windowId,
@@ -85,6 +91,7 @@
       return chrome.tabs.get(active_info.tabId, function(tab) {
         return cache_usage_log({
           user_id: _uid,
+          session_id: _sid,
           timestamp: get_current_ts(),
           event: 'TAB_ACTIVATED',
           window_id: active_info.windowId,
@@ -97,6 +104,7 @@
     tab_moved = function(tab_id, move_info) {
       return cache_usage_log({
         user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_MOVED',
         window_id: move_info.windowId,
@@ -109,6 +117,7 @@
     tab_attached = function(tab_id, attach_info) {
       return cache_usage_log({
         user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_ATTACHED',
         window_id: attach_info.newWindowId,
@@ -120,6 +129,7 @@
     tab_detached = function(tab_id, detach_info) {
       return cache_usage_log({
         user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_DETACHED',
         window_id: detach_info.oldWindowId,
@@ -132,6 +142,7 @@
       if (change_info.status === 'complete') {
         return cache_usage_log({
           user_id: _uid,
+          session_id: _sid,
           timestamp: get_current_ts(),
           event: 'TAB_UPDATED',
           url: tab.url,
