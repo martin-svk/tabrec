@@ -51,7 +51,7 @@ class @UsageLogger
   cache_usage_log = (log) ->
     console.log("Caching usage log: User id: #{log.user_id}, Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if _dbg
     cache.push log
-    if (cache.length >= _batch_size) || (get_current_ts() - last_post_time > (3 * 60 * 1000))
+    if (cache.length >= _batch_size) || (get_current_ts() - last_post_time > (2 * 60 * 1000))
       post_usage_logs()
 
   post_usage_logs = () ->
