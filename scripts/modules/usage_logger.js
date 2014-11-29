@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, get_current_ts, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg, _parser, _sha1, _sid, _uid;
+    var cache, cache_usage_log, get_current_ts, get_domain, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg, _parser, _sha1, _sid, _uid;
 
     _conn = null;
 
@@ -68,13 +68,21 @@
       return new Date().getTime();
     };
 
+    get_domain = function(subdomain) {
+      var array, top_level_domain;
+      array = subdomain.split('.');
+      top_level_domain = array.pop();
+      return "" + (array.pop()) + "." + top_level_domain;
+    };
+
     tab_created = function(tab) {
-      var _domain, _path;
+      var _domain, _path, _subdomain;
       _parser.href = tab.url;
-      _domain = _parser.hostname;
+      _subdomain = _parser.hostname;
+      _domain = get_domain(_subdomain);
       _path = _parser.pathname;
       if (_dbg) {
-        console.log("Domain: " + _domain + " path: " + _path + " url: " + _parser.href);
+        console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + _parser.href);
       }
       return cache_usage_log({
         user_id: _uid,
@@ -83,8 +91,9 @@
         event: 'TAB_CREATED',
         window_id: tab.windowId,
         tab_id: tab.id,
-        url: _sha1.process(tab.url),
+        url: _sha1.process(_parser.href),
         domain: _sha1.process(_domain),
+        subdomain: _sha1.process(_subdomain),
         path: _sha1.process(_path)
       });
     };
@@ -151,13 +160,14 @@
     };
 
     tab_updated = function(tab_id, change_info, tab) {
-      var _domain, _path;
+      var _domain, _path, _subdomain;
       if (change_info.status === 'complete') {
         _parser.href = tab.url;
-        _domain = _parser.hostname;
+        _subdomain = _parser.hostname;
+        _domain = get_domain(_subdomain);
         _path = _parser.pathname;
         if (_dbg) {
-          console.log("Domain: " + _domain + " path: " + _path + " url: " + _parser.href);
+          console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + _parser.href);
         }
         return cache_usage_log({
           user_id: _uid,
@@ -166,8 +176,9 @@
           event: 'TAB_UPDATED',
           window_id: tab.windowId,
           tab_id: tab.id,
-          url: _sha1.process(tab.url),
+          url: _sha1.process(_parser.href),
           domain: _sha1.process(_domain),
+          subdomain: _sha1.process(_subdomain),
           path: _sha1.process(_path)
         });
       }

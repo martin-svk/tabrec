@@ -59,9 +59,13 @@ class @UsageLogger
     cache.length = 0
     last_post_time = get_current_ts()
 
-
   get_current_ts = () ->
     new Date().getTime()
+
+  get_domain = (subdomain) ->
+    array = subdomain.split('.')
+    top_level_domain = array.pop()
+    "#{array.pop()}.#{top_level_domain}"
 
   # ===================================
   # Event handlers
@@ -71,9 +75,10 @@ class @UsageLogger
 
     # URL splitting and hashing
     _parser.href = tab.url
-    _domain = _parser.hostname
+    _subdomain = _parser.hostname
+    _domain = get_domain(_subdomain)
     _path = _parser.pathname
-    console.log("Domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
+    console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
 
     # Creating data object to POST
     cache_usage_log({
@@ -83,8 +88,9 @@ class @UsageLogger
       event: 'TAB_CREATED'
       window_id: tab.windowId
       tab_id: tab.id
-      url: _sha1.process(tab.url)
+      url: _sha1.process(_parser.href)
       domain: _sha1.process(_domain)
+      subdomain: _sha1.process(_subdomain)
       path: _sha1.process(_path)
     })
 
@@ -148,9 +154,10 @@ class @UsageLogger
 
       # URL splitting and hashing
       _parser.href = tab.url
-      _domain = _parser.hostname
+      _subdomain = _parser.hostname
+      _domain = get_domain(_subdomain)
       _path = _parser.pathname
-      console.log("Domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
+      console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
 
       # Creating data object to POST
       cache_usage_log({
@@ -160,7 +167,8 @@ class @UsageLogger
         event: 'TAB_UPDATED'
         window_id: tab.windowId
         tab_id: tab.id
-        url: _sha1.process(tab.url)
+        url: _sha1.process(_parser.href)
         domain: _sha1.process(_domain)
+        subdomain: _sha1.process(_subdomain)
         path: _sha1.process(_path)
       })
