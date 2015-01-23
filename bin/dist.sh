@@ -33,6 +33,7 @@ cp ./bower_components/bootstrap/dist/js/bootstrap.min.js ./dist/bower_components
 echo "Copying jquery files."
 mkdir -p ./dist/bower_components/jquery/dist/
 cp ./bower_components/jquery/dist/jquery.min.js ./dist/bower_components/jquery/dist/
+cp ./bower_components/jquery/dist/jquery.min.map ./dist/bower_components/jquery/dist/
 
 echo "Copying sweetalert files."
 mkdir -p ./dist/bower_components/sweetalert/lib/
