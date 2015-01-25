@@ -1,22 +1,25 @@
 'use strict'
 
-# Recommendation are on by default
-# need to store to user settings storage
-active = true
+STATS_URL = 'http://tabber.fiit.stuba.sk'
+#STATS_URL = 'http://localhost:9292'
 
-# Change browser action icon function
-updateIcon = (val) ->
-  if val
-    iconName = 'active'
-  else
-    iconName = 'inactive'
-  active = val
-  chrome.browserAction.setIcon({path:'../images/icon_' + iconName + '.png'})
+$ ->
+  chrome.storage.sync.get ['user_id'], (result) ->
+    if result.user_id
+      $.ajax "#{STATS_URL}/bstats/#{result.user_id}",
+        type: 'GET'
+        dataType: 'json'
+        success: (data, textStatus, jqXHR) ->
+          $('#w-tabs-created').html(data.weekly.created)
+          $('#w-tabs-closed').html(data.weekly.closed)
+          $('#tabs-created').html(data.alltime.created)
+          $('#tabs-closed').html(data.alltime.closed)
+        error: (jqXHR, textStatus, errorThrown) ->
+          $('#w-tabs-created').html('N/A')
+          $('#w-tabs-closed').html('N/A')
+          $('#tabs-created').html('N/A')
+          $('#tabs-closed').html('N/A')
 
-# Change browser action icon based on value of this checkbox
-$('#tabrec-status').change ->
-  updateIcon($(this).prop('checked'))
-
-$(document).ready ->
-  $('#tabrec-status').prop('checked', active)
-
+    $('#settings').on('click', ->
+      chrome.tabs.create({url: 'options.html'})
+    )
