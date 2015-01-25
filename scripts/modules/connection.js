@@ -16,6 +16,10 @@
       return get_member(this.url, 'users', id, callback);
     };
 
+    Connection.prototype.get_user_bstats = function(id, callback) {
+      return get_member(this.url, 'bstats', id, callback);
+    };
+
     Connection.prototype.create_user = function(data) {
       return post_member(this.url, data, 'users');
     };

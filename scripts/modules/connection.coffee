@@ -18,6 +18,9 @@ class @Connection
   get_user: (id, callback) ->
     get_member(@url, 'users', id, callback)
 
+  get_user_bstats: (id, callback) ->
+    get_member(@url, 'bstats', id, callback)
+
   create_user: (data) ->
     post_member(@url, data, 'users')
 
