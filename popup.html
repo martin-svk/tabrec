@@ -7,25 +7,37 @@
         <link href="styles/popup.css" rel="stylesheet">
     </head>
     <body>
-        <div class="container">
-            <header>
-                <div class="page-header">
-                    <h4 id="">TabRec</h4>
-                </div>
-            </header>
+        <div id="header" class="page-header">
+            <h3 id="title">TabRec statistics</h3>
+        </div>
 
-            <div id="stats">
+        <div id="container" class="container">
+
+            <h4>This week</h4>
+
+            <div id="weekly-tab-stats">
                 <ul>
-                    <li>Total recommendations:</li>
-                    <li>Accepted:</li>
-                    <li>Canceled:</li>
+                    <li>Tabs created <span class="pull-right" id="w-tabs-created"></span></li>
+                    <li>Tabs closed <span class="pull-right" id="w-tabs-closed"></span></li>
                 </ul>
             </div>
 
-            <footer>
-                <p>TabRec recommender</p>
-            </footer>
+            <h4>All-time</h4>
+
+            <div id="tab-stats">
+                <ul>
+                    <li>Tabs created <span class="pull-right" id="tabs-created"></span></li>
+                    <li>Tabs closed <span class="pull-right" id="tabs-closed"></span></li>
+                </ul>
+            </div>
+
         </div>
+
+        <footer id="settings" role="button">
+            <div id="settings-icon" class="glyphicon glyphicon-cog"></div>
+            <span id="settings-text">Settings</span>
+        </footer>
+
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="scripts/popup.js"></script>
