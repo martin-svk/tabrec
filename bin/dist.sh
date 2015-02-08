@@ -31,6 +31,8 @@ mkdir -p ./dist/bower_components/bootstrap/dist/css/
 cp ./bower_components/bootstrap/dist/css/bootstrap.min.css ./dist/bower_components/bootstrap/dist/css/
 mkdir -p ./dist/bower_components/bootstrap/dist/js/
 cp ./bower_components/bootstrap/dist/js/bootstrap.min.js ./dist/bower_components/bootstrap/dist/js/
+mkdir -p ./dist/bower_components/bootstrap/dist/fonts/
+cp ./bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff ./dist/bower_components/bootstrap/dist/fonts/
 
 echo "Copying sweetalert files."
 mkdir -p ./dist/bower_components/sweetalert/lib/
