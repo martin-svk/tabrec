@@ -3,7 +3,7 @@
   'use strict';
   var API_URL, BATCH_SIZE, DEBUG_MODE, connection, user;
 
-  API_URL = 'http://tabber.fiit.stuba.sk';
+  API_URL = 'http://localhost:9292';
 
   DEBUG_MODE = false;
 

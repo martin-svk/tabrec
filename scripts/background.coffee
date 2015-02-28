@@ -10,8 +10,8 @@
 
 # Defining constants
 # ======================================
-API_URL = 'http://tabber.fiit.stuba.sk'
-#API_URL = 'http://localhost:9292'
+# API_URL = 'http://tabber.fiit.stuba.sk'
+API_URL = 'http://localhost:9292'
 DEBUG_MODE = false
 BATCH_SIZE = 50
 

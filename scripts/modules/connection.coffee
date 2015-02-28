@@ -19,13 +19,13 @@ class @Connection
     get_member(@url, 'users', id, callback)
 
   get_user_bstats: (id, callback) ->
-    get_member(@url, 'bstats', id, callback)
+    get_member(@url, 'stats/browsing', id, callback)
 
   create_user: (data) ->
     post_member(@url, data, 'users')
 
   post_usage_logs: (data) ->
-    post_collection(@url, data, 'usage_logs')
+    post_collection(@url, data, 'logs/usage')
 
   # Private methods
 

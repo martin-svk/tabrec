@@ -17,7 +17,7 @@
     };
 
     Connection.prototype.get_user_bstats = function(id, callback) {
-      return get_member(this.url, 'bstats', id, callback);
+      return get_member(this.url, 'stats/browsing', id, callback);
     };
 
     Connection.prototype.create_user = function(data) {
@@ -25,7 +25,7 @@
     };
 
     Connection.prototype.post_usage_logs = function(data) {
-      return post_collection(this.url, data, 'usage_logs');
+      return post_collection(this.url, data, 'logs/usage');
     };
 
     get_member = function(url, resource, id, callback) {

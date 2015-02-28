@@ -3,12 +3,12 @@
   'use strict';
   var STATS_URL;
 
-  STATS_URL = 'http://tabber.fiit.stuba.sk';
+  STATS_URL = 'http://localhost:9292';
 
   $(function() {
     return chrome.storage.sync.get(['user_id'], function(result) {
       if (result.user_id) {
-        $.ajax("" + STATS_URL + "/bstats/" + result.user_id, {
+        $.ajax("" + STATS_URL + "/stats/browsing/" + result.user_id, {
           type: 'GET',
           dataType: 'json',
           success: function(data, textStatus, jqXHR) {
