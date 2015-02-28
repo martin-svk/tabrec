@@ -8,12 +8,20 @@
 # instantiate logger, recognizers, etc.
 # ======================================
 
+# Mode definition
+# ======================================
+
+DEBUG_MODE = false
+
 # Defining constants
 # ======================================
-# API_URL = 'http://tabber.fiit.stuba.sk'
-API_URL = 'http://localhost:9292'
-DEBUG_MODE = false
-BATCH_SIZE = 50
+
+if DEBUG_MODE
+  API_URL = 'http://localhost:9292'
+  BATCH_SIZE = 5
+else
+  API_URL = 'http://tabber.fiit.stuba.sk'
+  BATCH_SIZE = 50
 
 # Run entire session in unique user context
 # ======================================

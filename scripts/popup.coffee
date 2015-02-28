@@ -1,7 +1,7 @@
 'use strict'
 
-# STATS_URL = 'http://tabber.fiit.stuba.sk'
-STATS_URL = 'http://localhost:9292'
+STATS_URL = 'http://tabber.fiit.stuba.sk'
+# STATS_URL = 'http://localhost:9292'
 
 $ ->
   chrome.storage.sync.get ['user_id'], (result) ->
