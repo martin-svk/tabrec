@@ -3,7 +3,7 @@
   'use strict';
   var connection, user;
 
-  connection = new Connection(Constants.get_api_url(), Constants.get_batch_size());
+  connection = new Connection(Constants.get_api_url(), Constants.is_debug_mode());
 
   user = new User(connection);
 

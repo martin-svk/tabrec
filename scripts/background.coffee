@@ -10,7 +10,7 @@
 
 # Run entire session in unique user context
 # ======================================
-connection = new Connection(Constants.get_api_url(),Constants.get_batch_size())
+connection = new Connection(Constants.get_api_url(), Constants.is_debug_mode())
 user = new User(connection)
 
 user.in_context((user_id, session_id) ->

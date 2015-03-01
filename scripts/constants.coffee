@@ -3,11 +3,11 @@
 # ======================================
 # @author Martin Toma
 #
-# Contains application wide constats
+# Contains application wide constants
 # ======================================
 
 class @Constants
-  DEBUG_MODE = false
+  DEBUG_MODE = true
 
   @is_debug_mode: ->
     DEBUG_MODE
