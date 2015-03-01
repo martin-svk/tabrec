@@ -3,7 +3,7 @@
   'use strict';
   var API_URL, load_options, reset_options, save_option, update_user;
 
-  API_URL = 'http://tabber.fiit.stuba.sk';
+  API_URL = Constants.get_api_url();
 
   reset_options = function() {
     $('#user-level-select').val('beginner');

@@ -1,12 +1,11 @@
 'use strict'
 
-STATS_URL = 'http://tabber.fiit.stuba.sk'
-# STATS_URL = 'http://localhost:9292'
+API_URL = Constants.get_api_url()
 
 $ ->
   chrome.storage.sync.get ['user_id'], (result) ->
     if result.user_id
-      $.ajax "#{STATS_URL}/stats/browsing/#{result.user_id}",
+      $.ajax "#{API_URL}/stats/browsing/#{result.user_id}",
         type: 'GET'
         dataType: 'json'
         success: (data, textStatus, jqXHR) ->

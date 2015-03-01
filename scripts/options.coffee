@@ -1,7 +1,6 @@
 'use strict'
 
-API_URL = 'http://tabber.fiit.stuba.sk'
-# API_URL = 'http://localhost:9292'
+API_URL = Constants.get_api_url()
 
 # Reset options method
 reset_options = () ->
