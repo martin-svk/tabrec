@@ -11,6 +11,7 @@
     "background": {
         "scripts": [
             "bower_components/jquery/dist/jquery.min.js",
+            "scripts/constants.js",
             "scripts/modules/sha1.js",
             "scripts/modules/user.js",
             "scripts/modules/connection.js",
@@ -39,6 +40,9 @@
         "tabCapture",
         "tabs",
         "http://tabber.fiit.stuba.sk/*",
-        "http://localhost:9292/*"
-    ]
+        "http://localhost:9292/*",
+        "https://maxcdn.bootstrapcdn.com/*",
+        "https://cdnjs.cloudflare.com/*"
+    ],
+    "content_security_policy": "script-src 'self' https://maxcdn.bootstrapcdn.com https://cdnjs.cloudflare.com; object-src 'self'"
 }
