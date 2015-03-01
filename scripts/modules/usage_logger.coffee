@@ -9,18 +9,18 @@
 # ======================================
 
 class @UsageLogger
-  connection = null
-  debug_mode = false
-  batch_size = 100
+  conn = null
+  dbg_mode = false
+  bsize = 100
   uid = null
   sid = null
   parser = document.createElement('a')
   sha1 = new Sha1()
 
   constructor: (@connection, @batch_size, @user_id, @session_id, @debug_mode) ->
-    connection = @connection
-    debug_mode = @debug_mode
-    batch_size = @batch_size
+    conn = @connection
+    dbg_mode = @debug_mode
+    bsize = @batch_size
     uid = @user_id
     sid = @session_id
 
@@ -29,7 +29,7 @@ class @UsageLogger
   # ===================================
 
   start: () ->
-    console.log("Usage logger has started!") if debug_mode
+    console.log("Usage logger has started!") if dbg_mode
     chrome.tabs.onCreated.addListener(tab_created)
     chrome.tabs.onRemoved.addListener(tab_removed)
     chrome.tabs.onActivated.addListener(tab_activated)
@@ -49,13 +49,13 @@ class @UsageLogger
   # ===================================
 
   cache_usage_log = (log) ->
-    console.log("Caching usage log: User id: #{log.user_id}, Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if debug_mode
+    console.log("Caching usage log: User id: #{log.user_id}, Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if dbg_mode
     _cache.push log
-    if (_cache.length >= batch_size) || (get_current_ts() - _last_post_time > (2 * 60 * 1000))
+    if (_cache.length >= bsize) || (get_current_ts() - _last_post_time > (2 * 60 * 1000))
       post_usage_logs()
 
   post_usage_logs = () ->
-    connection.post_usage_logs(_cache)
+    conn.post_usage_logs(_cache)
     _cache.length = 0
     _last_post_time = get_current_ts()
 
@@ -78,7 +78,7 @@ class @UsageLogger
     _subdomain = parser.hostname
     _domain = get_domain(_subdomain)
     _path = parser.pathname
-    console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{parser.href}") if debug_mode
+    console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{parser.href}") if dbg_mode
 
     # Creating data object to POST
     cache_usage_log({
@@ -157,7 +157,7 @@ class @UsageLogger
       _subdomain = parser.hostname
       _domain = get_domain(_subdomain)
       _path = parser.pathname
-      console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{parser.href}") if debug_mode
+      console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{parser.href}") if dbg_mode
 
       # Creating data object to POST
       cache_usage_log({

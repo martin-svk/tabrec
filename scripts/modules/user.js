@@ -2,13 +2,13 @@
 (function() {
   'use strict';
   this.User = (function() {
-    var connection, create_if_not_exists, create_user, generate_uuid;
+    var conn, create_if_not_exists, create_user, generate_uuid;
 
-    connection = null;
+    conn = null;
 
     function User(connection) {
       this.connection = connection;
-      connection = this.connection;
+      conn = this.connection;
     }
 
     User.prototype.in_context = function(callback) {
@@ -16,14 +16,14 @@
         var new_id, session_id;
         session_id = generate_uuid();
         if (result.user_id) {
-          create_if_not_exists(connection, result.user_id);
+          create_if_not_exists(result.user_id);
           return callback(result.user_id, session_id);
         } else {
           new_id = generate_uuid();
           return chrome.storage.sync.set({
             'user_id': new_id
           }, function() {
-            create_user(connection, new_id);
+            create_user(new_id);
             return callback(new_id, session_id);
           });
         }
@@ -39,19 +39,19 @@
       });
     };
 
-    create_user = function(conn, id) {
-      return conn.create_user({
-        id: id,
-        rec_mode: 'default',
-        experience: 'default'
-      });
-    };
-
-    create_if_not_exists = function(conn, id) {
+    create_if_not_exists = function(id) {
       return conn.get_user(id, function(user) {
         if (!user) {
           return create_user(conn, id);
         }
+      });
+    };
+
+    create_user = function(id) {
+      return conn.create_user({
+        id: id,
+        rec_mode: 'default',
+        experience: 'default'
       });
     };
 

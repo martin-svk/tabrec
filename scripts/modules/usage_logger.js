@@ -2,13 +2,13 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var batch_size, cache_usage_log, connection, debug_mode, get_current_ts, get_domain, parser, post_usage_logs, sha1, sid, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, uid, _cache, _last_post_time;
+    var bsize, cache_usage_log, conn, dbg_mode, get_current_ts, get_domain, parser, post_usage_logs, sha1, sid, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, uid, _cache, _last_post_time;
 
-    connection = null;
+    conn = null;
 
-    debug_mode = false;
+    dbg_mode = false;
 
-    batch_size = 100;
+    bsize = 100;
 
     uid = null;
 
@@ -24,15 +24,15 @@
       this.user_id = user_id;
       this.session_id = session_id;
       this.debug_mode = debug_mode;
-      connection = this.connection;
-      debug_mode = this.debug_mode;
-      batch_size = this.batch_size;
+      conn = this.connection;
+      dbg_mode = this.debug_mode;
+      bsize = this.batch_size;
       uid = this.user_id;
       sid = this.session_id;
     }
 
     UsageLogger.prototype.start = function() {
-      if (debug_mode) {
+      if (dbg_mode) {
         console.log("Usage logger has started!");
       }
       chrome.tabs.onCreated.addListener(tab_created);
@@ -49,17 +49,17 @@
     _last_post_time = new Date().getTime();
 
     cache_usage_log = function(log) {
-      if (debug_mode) {
+      if (dbg_mode) {
         console.log("Caching usage log: User id: " + log.user_id + ", Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
       }
       _cache.push(log);
-      if ((_cache.length >= batch_size) || (get_current_ts() - _last_post_time > (2 * 60 * 1000))) {
+      if ((_cache.length >= bsize) || (get_current_ts() - _last_post_time > (2 * 60 * 1000))) {
         return post_usage_logs();
       }
     };
 
     post_usage_logs = function() {
-      connection.post_usage_logs(_cache);
+      conn.post_usage_logs(_cache);
       _cache.length = 0;
       return _last_post_time = get_current_ts();
     };
@@ -81,7 +81,7 @@
       _subdomain = parser.hostname;
       _domain = get_domain(_subdomain);
       _path = parser.pathname;
-      if (debug_mode) {
+      if (dbg_mode) {
         console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + parser.href);
       }
       return cache_usage_log({
@@ -166,7 +166,7 @@
         _subdomain = parser.hostname;
         _domain = get_domain(_subdomain);
         _path = parser.pathname;
-        if (debug_mode) {
+        if (dbg_mode) {
           console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + parser.href);
         }
         return cache_usage_log({
