@@ -8,24 +8,22 @@
 # ======================================
 
 class @Connection
-  _dbg = false
-
-  constructor: (@url, @debug_mode) ->
-    _dbg = @debug_mode
+  debug_mode = Constants.is_debug_mode()
+  api_url = Constants.get_api_url()
 
   # Public methods
 
   get_user: (id, callback) ->
-    get_member(@url, 'users', id, callback)
+    get_member(api_url, 'users', id, callback)
 
   get_user_bstats: (id, callback) ->
-    get_member(@url, 'stats/browsing', id, callback)
+    get_member(api_url, 'stats/browsing', id, callback)
 
   create_user: (data) ->
-    post_member(@url, data, 'users')
+    post_member(api_url, data, 'users')
 
   post_usage_logs: (data) ->
-    post_collection(@url, data, 'logs/usage')
+    post_collection(api_url, data, 'logs/usage')
 
   # Private methods
 
@@ -43,10 +41,11 @@ class @Connection
       type: 'GET'
       dataType: 'json'
       error: (jqXHR, textStatus, errorThrown) ->
-        console.log("Error: #{textStatus}")
+        console.log("Error: #{textStatus}") if debug_mode
       success: (data, textStatus, jqXHR) ->
-        for event in data
-          console.log("#{event['name']}")
+        if debug_mode
+          for event in data
+            console.log("#{event['name']}")
 
   post_member = (url, data, resource) ->
     $.ajax "#{url}/#{resource}",
@@ -54,7 +53,7 @@ class @Connection
       dataType: 'json'
       data: { user: data }
       success: (data, textStatus, jqXHR) ->
-        console.log("Status: #{textStatus}") if _dbg
+        console.log("Status: #{textStatus}") if debug_mode
 
   post_collection = (url, data, resource) ->
     $.ajax "#{url}/#{resource}",
@@ -62,6 +61,6 @@ class @Connection
       dataType: 'json'
       data: { data: data }
       success: (data, textStatus, jqXHR) ->
-        if _dbg
+        if debug_mode
           console.log("Status: #{textStatus}")
           console.log(data)

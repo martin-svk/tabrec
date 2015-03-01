@@ -2,30 +2,28 @@
 (function() {
   'use strict';
   this.Connection = (function() {
-    var get_collection, get_member, post_collection, post_member, _dbg;
+    var api_url, debug_mode, get_collection, get_member, post_collection, post_member;
 
-    _dbg = false;
+    function Connection() {}
 
-    function Connection(url, debug_mode) {
-      this.url = url;
-      this.debug_mode = debug_mode;
-      _dbg = this.debug_mode;
-    }
+    debug_mode = Constants.is_debug_mode();
+
+    api_url = Constants.get_api_url();
 
     Connection.prototype.get_user = function(id, callback) {
-      return get_member(this.url, 'users', id, callback);
+      return get_member(api_url, 'users', id, callback);
     };
 
     Connection.prototype.get_user_bstats = function(id, callback) {
-      return get_member(this.url, 'stats/browsing', id, callback);
+      return get_member(api_url, 'stats/browsing', id, callback);
     };
 
     Connection.prototype.create_user = function(data) {
-      return post_member(this.url, data, 'users');
+      return post_member(api_url, data, 'users');
     };
 
     Connection.prototype.post_usage_logs = function(data) {
-      return post_collection(this.url, data, 'logs/usage');
+      return post_collection(api_url, data, 'logs/usage');
     };
 
     get_member = function(url, resource, id, callback) {
@@ -46,16 +44,20 @@
         type: 'GET',
         dataType: 'json',
         error: function(jqXHR, textStatus, errorThrown) {
-          return console.log("Error: " + textStatus);
+          if (debug_mode) {
+            return console.log("Error: " + textStatus);
+          }
         },
         success: function(data, textStatus, jqXHR) {
           var event, _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = data.length; _i < _len; _i++) {
-            event = data[_i];
-            _results.push(console.log("" + event['name']));
+          if (debug_mode) {
+            _results = [];
+            for (_i = 0, _len = data.length; _i < _len; _i++) {
+              event = data[_i];
+              _results.push(console.log("" + event['name']));
+            }
+            return _results;
           }
-          return _results;
         }
       });
     };
@@ -68,7 +70,7 @@
           user: data
         },
         success: function(data, textStatus, jqXHR) {
-          if (_dbg) {
+          if (debug_mode) {
             return console.log("Status: " + textStatus);
           }
         }
@@ -83,7 +85,7 @@
           data: data
         },
         success: function(data, textStatus, jqXHR) {
-          if (_dbg) {
+          if (debug_mode) {
             console.log("Status: " + textStatus);
             return console.log(data);
           }
