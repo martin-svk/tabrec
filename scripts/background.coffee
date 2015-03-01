@@ -10,9 +10,7 @@
 
 # Run entire session in unique user context
 # ======================================
-connection = new Connection(Constants.get_api_url(), Constants.is_debug_mode())
-user = new User(connection)
-
+user = new User()
 user.in_context((user_id, session_id) ->
   # Modules initialization
   usage_logger = new UsageLogger(connection, Constants.get_batch_size(), user_id, session_id, Constants.is_debug_mode())
