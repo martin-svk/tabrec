@@ -84,7 +84,8 @@
         },
         success: function(data, textStatus, jqXHR) {
           if (_dbg) {
-            return console.log("Status: " + textStatus);
+            console.log("Status: " + textStatus);
+            return console.log(data);
           }
         }
       });

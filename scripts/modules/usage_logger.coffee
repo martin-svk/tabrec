@@ -55,7 +55,8 @@ class @UsageLogger
       post_usage_logs()
 
   post_usage_logs = () ->
-    conn.post_usage_logs(_cache)
+    # Clone of cache send to connection
+    conn.post_usage_logs(_cache.slice(0))
     _cache.length = 0
     _last_post_time = get_current_ts()
 

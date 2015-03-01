@@ -59,7 +59,7 @@
     };
 
     post_usage_logs = function() {
-      conn.post_usage_logs(_cache);
+      conn.post_usage_logs(_cache.slice(0));
       _cache.length = 0;
       return _last_post_time = get_current_ts();
     };

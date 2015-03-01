@@ -62,4 +62,6 @@ class @Connection
       dataType: 'json'
       data: { data: data }
       success: (data, textStatus, jqXHR) ->
-        console.log("Status: #{textStatus}") if _dbg
+        if _dbg
+          console.log("Status: #{textStatus}")
+          console.log(data)
