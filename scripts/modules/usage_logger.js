@@ -4,31 +4,23 @@
   this.UsageLogger = (function() {
     var bsize, cache_usage_log, conn, dbg_mode, get_current_ts, get_domain, parser, post_usage_logs, sha1, sid, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, uid, _cache, _last_post_time;
 
-    conn = null;
+    bsize = Constants.get_batch_size();
 
-    dbg_mode = false;
+    dbg_mode = Constants.is_debug_mode();
 
-    bsize = 100;
+    parser = document.createElement('a');
+
+    conn = new Connection();
+
+    sha1 = new Sha1();
 
     uid = null;
 
     sid = null;
 
-    parser = document.createElement('a');
-
-    sha1 = new Sha1();
-
-    function UsageLogger(connection, batch_size, user_id, session_id, debug_mode) {
-      this.connection = connection;
-      this.batch_size = batch_size;
-      this.user_id = user_id;
-      this.session_id = session_id;
-      this.debug_mode = debug_mode;
-      conn = this.connection;
-      dbg_mode = this.debug_mode;
-      bsize = this.batch_size;
-      uid = this.user_id;
-      sid = this.session_id;
+    function UsageLogger(user_id, session_id) {
+      uid = user_id;
+      sid = session_id;
     }
 
     UsageLogger.prototype.start = function() {

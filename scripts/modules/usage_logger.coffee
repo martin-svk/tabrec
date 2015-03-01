@@ -9,20 +9,17 @@
 # ======================================
 
 class @UsageLogger
-  conn = null
-  dbg_mode = false
-  bsize = 100
+  bsize = Constants.get_batch_size()
+  dbg_mode = Constants.is_debug_mode()
+  parser = document.createElement('a')
+  conn = new Connection()
+  sha1 = new Sha1()
   uid = null
   sid = null
-  parser = document.createElement('a')
-  sha1 = new Sha1()
 
-  constructor: (@connection, @batch_size, @user_id, @session_id, @debug_mode) ->
-    conn = @connection
-    dbg_mode = @debug_mode
-    bsize = @batch_size
-    uid = @user_id
-    sid = @session_id
+  constructor: (user_id, session_id) ->
+    uid = user_id
+    sid = session_id
 
   # ===================================
   # Public methods
