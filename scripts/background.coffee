@@ -13,6 +13,6 @@
 user = new User()
 user.in_context((user_id, session_id) ->
   # Modules initialization
-  usage_logger = new UsageLogger(connection, Constants.get_batch_size(), user_id, session_id, Constants.is_debug_mode())
+  usage_logger = new UsageLogger(user_id, session_id)
   usage_logger.start()
 )

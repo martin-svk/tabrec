@@ -7,7 +7,7 @@
 
   user.in_context(function(user_id, session_id) {
     var usage_logger;
-    usage_logger = new UsageLogger(connection, Constants.get_batch_size(), user_id, session_id, Constants.is_debug_mode());
+    usage_logger = new UsageLogger(user_id, session_id);
     return usage_logger.start();
   });
 
