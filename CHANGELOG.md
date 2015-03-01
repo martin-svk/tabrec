@@ -1,6 +1,12 @@
 TabRec changelog
 ---
 
+0.7.1
+----
+
+* Proper user recreation.
+* Code refactoring.
+
 0.7.0
 ----
 
