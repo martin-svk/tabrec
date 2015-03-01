@@ -8,10 +8,7 @@
 # ======================================
 
 class @User
-  conn = null
-
-  constructor: (@connection) ->
-    conn = @connection
+  connection = new Connection()
 
   # ===================================
   # Public methods
@@ -43,13 +40,13 @@ class @User
         v.toString(16))
 
   create_if_not_exists = (id) ->
-    conn.get_user(id, (user) ->
+    connection.get_user(id, (user) ->
       unless user
-        create_user(conn, id)
+        create_user(connection, id)
     )
 
   create_user = (id) ->
-    conn.create_user({
+    connection.create_user({
       id: id
       rec_mode: 'default'
       experience: 'default'
