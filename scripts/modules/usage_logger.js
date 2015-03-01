@@ -2,21 +2,21 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var cache, cache_usage_log, get_current_ts, get_domain, last_post_time, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _batch_size, _conn, _dbg, _parser, _sha1, _sid, _uid;
+    var batch_size, cache_usage_log, connection, debug_mode, get_current_ts, get_domain, parser, post_usage_logs, sha1, sid, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, uid, _cache, _last_post_time;
 
-    _conn = null;
+    connection = null;
 
-    _dbg = false;
+    debug_mode = false;
 
-    _batch_size = 100;
+    batch_size = 100;
 
-    _uid = null;
+    uid = null;
 
-    _sid = null;
+    sid = null;
 
-    _parser = document.createElement('a');
+    parser = document.createElement('a');
 
-    _sha1 = new Sha1();
+    sha1 = new Sha1();
 
     function UsageLogger(connection, batch_size, user_id, session_id, debug_mode) {
       this.connection = connection;
@@ -24,15 +24,15 @@
       this.user_id = user_id;
       this.session_id = session_id;
       this.debug_mode = debug_mode;
-      _conn = this.connection;
-      _dbg = this.debug_mode;
-      _batch_size = this.batch_size;
-      _uid = this.user_id;
-      _sid = this.session_id;
+      connection = this.connection;
+      debug_mode = this.debug_mode;
+      batch_size = this.batch_size;
+      uid = this.user_id;
+      sid = this.session_id;
     }
 
     UsageLogger.prototype.start = function() {
-      if (_dbg) {
+      if (debug_mode) {
         console.log("Usage logger has started!");
       }
       chrome.tabs.onCreated.addListener(tab_created);
@@ -44,24 +44,24 @@
       return chrome.tabs.onUpdated.addListener(tab_updated);
     };
 
-    cache = [];
+    _cache = [];
 
-    last_post_time = new Date().getTime();
+    _last_post_time = new Date().getTime();
 
     cache_usage_log = function(log) {
-      if (_dbg) {
+      if (debug_mode) {
         console.log("Caching usage log: User id: " + log.user_id + ", Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
       }
-      cache.push(log);
-      if ((cache.length >= _batch_size) || (get_current_ts() - last_post_time > (2 * 60 * 1000))) {
+      _cache.push(log);
+      if ((_cache.length >= batch_size) || (get_current_ts() - _last_post_time > (2 * 60 * 1000))) {
         return post_usage_logs();
       }
     };
 
     post_usage_logs = function() {
-      _conn.post_usage_logs(cache);
-      cache.length = 0;
-      return last_post_time = get_current_ts();
+      connection.post_usage_logs(_cache);
+      _cache.length = 0;
+      return _last_post_time = get_current_ts();
     };
 
     get_current_ts = function() {
@@ -77,31 +77,31 @@
 
     tab_created = function(tab) {
       var _domain, _path, _subdomain;
-      _parser.href = tab.url;
-      _subdomain = _parser.hostname;
+      parser.href = tab.url;
+      _subdomain = parser.hostname;
       _domain = get_domain(_subdomain);
-      _path = _parser.pathname;
-      if (_dbg) {
-        console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + _parser.href);
+      _path = parser.pathname;
+      if (debug_mode) {
+        console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + parser.href);
       }
       return cache_usage_log({
-        user_id: _uid,
-        session_id: _sid,
+        user_id: uid,
+        session_id: sid,
         timestamp: get_current_ts(),
         event: 'TAB_CREATED',
         window_id: tab.windowId,
         tab_id: tab.id,
-        url: _sha1.process(_parser.href),
-        domain: _sha1.process(_domain),
-        subdomain: _sha1.process(_subdomain),
-        path: _sha1.process(_path)
+        url: sha1.process(parser.href),
+        domain: sha1.process(_domain),
+        subdomain: sha1.process(_subdomain),
+        path: sha1.process(_path)
       });
     };
 
     tab_removed = function(tab_id, remove_info) {
       return cache_usage_log({
-        user_id: _uid,
-        session_id: _sid,
+        user_id: uid,
+        session_id: sid,
         timestamp: get_current_ts(),
         event: 'TAB_REMOVED',
         window_id: remove_info.windowId,
@@ -112,8 +112,8 @@
     tab_activated = function(active_info) {
       return chrome.tabs.get(active_info.tabId, function(tab) {
         return cache_usage_log({
-          user_id: _uid,
-          session_id: _sid,
+          user_id: uid,
+          session_id: sid,
           timestamp: get_current_ts(),
           event: 'TAB_ACTIVATED',
           window_id: active_info.windowId,
@@ -124,8 +124,8 @@
 
     tab_moved = function(tab_id, move_info) {
       return cache_usage_log({
-        user_id: _uid,
-        session_id: _sid,
+        user_id: uid,
+        session_id: sid,
         timestamp: get_current_ts(),
         event: 'TAB_MOVED',
         window_id: move_info.windowId,
@@ -137,8 +137,8 @@
 
     tab_attached = function(tab_id, attach_info) {
       return cache_usage_log({
-        user_id: _uid,
-        session_id: _sid,
+        user_id: uid,
+        session_id: sid,
         timestamp: get_current_ts(),
         event: 'TAB_ATTACHED',
         window_id: attach_info.newWindowId,
@@ -149,8 +149,8 @@
 
     tab_detached = function(tab_id, detach_info) {
       return cache_usage_log({
-        user_id: _uid,
-        session_id: _sid,
+        user_id: uid,
+        session_id: sid,
         timestamp: get_current_ts(),
         event: 'TAB_DETACHED',
         window_id: detach_info.oldWindowId,
@@ -162,24 +162,24 @@
     tab_updated = function(tab_id, change_info, tab) {
       var _domain, _path, _subdomain;
       if (change_info.status === 'complete') {
-        _parser.href = tab.url;
-        _subdomain = _parser.hostname;
+        parser.href = tab.url;
+        _subdomain = parser.hostname;
         _domain = get_domain(_subdomain);
-        _path = _parser.pathname;
-        if (_dbg) {
-          console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + _parser.href);
+        _path = parser.pathname;
+        if (debug_mode) {
+          console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + parser.href);
         }
         return cache_usage_log({
-          user_id: _uid,
-          session_id: _sid,
+          user_id: uid,
+          session_id: sid,
           timestamp: get_current_ts(),
           event: 'TAB_UPDATED',
           window_id: tab.windowId,
           tab_id: tab.id,
-          url: _sha1.process(_parser.href),
-          domain: _sha1.process(_domain),
-          subdomain: _sha1.process(_subdomain),
-          path: _sha1.process(_path)
+          url: sha1.process(parser.href),
+          domain: sha1.process(_domain),
+          subdomain: sha1.process(_subdomain),
+          path: sha1.process(_path)
         });
       }
     };
