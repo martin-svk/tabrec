@@ -4,9 +4,11 @@
   this.User = (function() {
     var connection, create_if_not_exists, create_user, generate_uuid;
 
-    function User() {}
+    connection = null;
 
-    connection = new Connection();
+    function User() {
+      connection = new Connection();
+    }
 
     User.prototype.in_context = function(callback) {
       return chrome.storage.sync.get(['user_id'], function(result) {
@@ -39,7 +41,7 @@
     create_if_not_exists = function(id) {
       return connection.get_user(id, function(user) {
         if (!user) {
-          return create_user(connection, id);
+          return create_user(id);
         }
       });
     };

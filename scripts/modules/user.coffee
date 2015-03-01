@@ -8,7 +8,10 @@
 # ======================================
 
 class @User
-  connection = new Connection()
+  connection = null
+
+  constructor: () ->
+    connection = new Connection()
 
   # ===================================
   # Public methods
@@ -42,7 +45,7 @@ class @User
   create_if_not_exists = (id) ->
     connection.get_user(id, (user) ->
       unless user
-        create_user(connection, id)
+        create_user(id)
     )
 
   create_user = (id) ->
