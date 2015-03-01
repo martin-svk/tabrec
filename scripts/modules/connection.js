@@ -4,30 +4,33 @@
   this.Connection = (function() {
     var api_url, debug_mode, get_collection, get_member, post_collection, post_member;
 
-    function Connection() {}
+    debug_mode = null;
 
-    debug_mode = Constants.is_debug_mode();
+    api_url = null;
 
-    api_url = Constants.get_api_url();
+    function Connection() {
+      api_url = Constants.get_api_url();
+      debug_mode = Constants.is_debug_mode();
+    }
 
     Connection.prototype.get_user = function(id, callback) {
-      return get_member(api_url, 'users', id, callback);
+      return get_member('users', id, callback);
     };
 
     Connection.prototype.get_user_bstats = function(id, callback) {
-      return get_member(api_url, 'stats/browsing', id, callback);
+      return get_member('stats/browsing', id, callback);
     };
 
     Connection.prototype.create_user = function(data) {
-      return post_member(api_url, data, 'users');
+      return post_member(data, 'users');
     };
 
     Connection.prototype.post_usage_logs = function(data) {
-      return post_collection(api_url, data, 'logs/usage');
+      return post_collection(data, 'logs/usage');
     };
 
-    get_member = function(url, resource, id, callback) {
-      return $.ajax("" + url + "/" + resource + "/" + id, {
+    get_member = function(resource, id, callback) {
+      return $.ajax("" + api_url + "/" + resource + "/" + id, {
         type: 'GET',
         dataType: 'json',
         error: function(jqXHR, textStatus, errorThrown) {
@@ -39,8 +42,8 @@
       });
     };
 
-    get_collection = function(url, resource) {
-      return $.ajax("" + url + "/" + resource, {
+    get_collection = function(resource) {
+      return $.ajax("" + api_url + "/" + resource, {
         type: 'GET',
         dataType: 'json',
         error: function(jqXHR, textStatus, errorThrown) {
@@ -62,8 +65,8 @@
       });
     };
 
-    post_member = function(url, data, resource) {
-      return $.ajax("" + url + "/" + resource, {
+    post_member = function(data, resource) {
+      return $.ajax("" + api_url + "/" + resource, {
         type: 'POST',
         dataType: 'json',
         data: {
@@ -77,8 +80,8 @@
       });
     };
 
-    post_collection = function(url, data, resource) {
-      return $.ajax("" + url + "/" + resource, {
+    post_collection = function(data, resource) {
+      return $.ajax("" + api_url + "/" + resource, {
         type: 'POST',
         dataType: 'json',
         data: {
@@ -86,8 +89,7 @@
         },
         success: function(data, textStatus, jqXHR) {
           if (debug_mode) {
-            console.log("Status: " + textStatus);
-            return console.log(data);
+            return console.log("Status: " + textStatus);
           }
         }
       });
