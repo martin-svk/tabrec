@@ -6,7 +6,7 @@
 
     function Constants() {}
 
-    DEBUG_MODE = true;
+    DEBUG_MODE = false;
 
     Constants.is_debug_mode = function() {
       return DEBUG_MODE;

@@ -7,7 +7,7 @@
 # ======================================
 
 class @Constants
-  DEBUG_MODE = true
+  DEBUG_MODE = false
 
   @is_debug_mode: ->
     DEBUG_MODE
