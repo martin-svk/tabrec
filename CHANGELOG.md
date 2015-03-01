@@ -5,6 +5,7 @@ TabRec changelog
 ----
 
 * Update to reflect API changes.
+* Fix usage logs losting bug.
 
 0.6.0
 ----
