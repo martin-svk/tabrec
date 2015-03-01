@@ -9,27 +9,27 @@
 # ======================================
 
 class @UsageLogger
-  _conn = null
-  _dbg = false
-  _batch_size = 100
-  _uid = null
-  _sid = null
-  _parser = document.createElement('a')
-  _sha1 = new Sha1()
+  connection = null
+  debug_mode = false
+  batch_size = 100
+  uid = null
+  sid = null
+  parser = document.createElement('a')
+  sha1 = new Sha1()
 
   constructor: (@connection, @batch_size, @user_id, @session_id, @debug_mode) ->
-    _conn = @connection
-    _dbg = @debug_mode
-    _batch_size = @batch_size
-    _uid = @user_id
-    _sid = @session_id
+    connection = @connection
+    debug_mode = @debug_mode
+    batch_size = @batch_size
+    uid = @user_id
+    sid = @session_id
 
   # ===================================
   # Public methods
   # ===================================
 
   start: () ->
-    console.log("Usage logger has started!") if _dbg
+    console.log("Usage logger has started!") if debug_mode
     chrome.tabs.onCreated.addListener(tab_created)
     chrome.tabs.onRemoved.addListener(tab_removed)
     chrome.tabs.onActivated.addListener(tab_activated)
@@ -41,23 +41,23 @@ class @UsageLogger
   # ===================================
   # Private vars
   # ===================================
-  cache = []
-  last_post_time = new Date().getTime()
+  _cache = []
+  _last_post_time = new Date().getTime()
 
   # ===================================
   # Private functions
   # ===================================
 
   cache_usage_log = (log) ->
-    console.log("Caching usage log: User id: #{log.user_id}, Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if _dbg
-    cache.push log
-    if (cache.length >= _batch_size) || (get_current_ts() - last_post_time > (2 * 60 * 1000))
+    console.log("Caching usage log: User id: #{log.user_id}, Tab id: #{log.tab_id}, Event: #{log.event}, Time: #{log.timestamp}") if debug_mode
+    _cache.push log
+    if (_cache.length >= batch_size) || (get_current_ts() - _last_post_time > (2 * 60 * 1000))
       post_usage_logs()
 
   post_usage_logs = () ->
-    _conn.post_usage_logs(cache)
-    cache.length = 0
-    last_post_time = get_current_ts()
+    connection.post_usage_logs(_cache)
+    _cache.length = 0
+    _last_post_time = get_current_ts()
 
   get_current_ts = () ->
     new Date().getTime()
@@ -74,30 +74,30 @@ class @UsageLogger
   tab_created = (tab) ->
 
     # URL splitting and hashing
-    _parser.href = tab.url
-    _subdomain = _parser.hostname
+    parser.href = tab.url
+    _subdomain = parser.hostname
     _domain = get_domain(_subdomain)
-    _path = _parser.pathname
-    console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
+    _path = parser.pathname
+    console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{parser.href}") if debug_mode
 
     # Creating data object to POST
     cache_usage_log({
-      user_id: _uid
-      session_id: _sid
+      user_id: uid
+      session_id: sid
       timestamp: get_current_ts()
       event: 'TAB_CREATED'
       window_id: tab.windowId
       tab_id: tab.id
-      url: _sha1.process(_parser.href)
-      domain: _sha1.process(_domain)
-      subdomain: _sha1.process(_subdomain)
-      path: _sha1.process(_path)
+      url: sha1.process(parser.href)
+      domain: sha1.process(_domain)
+      subdomain: sha1.process(_subdomain)
+      path: sha1.process(_path)
     })
 
   tab_removed = (tab_id, remove_info) ->
     cache_usage_log({
-      user_id: _uid
-      session_id: _sid
+      user_id: uid
+      session_id: sid
       timestamp: get_current_ts()
       event: 'TAB_REMOVED'
       window_id: remove_info.windowId
@@ -107,8 +107,8 @@ class @UsageLogger
   tab_activated = (active_info) ->
     chrome.tabs.get active_info.tabId, (tab) ->
       cache_usage_log({
-        user_id: _uid
-        session_id: _sid
+        user_id: uid
+        session_id: sid
         timestamp: get_current_ts()
         event: 'TAB_ACTIVATED'
         window_id: active_info.windowId
@@ -117,8 +117,8 @@ class @UsageLogger
 
   tab_moved = (tab_id, move_info) ->
     cache_usage_log({
-      user_id: _uid
-      session_id: _sid
+      user_id: uid
+      session_id: sid
       timestamp: get_current_ts()
       event: 'TAB_MOVED'
       window_id: move_info.windowId
@@ -129,8 +129,8 @@ class @UsageLogger
 
   tab_attached = (tab_id, attach_info) ->
     cache_usage_log({
-      user_id: _uid
-      session_id: _sid
+      user_id: uid
+      session_id: sid
       timestamp: get_current_ts()
       event: 'TAB_ATTACHED'
       window_id: attach_info.newWindowId
@@ -140,8 +140,8 @@ class @UsageLogger
 
   tab_detached = (tab_id, detach_info) ->
     cache_usage_log({
-      user_id: _uid
-      session_id: _sid
+      user_id: uid
+      session_id: sid
       timestamp: get_current_ts()
       event: 'TAB_DETACHED'
       window_id: detach_info.oldWindowId
@@ -153,22 +153,22 @@ class @UsageLogger
     if change_info.status == 'complete'
 
       # URL splitting and hashing
-      _parser.href = tab.url
-      _subdomain = _parser.hostname
+      parser.href = tab.url
+      _subdomain = parser.hostname
       _domain = get_domain(_subdomain)
-      _path = _parser.pathname
-      console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{_parser.href}") if _dbg
+      _path = parser.pathname
+      console.log("Subdomain: #{_subdomain} domain: #{_domain} path: #{_path} url: #{parser.href}") if debug_mode
 
       # Creating data object to POST
       cache_usage_log({
-        user_id: _uid
-        session_id: _sid
+        user_id: uid
+        session_id: sid
         timestamp: get_current_ts()
         event: 'TAB_UPDATED'
         window_id: tab.windowId
         tab_id: tab.id
-        url: _sha1.process(_parser.href)
-        domain: _sha1.process(_domain)
-        subdomain: _sha1.process(_subdomain)
-        path: _sha1.process(_path)
+        url: sha1.process(parser.href)
+        domain: sha1.process(_domain)
+        subdomain: sha1.process(_subdomain)
+        path: sha1.process(_path)
       })
