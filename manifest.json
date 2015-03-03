@@ -13,7 +13,6 @@
             "bower_components/jquery/dist/jquery.min.js",
             "bower_components/jshashes/hashes.min.js",
             "scripts/constants.js",
-            "scripts/modules/sha1.js",
             "scripts/modules/user.js",
             "scripts/modules/connection.js",
             "scripts/modules/notifier.js",
