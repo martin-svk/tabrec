@@ -13,7 +13,7 @@ class @UsageLogger
   dbg_mode = Constants.is_debug_mode()
   parser = document.createElement('a')
   conn = new Connection()
-  sha1 = new Sha1()
+  sha1 = new Hashes.SHA1()
   uid = null
   sid = null
 
@@ -86,10 +86,10 @@ class @UsageLogger
       event: 'TAB_CREATED'
       window_id: tab.windowId
       tab_id: tab.id
-      url: sha1.process(parser.href)
-      domain: sha1.process(_domain)
-      subdomain: sha1.process(_subdomain)
-      path: sha1.process(_path)
+      url: sha1.hex(parser.href)
+      domain: sha1.hex(_domain)
+      subdomain: sha1.hex(_subdomain)
+      path: sha1.hex(_path)
     })
 
   tab_removed = (tab_id, remove_info) ->
@@ -165,8 +165,8 @@ class @UsageLogger
         event: 'TAB_UPDATED'
         window_id: tab.windowId
         tab_id: tab.id
-        url: sha1.process(parser.href)
-        domain: sha1.process(_domain)
-        subdomain: sha1.process(_subdomain)
-        path: sha1.process(_path)
+        url: sha1.hex(parser.href)
+        domain: sha1.hex(_domain)
+        subdomain: sha1.hex(_subdomain)
+        path: sha1.hex(_path)
       })
