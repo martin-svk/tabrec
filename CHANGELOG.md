@@ -1,6 +1,11 @@
 TabRec changelog
 ---
 
+0.7.2
+----
+
+* Replace included self maintained SHA1 script with popular jshashes library.
+
 0.7.1
 ----
 
