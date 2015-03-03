@@ -44,4 +44,4 @@ echo "Removing localhost from allowed urls"
 sed -i '/localhost/d' ./dist/manifest.json
 
 echo "Creating tabrec.zip"
-zip tabrec.zip ./dist
+zip -r tabrec.zip ./dist/*
