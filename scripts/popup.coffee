@@ -19,6 +19,8 @@ $ ->
           $('#tabs-created').html('N/A')
           $('#tabs-closed').html('N/A')
 
-    $('#settings').on('click', ->
-      chrome.tabs.create({url: 'options.html'})
-    )
+    $('#settings').on 'click', ->
+      chrome.tabs.create {
+        url: chrome.runtime.getURL('options.html')
+        active: true
+      }

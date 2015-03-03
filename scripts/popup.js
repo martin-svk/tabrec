@@ -27,7 +27,8 @@
       }
       return $('#settings').on('click', function() {
         return chrome.tabs.create({
-          url: 'options.html'
+          url: chrome.runtime.getURL('options.html'),
+          active: true
         });
       });
     });
