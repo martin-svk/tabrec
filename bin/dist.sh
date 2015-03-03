@@ -40,5 +40,8 @@ echo "New version number: "
 read version
 sed -i "3s/[0-9]\.[0-9]\.[0-9]/${version}/" ./dist/manifest.json
 
+echo "Removing localhost from allowed urls"
+sed -i '/localhost/d' ./dist/manifest.json
+
 echo "Creating tabrec.zip"
 zip tabrec.zip ./dist
