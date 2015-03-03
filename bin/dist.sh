@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Break on error
+set -e
+
 # Cleaning previous release
 rm -rf ./dist/
 
@@ -30,5 +33,12 @@ echo "Copying jshashes files."
 mkdir -p ./dist/bower_components/jshashes/
 cp ./bower_components/jshashes/hashes.min.js ./dist/bower_components/jshashes/hashes.min.js
 
-echo "Copying manifest files. Don't forget to update version!"
+echo "Copying manifest files."
 cp ./manifest.json ./dist/
+
+echo "New version number: "
+read version
+sed -i "3s/[0-9]\.[0-9]\.[0-9]/${version}/" ./dist/manifest.json
+
+echo "Creating tabrec.zip"
+zip tabrec.zip ./dist
