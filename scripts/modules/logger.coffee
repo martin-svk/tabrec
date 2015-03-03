@@ -20,4 +20,4 @@ class @Logger
   # Private methods
 
   save_log = (event) ->
-    console.log("Saved event: #{}")
+    console.log("Saved event: #{event}")

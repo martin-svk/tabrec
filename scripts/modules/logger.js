@@ -13,7 +13,7 @@
     };
 
     save_log = function(event) {
-      return console.log("Saved event: ");
+      return console.log("Saved event: " + event);
     };
 
     return Logger;
