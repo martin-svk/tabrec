@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Break on error
+set -e
+
 echo "Compiling coffee scripts."
 coffee -c ./scripts
 
