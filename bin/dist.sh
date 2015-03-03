@@ -26,5 +26,9 @@ mkdir -p ./dist/bower_components/jquery/dist/
 cp ./bower_components/jquery/dist/jquery.min.js ./dist/bower_components/jquery/dist/
 cp ./bower_components/jquery/dist/jquery.min.map ./dist/bower_components/jquery/dist/
 
+echo "Copying jshashes files."
+mkdir -p ./dist/bower_components/jshashes/
+cp ./bower_components/jshashes/hashes.min.js ./dist/bower_components/jshashes/hashes.min.js
+
 echo "Copying manifest files. Don't forget to update version!"
 cp ./manifest.json ./dist/
