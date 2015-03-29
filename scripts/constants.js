@@ -16,7 +16,7 @@
       if (DEBUG_MODE) {
         return 'http://localhost:9292';
       } else {
-        return 'http://tabber.fiit.stuba.sk';
+        return 'http://tabber.fiit.stuba.sk:9292';
       }
     };
 
