@@ -1,6 +1,11 @@
 TabRec changelog
 ---
 
+0.7.3
+----
+
+* Fix API url due to server changes.
+
 0.7.2
 ----
 
