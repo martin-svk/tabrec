@@ -5,7 +5,7 @@ of users by providing appropriate recommendations based on Your browser usage.
 
 How to install Tabrec?
 ---
-The fastest way is to install Tabrec from [Google Chrome store](http://tabber.fiit.stuba.sk).
+The fastest way is to install Tabrec from [Google Chrome store](http://tabber.fiit.stuba.sk:9292).
 
 Current state
 ---
