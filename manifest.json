@@ -32,12 +32,8 @@
     },
     "options_page": "options.html",
     "permissions": [
-        "alarms",
-        "history",
-        "identity",
         "notifications",
         "storage",
-        "tabCapture",
         "tabs",
         "http://tabber.fiit.stuba.sk:9292/*",
         "http://localhost:9292/*",
