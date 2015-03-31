@@ -12,6 +12,7 @@
 class @Logger
   dbg_mode = Constants.is_debug_mode()
   conn = new Connection()
+  notifier = new Notifier()
   uid = null
   sid = null
 
@@ -34,34 +35,75 @@ class @Logger
     chrome.tabs.onUpdated.addListener(tab_updated)
 
   # ===================================
+  # Locals
+  # ===================================
+
+  _last_event_time = null
+  _max_gap = Constants.get_max_gap()
+  _current_sequence = []
+
+  # This is activate pattern with sort advice
+  _activate_pattern = ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED']
+
+  # TODO: load from API: conn.get_patterns()
+  _ignored_events = ['TAB_REMOVED']
+  _patterns = [ _activate_pattern ]
+
+  # ===================================
   # Event handlers
   # ===================================
 
   tab_created = (tab) ->
-    console.log("tab created") if dbg_mode
+    process_event('TAB_CREATED', get_current_ts())
 
   tab_removed = (tab_id, remove_info) ->
-    console.log("tab removed") if dbg_mode
+    process_event('TAB_REMOVED', get_current_ts())
 
   tab_activated = (active_info) ->
-    console.log("tab activated") if dbg_mode
+    process_event('TAB_ACTIVATED', get_current_ts())
 
   tab_moved = (tab_id, move_info) ->
-    console.log("tab moved") if dbg_mode
+    process_event('TAB_MOVED', get_current_ts())
 
   tab_attached = (tab_id, attach_info) ->
-    console.log("tab attached") if dbg_mode
+    process_event('TAB_ATTACHED', get_current_ts())
 
   tab_detached = (tab_id, detach_info) ->
-    console.log("tab detached") if dbg_mode
+    process_event('TAB_DETACHED', get_current_ts())
 
   tab_updated = (tab_id, change_info, tab) ->
     if change_info.status == 'complete'
-      console.log("tab updated") if dbg_mode
+      process_event('TAB_UPDATED', get_current_ts())
 
   # ===================================
   # Pattern recognizing
   # ===================================
 
-  record_event = (event_name, time_occured) ->
-    console.log("#{event_name} occured on #{time_occured}") if dbg_mode
+  process_event = (event_name, time_occured) ->
+    if _last_event_time == null || (time_occured - _last_event_time) < _max_gap
+      # Push event into current sequence, unless the event is in ignored list
+      unless event_name in _ignored_events
+        _current_sequence.push(event_name)
+        if current_state_is_pattern(_current_sequence)
+          notifier.notify(_current_sequence)
+          _current_sequence = []
+    else
+      # Gap is wider
+      _current_sequence = []
+
+    # Always update last event
+    _last_event_time = time_occured
+
+  # ===================================
+  # Helper functions
+  # ===================================
+
+  current_state_is_pattern = (sequence) ->
+    console.log("Current sequence: #{sequence}") if dbg_mode
+    for pattern in _patterns
+      if sequence.length == pattern.length && sequence.toString() == pattern.toString()
+        return true
+    return false
+
+  get_current_ts = () ->
+    new Date().getTime()

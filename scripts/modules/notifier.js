@@ -2,10 +2,18 @@
 (function() {
   'use strict';
   this.Notifier = (function() {
-    function Notifier() {}
+    var debug_mode;
 
-    Notifier.prototype.notify = function(message) {
-      return console.log("Notifiyng: " + message);
+    debug_mode = null;
+
+    function Notifier() {
+      debug_mode = Constants.is_debug_mode();
+    }
+
+    Notifier.prototype.notify = function(pattern) {
+      if (debug_mode) {
+        return console.log("Notification: pattern occured: " + pattern);
+      }
     };
 
     return Notifier;

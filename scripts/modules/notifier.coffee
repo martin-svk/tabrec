@@ -8,5 +8,10 @@
 # ======================================
 
 class @Notifier
-  notify: (message) ->
-    console.log("Notifiyng: #{message}")
+  debug_mode = null
+
+  constructor: () ->
+    debug_mode = Constants.is_debug_mode()
+
+  notify: (pattern) ->
+    console.log("Notification: pattern occured: #{pattern}") if debug_mode
