@@ -12,8 +12,8 @@ class @Notifier
   tab_sort_notification_options =
     type: 'basic'
     iconUrl: 'images/notification.png'
-    title: 'Pattern detected!'
-    message: 'Looks like you are looking for some tabs, need help?'
+    title: 'Recommendation available!'
+    message: 'This will sort all your tabs by their domains.'
     buttons: [
         title: 'Accept'
         iconUrl: 'images/accept.png'
