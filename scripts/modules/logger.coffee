@@ -46,7 +46,6 @@ class @Logger
   _activate_pattern = ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED']
 
   # TODO: load from API: conn.get_patterns()
-  _ignored_events = ['TAB_REMOVED']
   _patterns = [ _activate_pattern ]
 
   # ===================================
@@ -81,12 +80,10 @@ class @Logger
 
   process_event = (event_name, time_occured) ->
     if _last_event_time == null || (time_occured - _last_event_time) < _max_gap
-      # Push event into current sequence, unless the event is in ignored list
-      unless event_name in _ignored_events
-        _current_sequence.push(event_name)
-        if current_state_is_pattern(_current_sequence)
-          notifier.notify(_current_sequence)
-          _current_sequence = []
+      _current_sequence.push(event_name)
+      if current_state_is_pattern(_current_sequence)
+        notifier.notify(_current_sequence)
+        _current_sequence = []
     else
       # Gap is wider
       _current_sequence = []
@@ -101,7 +98,7 @@ class @Logger
   current_state_is_pattern = (sequence) ->
     console.log("Current sequence: #{sequence}") if dbg_mode
     for pattern in _patterns
-      if sequence.length == pattern.length && sequence.toString() == pattern.toString()
+      if sequence.toString().indexOf(pattern.toString()) >= 0
         return true
     return false
 
