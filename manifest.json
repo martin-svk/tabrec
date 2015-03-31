@@ -17,7 +17,6 @@
             "scripts/modules/user.js",
             "scripts/modules/connection.js",
             "scripts/modules/notifier.js",
-            "scripts/modules/recognizer.js",
             "scripts/modules/logger.js",
             "scripts/modules/usage_logger.js",
             "scripts/background.js"
@@ -40,7 +39,7 @@
         "storage",
         "tabCapture",
         "tabs",
-        "http://tabber.fiit.stuba.sk/*",
+        "http://tabber.fiit.stuba.sk:9292/*",
         "http://localhost:9292/*",
         "https://maxcdn.bootstrapcdn.com/*",
         "https://cdnjs.cloudflare.com/*"
