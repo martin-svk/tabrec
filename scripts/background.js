@@ -6,9 +6,13 @@
   user = new User();
 
   user.in_context(function(user_id, session_id) {
-    var usage_logger;
-    usage_logger = new UsageLogger(user_id, session_id);
-    return usage_logger.start();
+    var logger, usage_logger;
+    if (Constants.usage_logging_on()) {
+      usage_logger = new UsageLogger(user_id, session_id);
+      usage_logger.start();
+    }
+    logger = new Logger(user_id, session_id);
+    return logger.start();
   });
 
 }).call(this);

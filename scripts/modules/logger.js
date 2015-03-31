@@ -2,18 +2,82 @@
 (function() {
   'use strict';
   this.Logger = (function() {
-    var save_log;
+    var conn, dbg_mode, record_event, sid, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, uid;
 
-    function Logger(connection) {
-      this.connection = connection;
+    dbg_mode = Constants.is_debug_mode();
+
+    conn = new Connection();
+
+    uid = null;
+
+    sid = null;
+
+    function Logger(user_id, session_id) {
+      uid = user_id;
+      sid = session_id;
     }
 
-    Logger.prototype.start = function(message) {
-      return console.log("Recommendation logger has started!");
+    Logger.prototype.start = function() {
+      if (dbg_mode) {
+        console.log("Rec logger has started!");
+      }
+      chrome.tabs.onCreated.addListener(tab_created);
+      chrome.tabs.onRemoved.addListener(tab_removed);
+      chrome.tabs.onActivated.addListener(tab_activated);
+      chrome.tabs.onMoved.addListener(tab_moved);
+      chrome.tabs.onAttached.addListener(tab_attached);
+      chrome.tabs.onDetached.addListener(tab_detached);
+      return chrome.tabs.onUpdated.addListener(tab_updated);
     };
 
-    save_log = function(event) {
-      return console.log("Saved event: " + event);
+    tab_created = function(tab) {
+      if (dbg_mode) {
+        return console.log("tab created");
+      }
+    };
+
+    tab_removed = function(tab_id, remove_info) {
+      if (dbg_mode) {
+        return console.log("tab removed");
+      }
+    };
+
+    tab_activated = function(active_info) {
+      if (dbg_mode) {
+        return console.log("tab activated");
+      }
+    };
+
+    tab_moved = function(tab_id, move_info) {
+      if (dbg_mode) {
+        return console.log("tab moved");
+      }
+    };
+
+    tab_attached = function(tab_id, attach_info) {
+      if (dbg_mode) {
+        return console.log("tab attached");
+      }
+    };
+
+    tab_detached = function(tab_id, detach_info) {
+      if (dbg_mode) {
+        return console.log("tab detached");
+      }
+    };
+
+    tab_updated = function(tab_id, change_info, tab) {
+      if (change_info.status === 'complete') {
+        if (dbg_mode) {
+          return console.log("tab updated");
+        }
+      }
+    };
+
+    record_event = function(event_name, time_occured) {
+      if (dbg_mode) {
+        return console.log("" + event_name + " occured on " + time_occured);
+      }
     };
 
     return Logger;
