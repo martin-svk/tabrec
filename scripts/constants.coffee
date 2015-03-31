@@ -8,9 +8,13 @@
 
 class @Constants
   DEBUG_MODE = false
+  USAGE_LOGGING = true
 
   @is_debug_mode: ->
     DEBUG_MODE
+
+  @usage_logging_on: ->
+    USAGE_LOGGING
 
   @get_api_url: ->
     if DEBUG_MODE
@@ -23,3 +27,7 @@ class @Constants
       5
     else
       50
+
+  @get_max_gap: ->
+    # 3 seconds
+    3000

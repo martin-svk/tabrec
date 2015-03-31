@@ -2,14 +2,20 @@
 (function() {
   'use strict';
   this.Constants = (function() {
-    var DEBUG_MODE;
+    var DEBUG_MODE, USAGE_LOGGING;
 
     function Constants() {}
 
     DEBUG_MODE = false;
 
+    USAGE_LOGGING = true;
+
     Constants.is_debug_mode = function() {
       return DEBUG_MODE;
+    };
+
+    Constants.usage_logging_on = function() {
+      return USAGE_LOGGING;
     };
 
     Constants.get_api_url = function() {
@@ -26,6 +32,10 @@
       } else {
         return 50;
       }
+    };
+
+    Constants.get_max_gap = function() {
+      return 3000;
     };
 
     return Constants;
