@@ -38,19 +38,21 @@
     notification_button_clicked = function(notif_id, button_index) {
       if (button_index === 0) {
         if (debug_mode) {
-          return console.log('recommendation accepted');
+          console.log('recommendation accepted');
         }
       } else if (button_index === 1) {
         if (debug_mode) {
-          return console.log('recommendation rejected');
+          console.log('recommendation rejected');
         }
       }
+      return chrome.notifications.clear(notif_id, function(cleared) {});
     };
 
     notification_clicked = function(notif_id) {
       if (debug_mode) {
-        return console.log('recommendation accepted');
+        console.log('recommendation accepted');
       }
+      return chrome.notifications.clear(notif_id, function(cleared) {});
     };
 
     return Notifier;

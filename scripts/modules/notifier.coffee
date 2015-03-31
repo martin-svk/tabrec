@@ -40,7 +40,11 @@ class @Notifier
       console.log('recommendation accepted') if debug_mode
     else if button_index == 1
       console.log('recommendation rejected') if debug_mode
+    # Clear
+    chrome.notifications.clear(notif_id, (cleared) ->)
 
   notification_clicked = (notif_id) ->
     console.log('recommendation accepted') if debug_mode
+    # Clear
+    chrome.notifications.clear(notif_id, (cleared) ->)
 
