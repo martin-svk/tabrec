@@ -16,8 +16,8 @@
             "scripts/constants.js",
             "scripts/modules/user.js",
             "scripts/modules/connection.js",
-            "scripts/modules/notifier.js",
             "scripts/modules/executor.js",
+            "scripts/modules/notifier.js",
             "scripts/modules/logger.js",
             "scripts/modules/usage_logger.js",
             "scripts/background.js"
