@@ -2,18 +2,48 @@
 (function() {
   'use strict';
   this.Executor = (function() {
-    var _dbg_mode;
+    var handle_multi_activate_pattern, sort_tabs_by_domains, _dbg_mode;
 
     _dbg_mode = null;
 
     function Executor() {
-      _dbg_mode = Constants.get_debug_mode();
+      _dbg_mode = Constants.is_debug_mode();
     }
 
     Executor.prototype.execute = function(pattern) {
       if (_dbg_mode) {
-        return console.log("Executing action for: " + pattern);
+        console.log("Executing action for: " + pattern);
       }
+      if (pattern === 'MULTI_ACTIVATE') {
+        return handle_multi_activate_pattern();
+      }
+    };
+
+    handle_multi_activate_pattern = function() {
+      return chrome.tabs.query({
+        windowId: chrome.windows.WINDOW_ID_CURRENT
+      }, sort_tabs_by_domains);
+    };
+
+    sort_tabs_by_domains = function(tabs) {
+      var ids, tab, _current_tabs, _i, _len;
+      _current_tabs = [];
+      for (_i = 0, _len = tabs.length; _i < _len; _i++) {
+        tab = tabs[_i];
+        _current_tabs.push({
+          id: tab.id,
+          domain: new URL(tab.url).hostname
+        });
+      }
+      _current_tabs.sort(function(a, b) {
+        return a.domain.localeCompare(b.domain);
+      });
+      ids = _current_tabs.map(function(tab) {
+        return tab.id;
+      });
+      return chrome.tabs.move(ids, {
+        index: 0
+      });
     };
 
     return Executor;
