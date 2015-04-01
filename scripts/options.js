@@ -6,8 +6,8 @@
   API_URL = Constants.get_api_url();
 
   reset_options = function() {
-    $('#user-level-select').val('beginner');
-    $('#rec-mode-select').val('aggressive');
+    $('#user-level-select').val('advanced');
+    $('#rec-mode-select').val('semi-interactive');
     return $('#other-plugins-cb').prop('checked', false);
   };
 

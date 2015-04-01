@@ -4,8 +4,8 @@ API_URL = Constants.get_api_url()
 
 # Reset options method
 reset_options = () ->
-  $('#user-level-select').val('beginner')
-  $('#rec-mode-select').val('aggressive')
+  $('#user-level-select').val('advanced')
+  $('#rec-mode-select').val('semi-interactive')
   $('#other-plugins-cb').prop('checked', false)
 
 # Load options from chrome storage
