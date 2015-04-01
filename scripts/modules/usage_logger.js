@@ -2,29 +2,29 @@
 (function() {
   'use strict';
   this.UsageLogger = (function() {
-    var bsize, cache_usage_log, conn, dbg_mode, get_current_ts, get_domain, parser, post_usage_logs, sha1, sid, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, uid, _cache, _last_post_time;
+    var cache_usage_log, get_current_ts, get_domain, post_usage_logs, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _bsize, _cache, _conn, _dbg_mode, _last_post_time, _parser, _sha1, _sid, _uid;
 
-    bsize = Constants.get_batch_size();
+    _bsize = Constants.get_batch_size();
 
-    dbg_mode = Constants.is_debug_mode();
+    _dbg_mode = Constants.is_debug_mode();
 
-    parser = document.createElement('a');
+    _parser = document.createElement('a');
 
-    conn = new Connection();
+    _conn = new Connection();
 
-    sha1 = new Hashes.SHA1();
+    _sha1 = new Hashes.SHA1();
 
-    uid = null;
+    _uid = null;
 
-    sid = null;
+    _sid = null;
 
     function UsageLogger(user_id, session_id) {
-      uid = user_id;
-      sid = session_id;
+      _uid = user_id;
+      _sid = session_id;
     }
 
     UsageLogger.prototype.start = function() {
-      if (dbg_mode) {
+      if (_dbg_mode) {
         console.log("Usage logger has started!");
       }
       chrome.tabs.onCreated.addListener(tab_created);
@@ -41,17 +41,17 @@
     _last_post_time = new Date().getTime();
 
     cache_usage_log = function(log) {
-      if (dbg_mode) {
+      if (_dbg_mode) {
         console.log("Caching usage log: User id: " + log.user_id + ", Tab id: " + log.tab_id + ", Event: " + log.event + ", Time: " + log.timestamp);
       }
       _cache.push(log);
-      if ((_cache.length >= bsize) || (get_current_ts() - _last_post_time > (2 * 60 * 1000))) {
+      if ((_cache.length >= _bsize) || (get_current_ts() - _last_post_time > (2 * 60 * 1000))) {
         return post_usage_logs();
       }
     };
 
     post_usage_logs = function() {
-      conn.post_usage_logs(_cache.slice(0));
+      _conn.post_usage_logs(_cache.slice(0));
       _cache.length = 0;
       return _last_post_time = get_current_ts();
     };
@@ -69,31 +69,31 @@
 
     tab_created = function(tab) {
       var _domain, _path, _subdomain;
-      parser.href = tab.url;
-      _subdomain = parser.hostname;
+      _parser.href = tab.url;
+      _subdomain = _parser.hostname;
       _domain = get_domain(_subdomain);
-      _path = parser.pathname;
-      if (dbg_mode) {
-        console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + parser.href);
+      _path = _parser.pathname;
+      if (_dbg_mode) {
+        console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + _parser.href);
       }
       return cache_usage_log({
-        user_id: uid,
-        session_id: sid,
+        user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_CREATED',
         window_id: tab.windowId,
         tab_id: tab.id,
-        url: sha1.hex(parser.href),
-        domain: sha1.hex(_domain),
-        subdomain: sha1.hex(_subdomain),
-        path: sha1.hex(_path)
+        url: _sha1.hex(_parser.href),
+        domain: _sha1.hex(_domain),
+        subdomain: _sha1.hex(_subdomain),
+        path: _sha1.hex(_path)
       });
     };
 
     tab_removed = function(tab_id, remove_info) {
       return cache_usage_log({
-        user_id: uid,
-        session_id: sid,
+        user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_REMOVED',
         window_id: remove_info.windowId,
@@ -104,8 +104,8 @@
     tab_activated = function(active_info) {
       return chrome.tabs.get(active_info.tabId, function(tab) {
         return cache_usage_log({
-          user_id: uid,
-          session_id: sid,
+          user_id: _uid,
+          session_id: _sid,
           timestamp: get_current_ts(),
           event: 'TAB_ACTIVATED',
           window_id: active_info.windowId,
@@ -116,8 +116,8 @@
 
     tab_moved = function(tab_id, move_info) {
       return cache_usage_log({
-        user_id: uid,
-        session_id: sid,
+        user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_MOVED',
         window_id: move_info.windowId,
@@ -129,8 +129,8 @@
 
     tab_attached = function(tab_id, attach_info) {
       return cache_usage_log({
-        user_id: uid,
-        session_id: sid,
+        user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_ATTACHED',
         window_id: attach_info.newWindowId,
@@ -141,8 +141,8 @@
 
     tab_detached = function(tab_id, detach_info) {
       return cache_usage_log({
-        user_id: uid,
-        session_id: sid,
+        user_id: _uid,
+        session_id: _sid,
         timestamp: get_current_ts(),
         event: 'TAB_DETACHED',
         window_id: detach_info.oldWindowId,
@@ -154,24 +154,24 @@
     tab_updated = function(tab_id, change_info, tab) {
       var _domain, _path, _subdomain;
       if (change_info.status === 'complete') {
-        parser.href = tab.url;
-        _subdomain = parser.hostname;
+        _parser.href = tab.url;
+        _subdomain = _parser.hostname;
         _domain = get_domain(_subdomain);
-        _path = parser.pathname;
-        if (dbg_mode) {
-          console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + parser.href);
+        _path = _parser.pathname;
+        if (_dbg_mode) {
+          console.log("Subdomain: " + _subdomain + " domain: " + _domain + " path: " + _path + " url: " + _parser.href);
         }
         return cache_usage_log({
-          user_id: uid,
-          session_id: sid,
+          user_id: _uid,
+          session_id: _sid,
           timestamp: get_current_ts(),
           event: 'TAB_UPDATED',
           window_id: tab.windowId,
           tab_id: tab.id,
-          url: sha1.hex(parser.href),
-          domain: sha1.hex(_domain),
-          subdomain: sha1.hex(_subdomain),
-          path: sha1.hex(_path)
+          url: _sha1.hex(_parser.href),
+          domain: _sha1.hex(_domain),
+          subdomain: _sha1.hex(_subdomain),
+          path: _sha1.hex(_path)
         });
       }
     };
