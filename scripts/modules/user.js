@@ -2,12 +2,12 @@
 (function() {
   'use strict';
   this.User = (function() {
-    var connection, create_if_not_exists, create_user, generate_uuid;
+    var create_if_not_exists, create_user, generate_uuid, _conn;
 
-    connection = null;
+    _conn = null;
 
     function User() {
-      connection = new Connection();
+      _conn = new Connection();
     }
 
     User.prototype.in_context = function(callback) {
@@ -39,7 +39,7 @@
     };
 
     create_if_not_exists = function(id) {
-      return connection.get_user(id, function(user) {
+      return _conn.get_user(id, function(user) {
         if (!user) {
           return create_user(id);
         }
@@ -47,7 +47,7 @@
     };
 
     create_user = function(id) {
-      return connection.create_user({
+      return _conn.create_user({
         id: id,
         rec_mode: 'default',
         experience: 'default'
