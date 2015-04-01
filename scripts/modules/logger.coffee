@@ -10,23 +10,18 @@
 # ======================================
 
 class @Logger
-  dbg_mode = Constants.is_debug_mode()
-  conn = new Connection()
-  notifier = null
-  uid = null
-  sid = null
+  _dbg_mode = Constants.is_debug_mode()
+  _notifier = null
 
   constructor: (user_id, session_id) ->
-    uid = user_id
-    sid = session_id
-    notifier = new Notifier(user_id)
+    _notifier = new Notifier(user_id)
 
   # ===================================
   # Public methods
   # ===================================
 
   start: () ->
-    console.log("Rec logger has started!") if dbg_mode
+    console.log("Rec logger has started!") if _dbg_mode
     chrome.tabs.onCreated.addListener(tab_created)
     chrome.tabs.onRemoved.addListener(tab_removed)
     chrome.tabs.onActivated.addListener(tab_activated)
@@ -85,7 +80,7 @@ class @Logger
     if _last_event_time == null || (time_occured - _last_event_time) < _max_gap
       _current_sequence.push(event_name)
       if pattern = current_state_is_pattern(_current_sequence)
-        notifier.notify(pattern)
+        _notifier.notify(pattern)
         _current_sequence = []
     else
       # Gap is wider
@@ -99,7 +94,7 @@ class @Logger
   # ===================================
 
   current_state_is_pattern = (sequence) ->
-    console.log("Current sequence: #{sequence}") if dbg_mode
+    console.log("Current sequence: #{sequence}") if _dbg_mode
     for pattern in _patterns
       if sequence.toString().indexOf(pattern.sequence.toString()) >= 0
         return pattern.name

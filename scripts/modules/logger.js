@@ -2,26 +2,18 @@
 (function() {
   'use strict';
   this.Logger = (function() {
-    var conn, current_state_is_pattern, dbg_mode, get_current_ts, notifier, process_event, sid, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, uid, _activate_pattern, _current_sequence, _last_event_time, _max_gap, _patterns;
+    var current_state_is_pattern, get_current_ts, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _activate_pattern, _current_sequence, _dbg_mode, _last_event_time, _max_gap, _notifier, _patterns;
 
-    dbg_mode = Constants.is_debug_mode();
+    _dbg_mode = Constants.is_debug_mode();
 
-    conn = new Connection();
-
-    notifier = null;
-
-    uid = null;
-
-    sid = null;
+    _notifier = null;
 
     function Logger(user_id, session_id) {
-      uid = user_id;
-      sid = session_id;
-      notifier = new Notifier(user_id);
+      _notifier = new Notifier(user_id);
     }
 
     Logger.prototype.start = function() {
-      if (dbg_mode) {
+      if (_dbg_mode) {
         console.log("Rec logger has started!");
       }
       chrome.tabs.onCreated.addListener(tab_created);
@@ -81,7 +73,7 @@
       if (_last_event_time === null || (time_occured - _last_event_time) < _max_gap) {
         _current_sequence.push(event_name);
         if (pattern = current_state_is_pattern(_current_sequence)) {
-          notifier.notify(pattern);
+          _notifier.notify(pattern);
           _current_sequence = [];
         }
       } else {
@@ -92,7 +84,7 @@
 
     current_state_is_pattern = function(sequence) {
       var pattern, _i, _len;
-      if (dbg_mode) {
+      if (_dbg_mode) {
         console.log("Current sequence: " + sequence);
       }
       for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
