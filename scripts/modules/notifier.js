@@ -2,15 +2,21 @@
 (function() {
   'use strict';
   this.Notifier = (function() {
-    var debug_mode, notification_button_clicked, notification_clicked, tab_sort_notification_options;
+    var multi_activate_notification_options, notification_button_clicked, notification_clicked, send_resolution, _conn, _debug_mode, _pattern, _uid;
 
-    debug_mode = null;
+    _debug_mode = null;
 
-    tab_sort_notification_options = {
+    _conn = new Connection();
+
+    _pattern = null;
+
+    _uid = null;
+
+    multi_activate_notification_options = {
       type: 'basic',
       iconUrl: 'images/notification.png',
       title: 'Recommendation available!',
-      message: 'This will sort all your tabs by their domains.',
+      message: 'Are you looking for something? We can sort all your tabs by their domains.',
       buttons: [
         {
           title: 'Accept',
@@ -22,37 +28,41 @@
       ]
     };
 
-    function Notifier() {
-      debug_mode = Constants.is_debug_mode();
+    function Notifier(user_id) {
+      _debug_mode = Constants.is_debug_mode();
+      _uid = user_id;
       chrome.notifications.onButtonClicked.addListener(notification_button_clicked);
       chrome.notifications.onClicked.addListener(notification_clicked);
     }
 
     Notifier.prototype.notify = function(pattern) {
-      if (debug_mode) {
-        console.log("Notification: pattern occured: " + pattern);
+      _pattern = pattern;
+      if (_debug_mode) {
+        console.log("Notification: pattern occured: " + _pattern);
       }
-      return chrome.notifications.create("notification_" + (new Date().getTime()), tab_sort_notification_options, function(id) {});
+      return chrome.notifications.create("" + _pattern + "_" + (new Date().getTime()), multi_activate_notification_options, function(id) {});
     };
 
     notification_button_clicked = function(notif_id, button_index) {
       if (button_index === 0) {
-        if (debug_mode) {
-          console.log('recommendation accepted');
-        }
+        send_resolution('ACCEPTED');
       } else if (button_index === 1) {
-        if (debug_mode) {
-          console.log('recommendation rejected');
-        }
+        send_resolution('REJECTED');
       }
       return chrome.notifications.clear(notif_id, function(cleared) {});
     };
 
     notification_clicked = function(notif_id) {
-      if (debug_mode) {
-        console.log('recommendation accepted');
-      }
+      send_resolution('ACCEPTED');
       return chrome.notifications.clear(notif_id, function(cleared) {});
+    };
+
+    send_resolution = function(resolution) {
+      return _conn.create_rec_log({
+        pattern: _pattern,
+        resolution: resolution,
+        user_id: _uid
+      });
     };
 
     return Notifier;

@@ -2,15 +2,15 @@
 (function() {
   'use strict';
   this.Connection = (function() {
-    var api_url, debug_mode, get_collection, get_member, post_collection, post_member;
+    var get_collection, get_member, post_collection, post_member, _api_url, _debug_mode;
 
-    debug_mode = null;
+    _debug_mode = null;
 
-    api_url = null;
+    _api_url = null;
 
     function Connection() {
-      api_url = Constants.get_api_url();
-      debug_mode = Constants.is_debug_mode();
+      _api_url = Constants.get_api_url();
+      _debug_mode = Constants.is_debug_mode();
     }
 
     Connection.prototype.get_user = function(id, callback) {
@@ -21,16 +21,45 @@
       return get_member('stats/browsing', id, callback);
     };
 
-    Connection.prototype.create_user = function(data) {
-      return post_member(data, 'users');
-    };
-
     Connection.prototype.post_usage_logs = function(data) {
       return post_collection(data, 'logs/usage');
     };
 
+    Connection.prototype.create_user = function(user_data) {
+      return $.ajax("" + _api_url + "/users", {
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          user: user_data
+        },
+        success: function(data, textStatus, jqXHR) {
+          if (_debug_mode) {
+            return console.log("Status: " + textStatus);
+          }
+        }
+      });
+    };
+
+    Connection.prototype.create_rec_log = function(log_data) {
+      if (_debug_mode) {
+        console.log(log_data);
+      }
+      return $.ajax("" + _api_url + "/logs/rec", {
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          log: log_data
+        },
+        success: function(data, textStatus, jqXHR) {
+          if (_debug_mode) {
+            return console.log("Status: " + textStatus);
+          }
+        }
+      });
+    };
+
     get_member = function(resource, id, callback) {
-      return $.ajax("" + api_url + "/" + resource + "/" + id, {
+      return $.ajax("" + _api_url + "/" + resource + "/" + id, {
         type: 'GET',
         dataType: 'json',
         error: function(jqXHR, textStatus, errorThrown) {
@@ -43,37 +72,31 @@
     };
 
     get_collection = function(resource) {
-      return $.ajax("" + api_url + "/" + resource, {
+      return $.ajax("" + _api_url + "/" + resource, {
         type: 'GET',
         dataType: 'json',
         error: function(jqXHR, textStatus, errorThrown) {
-          if (debug_mode) {
+          if (_debug_mode) {
             return console.log("Error: " + textStatus);
           }
         },
         success: function(data, textStatus, jqXHR) {
-          var event, _i, _len, _results;
-          if (debug_mode) {
-            _results = [];
-            for (_i = 0, _len = data.length; _i < _len; _i++) {
-              event = data[_i];
-              _results.push(console.log("" + event['name']));
-            }
-            return _results;
+          if (_debug_mode) {
+            return console.log("Status: " + textStatus);
           }
         }
       });
     };
 
     post_member = function(data, resource) {
-      return $.ajax("" + api_url + "/" + resource, {
+      return $.ajax("" + _api_url + "/" + resource, {
         type: 'POST',
         dataType: 'json',
         data: {
-          user: data
+          data: data
         },
         success: function(data, textStatus, jqXHR) {
-          if (debug_mode) {
+          if (_debug_mode) {
             return console.log("Status: " + textStatus);
           }
         }
@@ -81,14 +104,14 @@
     };
 
     post_collection = function(data, resource) {
-      return $.ajax("" + api_url + "/" + resource, {
+      return $.ajax("" + _api_url + "/" + resource, {
         type: 'POST',
         dataType: 'json',
         data: {
           data: data
         },
         success: function(data, textStatus, jqXHR) {
-          if (debug_mode) {
+          if (_debug_mode) {
             return console.log("Status: " + textStatus);
           }
         }

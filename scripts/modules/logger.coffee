@@ -12,13 +12,14 @@
 class @Logger
   dbg_mode = Constants.is_debug_mode()
   conn = new Connection()
-  notifier = new Notifier()
+  notifier = null
   uid = null
   sid = null
 
   constructor: (user_id, session_id) ->
     uid = user_id
     sid = session_id
+    notifier = new Notifier(user_id)
 
   # ===================================
   # Public methods

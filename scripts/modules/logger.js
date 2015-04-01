@@ -8,7 +8,7 @@
 
     conn = new Connection();
 
-    notifier = new Notifier();
+    notifier = null;
 
     uid = null;
 
@@ -17,6 +17,7 @@
     function Logger(user_id, session_id) {
       uid = user_id;
       sid = session_id;
+      notifier = new Notifier(user_id);
     }
 
     Logger.prototype.start = function() {

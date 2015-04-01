@@ -8,14 +8,17 @@
 # ======================================
 
 class @Connection
-  debug_mode = null
-  api_url = null
+  _debug_mode = null
+  _api_url = null
 
   constructor: () ->
-    api_url = Constants.get_api_url()
-    debug_mode = Constants.is_debug_mode()
+    _api_url = Constants.get_api_url()
+    _debug_mode = Constants.is_debug_mode()
 
   # Public methods
+  # ======================================
+
+  # General
 
   get_user: (id, callback) ->
     get_member('users', id, callback)
@@ -23,16 +26,33 @@ class @Connection
   get_user_bstats: (id, callback) ->
     get_member('stats/browsing', id, callback)
 
-  create_user: (data) ->
-    post_member(data, 'users')
-
   post_usage_logs: (data) ->
     post_collection(data, 'logs/usage')
 
+  # Specific
+
+  create_user: (user_data) ->
+    $.ajax "#{_api_url}/users",
+      type: 'POST'
+      dataType: 'json'
+      data: { user: user_data }
+      success: (data, textStatus, jqXHR) ->
+        console.log("Status: #{textStatus}") if _debug_mode
+
+  create_rec_log: (log_data) ->
+    console.log(log_data) if _debug_mode
+    $.ajax "#{_api_url}/logs/rec",
+      type: 'POST'
+      dataType: 'json'
+      data: { log: log_data }
+      success: (data, textStatus, jqXHR) ->
+        console.log("Status: #{textStatus}") if _debug_mode
+
   # Private methods
+  # ======================================
 
   get_member = (resource, id, callback) ->
-    $.ajax "#{api_url}/#{resource}/#{id}",
+    $.ajax "#{_api_url}/#{resource}/#{id}",
       type: 'GET'
       dataType: 'json'
       error: (jqXHR, textStatus, errorThrown) ->
@@ -41,28 +61,26 @@ class @Connection
         callback(data)
 
   get_collection = (resource) ->
-    $.ajax "#{api_url}/#{resource}",
+    $.ajax "#{_api_url}/#{resource}",
       type: 'GET'
       dataType: 'json'
       error: (jqXHR, textStatus, errorThrown) ->
-        console.log("Error: #{textStatus}") if debug_mode
+        console.log("Error: #{textStatus}") if _debug_mode
       success: (data, textStatus, jqXHR) ->
-        if debug_mode
-          for event in data
-            console.log("#{event['name']}")
+        console.log("Status: #{textStatus}") if _debug_mode
 
   post_member = (data, resource) ->
-    $.ajax "#{api_url}/#{resource}",
-      type: 'POST'
-      dataType: 'json'
-      data: { user: data }
-      success: (data, textStatus, jqXHR) ->
-        console.log("Status: #{textStatus}") if debug_mode
-
-  post_collection = (data, resource) ->
-    $.ajax "#{api_url}/#{resource}",
+    $.ajax "#{_api_url}/#{resource}",
       type: 'POST'
       dataType: 'json'
       data: { data: data }
       success: (data, textStatus, jqXHR) ->
-        console.log("Status: #{textStatus}") if debug_mode
+        console.log("Status: #{textStatus}") if _debug_mode
+
+  post_collection = (data, resource) ->
+    $.ajax "#{_api_url}/#{resource}",
+      type: 'POST'
+      dataType: 'json'
+      data: { data: data }
+      success: (data, textStatus, jqXHR) ->
+        console.log("Status: #{textStatus}") if _debug_mode
