@@ -8,7 +8,7 @@
       });
     } else if (details.reason === 'update') {
       return chrome.tabs.create({
-        url: chrome.runtime.getURL('CHANGELOG.md'),
+        url: chrome.runtime.getURL('changelog.html'),
         active: true
       });
     }

@@ -6,6 +6,6 @@ chrome.runtime.onInstalled.addListener (details) ->
     }
   else if details.reason == 'update'
     chrome.tabs.create {
-      url: chrome.runtime.getURL('CHANGELOG.md')
+      url: chrome.runtime.getURL('changelog.html')
       active: true
     }
