@@ -1,6 +1,13 @@
 TabRec changelog
 ---
 
+0.8.0
+----
+
+* First pattern implemented and ready for recommendation (currently only interactive mode is supported).
+* More statistics in popup window.
+* Changed default values in settings.
+
 0.7.3
 ----
 
