@@ -8,29 +8,37 @@
     </head>
     <body>
         <div id="header" class="page-header">
-            <h3 id="title">TabRec statistics</h3>
+            <h3 id="title">
+              TabRec statistics
+              <span id="stats-icon" class="glyphicon glyphicon-stats"></span>
+            </h3>
         </div>
 
         <div id="container" class="container">
+            <h4>
+              <span id="recomendation-icon" class="glyphicon glyphicon-tags"></span>
+              &nbsp;Recomendation
+            </h4>
 
-            <h4>Last 7 days</h4>
-
-            <div id="weekly-tab-stats">
+            <div id="rec-stats">
                 <ul>
-                    <li>Tabs created <span class="pull-right" id="w-tabs-created"></span></li>
-                    <li>Tabs closed <span class="pull-right" id="w-tabs-closed"></span></li>
+                    <li>Accepted actions <span class="pull-right" id="recs-accepted"></span></li>
+                    <li>Rejected actions <span class="pull-right" id="recs-rejected"></span></li>
                 </ul>
             </div>
 
-            <h4>All-time</h4>
+            <hr />
+            <h4>
+              <span id="browsing-icon" class="glyphicon glyphicon-globe"></span>
+              &nbsp;Browsing
+            </h4>
 
             <div id="tab-stats">
                 <ul>
-                    <li>Tabs created <span class="pull-right" id="tabs-created"></span></li>
-                    <li>Tabs closed <span class="pull-right" id="tabs-closed"></span></li>
+                    <li>Created tabs <span class="pull-right" id="tabs-created"></span></li>
+                    <li>Closed tabs <span class="pull-right" id="tabs-closed"></span></li>
                 </ul>
             </div>
-
         </div>
 
         <footer id="settings" role="button">
