@@ -18,6 +18,10 @@ cp ./styles/*.css ./dist/styles/
 echo "Copying html files."
 cp ./*.html ./dist/
 
+echo "Copying pages directory."
+mkdir -p ./dist/pages/
+cp ./pages/* ./dist/pages/
+
 echo "Copying image files."
 cp -r ./images/ ./dist/images/
 
