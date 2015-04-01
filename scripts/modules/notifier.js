@@ -2,11 +2,13 @@
 (function() {
   'use strict';
   this.Notifier = (function() {
-    var multi_activate_notification_options, notification_button_clicked, notification_clicked, send_resolution, _conn, _debug_mode, _pattern, _uid;
-
-    _debug_mode = null;
+    var multi_activate_notification_options, notification_button_clicked, notification_clicked, send_resolution, _conn, _debug_mode, _executor, _pattern, _uid;
 
     _conn = new Connection();
+
+    _executor = new Executor();
+
+    _debug_mode = null;
 
     _pattern = null;
 
@@ -46,6 +48,7 @@
     notification_button_clicked = function(notif_id, button_index) {
       if (button_index === 0) {
         send_resolution('ACCEPTED');
+        _executor.execute(_pattern);
       } else if (button_index === 1) {
         send_resolution('REJECTED');
       }
@@ -54,6 +57,7 @@
 
     notification_clicked = function(notif_id) {
       send_resolution('ACCEPTED');
+      _executor.execute(_pattern);
       return chrome.notifications.clear(notif_id, function(cleared) {});
     };
 

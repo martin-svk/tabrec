@@ -8,8 +8,9 @@
 # ======================================
 
 class @Notifier
-  _debug_mode = null
   _conn = new Connection()
+  _executor = new Executor()
+  _debug_mode = null
   _pattern = null
   _uid = null
 
@@ -44,14 +45,14 @@ class @Notifier
   notification_button_clicked = (notif_id, button_index) ->
     if button_index == 0
       send_resolution('ACCEPTED')
-      # _executor.execute(_pattern)
+      _executor.execute(_pattern)
     else if button_index == 1
       send_resolution('REJECTED')
     chrome.notifications.clear(notif_id, (cleared) ->)
 
   notification_clicked = (notif_id) ->
     send_resolution('ACCEPTED')
-    # _executor.execute(_pattern)
+    _executor.execute(_pattern)
     chrome.notifications.clear(notif_id, (cleared) ->)
 
   # ===================================
