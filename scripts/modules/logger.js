@@ -38,7 +38,10 @@
 
     _current_sequence = [];
 
-    _activate_pattern = ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED'];
+    _activate_pattern = {
+      sequence: ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED'],
+      name: 'MULTI_ACTIVATE'
+    };
 
     _patterns = [_activate_pattern];
 
@@ -73,10 +76,11 @@
     };
 
     process_event = function(event_name, time_occured) {
+      var pattern;
       if (_last_event_time === null || (time_occured - _last_event_time) < _max_gap) {
         _current_sequence.push(event_name);
-        if (current_state_is_pattern(_current_sequence)) {
-          notifier.notify(_current_sequence);
+        if (pattern = current_state_is_pattern(_current_sequence)) {
+          notifier.notify(pattern);
           _current_sequence = [];
         }
       } else {
@@ -92,8 +96,8 @@
       }
       for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
         pattern = _patterns[_i];
-        if (sequence.toString().indexOf(pattern.toString()) >= 0) {
-          return true;
+        if (sequence.toString().indexOf(pattern.sequence.toString()) >= 0) {
+          return pattern.name;
         }
       }
       return false;

@@ -43,7 +43,9 @@ class @Logger
   _current_sequence = []
 
   # This is activate pattern with sort advice
-  _activate_pattern = ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED']
+  _activate_pattern =
+    sequence: ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED']
+    name: 'MULTI_ACTIVATE'
 
   # TODO: load from API: conn.get_patterns()
   _patterns = [ _activate_pattern ]
@@ -81,8 +83,8 @@ class @Logger
   process_event = (event_name, time_occured) ->
     if _last_event_time == null || (time_occured - _last_event_time) < _max_gap
       _current_sequence.push(event_name)
-      if current_state_is_pattern(_current_sequence)
-        notifier.notify(_current_sequence)
+      if pattern = current_state_is_pattern(_current_sequence)
+        notifier.notify(pattern)
         _current_sequence = []
     else
       # Gap is wider
@@ -98,8 +100,8 @@ class @Logger
   current_state_is_pattern = (sequence) ->
     console.log("Current sequence: #{sequence}") if dbg_mode
     for pattern in _patterns
-      if sequence.toString().indexOf(pattern.toString()) >= 0
-        return true
+      if sequence.toString().indexOf(pattern.sequence.toString()) >= 0
+        return pattern.name
     return false
 
   get_current_ts = () ->
