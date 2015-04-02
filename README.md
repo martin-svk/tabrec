@@ -1,32 +1,36 @@
-What is Tabrec?
+What is TabRec?
 ---
-Tabrec is a personalized tab actions recommender for Google Chrome. The purpose of Tabrec is to boost the productivity
+TabRec is a personalized tab actions recommender for Google Chrome. The purpose of TabRec is to boost the productivity
 of users by providing appropriate recommendations based on Your browser usage.
 
-How to install Tabrec?
+How to install TabRec?
 ---
-The fastest way is to install Tabrec from [Google Chrome store](http://tabber.fiit.stuba.sk:9292).
+The fastest way is to install TabRec from [Google Chrome store](http://tabber.fiit.stuba.sk:9292).
 
 Current state
 ---
-At this moment Tabrec is only capable of gathering parallel browsing mechanisms usage.
-We focus on events like creating, navigation, closing and moving (rearranging) tabs in one or more windows.
+At this moment TabRec is capable of gathering parallel browsing mechanisms usage and
+we focus on events like creating, navigation, closing and moving (rearranging) tabs in one or more windows.
 We care strongly about privacy, so we don't collect any personal information about the users.
 All URLs are encrypted before they are sent and stored.
 
-Later (Summer 2015) Tabrec release 1.0 is planned to actually provide
-tab actions recommendations based on usage patterns we will find using the data (usage logs) we are now collecting.
+From version 0.8 TabRec is capable of real-time detection and recommendation. Currently only one pattern
+is supported and only semi-interactive recommendation mode is enabled.
+
+Later (May 2015) TabRec release 1.0 is planned to support more patterns and recommendations based on collected
+usage patterns as well as support for all three recommendation modes.
 
 Feature list
 ---
 
-* **Browser usage logging**
-* Pattern recognition
-* Recommendations providing
+* Browser usage logging
+* Real-time pattern recognition
+* Recommendation providing
+* Personal statistics
 
 Credits
 ---
-Tabrec is being developed as a part of my master thesis project at
+TabRec is being developed as a part of my master thesis project at
 [Slovak Technical University in Bratislava, Slovakia](http://www.fiit.stuba.sk). Thank You all for your participation!
 
 License
