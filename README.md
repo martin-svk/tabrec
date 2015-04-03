@@ -20,7 +20,7 @@ All URLs are encrypted before they are sent and stored.
 Later (May 2015) TabRec release 1.0 is planned to support more patterns and recommendations based on collected
 usage patterns as well as support for all three recommendation modes.
 
-You can see detailed list of changes for each version [here](pages/changelog.html).
+You can see detailed list of changes for each version [here](CHANGELOG.md).
 
 Feature list
 ---
