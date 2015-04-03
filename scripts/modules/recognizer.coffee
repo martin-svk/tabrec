@@ -9,6 +9,7 @@
 
 class @Recognizer
   _dbg_mode = Constants.is_debug_mode()
+  _rec_timeout = Constants.get_rec_timeout()
   _notifier = null
 
   constructor: (user_id, session_id) ->
@@ -35,11 +36,12 @@ class @Recognizer
   _last_event_time = null
   _max_gap = Constants.get_max_gap()
   _current_sequence = []
+  _last_pattern_time = null
 
   # This is activate pattern with sort advice
   _activate_pattern =
     sequence: ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED']
-    name: 'MULTI_ACTIVATE'
+    name: 'MULTI_ACTIVATE_V2'
 
   # TODO: load from API: conn.get_patterns()
   _patterns = [ _activate_pattern ]
@@ -77,8 +79,9 @@ class @Recognizer
   process_event = (event_name, time_occured) ->
     if _last_event_time == null || (time_occured - _last_event_time) < _max_gap
       _current_sequence.push(event_name)
-      if pattern = current_state_is_pattern(_current_sequence)
+      if (pattern = current_state_is_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())
         _notifier.show_pattern(pattern)
+        _last_pattern_time = get_current_ts()
         _current_sequence = []
     else
       # Gap is wider
@@ -94,9 +97,17 @@ class @Recognizer
   current_state_is_pattern = (sequence) ->
     console.log("Current sequence: #{sequence}") if _dbg_mode
     for pattern in _patterns
+      # Rework to endsWith to prevent triggering after timeout
       if sequence.toString().indexOf(pattern.sequence.toString()) >= 0
         return pattern.name
     return false
 
   get_current_ts = () ->
     new Date().getTime()
+
+  not_inside_timeout = (current_time) ->
+    if _last_pattern_time == null || current_time - _last_pattern_time > _rec_timeout
+      return true
+    else
+      return false
+

@@ -2,9 +2,11 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_is_pattern, get_current_ts, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _activate_pattern, _current_sequence, _dbg_mode, _last_event_time, _max_gap, _notifier, _patterns;
+    var current_state_is_pattern, get_current_ts, not_inside_timeout, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _activate_pattern, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_gap, _notifier, _patterns, _rec_timeout;
 
     _dbg_mode = Constants.is_debug_mode();
+
+    _rec_timeout = Constants.get_rec_timeout();
 
     _notifier = null;
 
@@ -31,9 +33,11 @@
 
     _current_sequence = [];
 
+    _last_pattern_time = null;
+
     _activate_pattern = {
       sequence: ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED'],
-      name: 'MULTI_ACTIVATE'
+      name: 'MULTI_ACTIVATE_V2'
     };
 
     _patterns = [_activate_pattern];
@@ -72,8 +76,9 @@
       var pattern;
       if (_last_event_time === null || (time_occured - _last_event_time) < _max_gap) {
         _current_sequence.push(event_name);
-        if (pattern = current_state_is_pattern(_current_sequence)) {
+        if ((pattern = current_state_is_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())) {
           _notifier.show_pattern(pattern);
+          _last_pattern_time = get_current_ts();
           _current_sequence = [];
         }
       } else {
@@ -98,6 +103,14 @@
 
     get_current_ts = function() {
       return new Date().getTime();
+    };
+
+    not_inside_timeout = function(current_time) {
+      if (_last_pattern_time === null || current_time - _last_pattern_time > _rec_timeout) {
+        return true;
+      } else {
+        return false;
+      }
     };
 
     return Recognizer;
