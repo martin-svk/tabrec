@@ -7,8 +7,8 @@
 # ======================================
 
 class @Constants
-  DEBUG_MODE = true
-  USAGE_LOGGING = false
+  DEBUG_MODE = false
+  USAGE_LOGGING = true
 
   @is_debug_mode: ->
     DEBUG_MODE
