@@ -97,13 +97,9 @@ class @Recognizer
   current_state_is_pattern = (sequence) ->
     console.log("Current sequence: #{sequence}") if _dbg_mode
     for pattern in _patterns
-      # Rework to endsWith to prevent triggering after timeout
-      if sequence.toString().indexOf(pattern.sequence.toString()) >= 0
+      if has_suffix(sequence.toString(), pattern.sequence.toString())
         return pattern.name
     return false
-
-  get_current_ts = () ->
-    new Date().getTime()
 
   not_inside_timeout = (current_time) ->
     if _last_pattern_time == null || current_time - _last_pattern_time > _rec_timeout
@@ -111,3 +107,8 @@ class @Recognizer
     else
       return false
 
+  get_current_ts = () ->
+    new Date().getTime()
+
+  has_suffix = (str, suffix) ->
+    str.indexOf(suffix, str.length - suffix.length) != -1

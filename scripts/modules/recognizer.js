@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_is_pattern, get_current_ts, not_inside_timeout, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _activate_pattern, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_gap, _notifier, _patterns, _rec_timeout;
+    var current_state_is_pattern, get_current_ts, has_suffix, not_inside_timeout, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _activate_pattern, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_gap, _notifier, _patterns, _rec_timeout;
 
     _dbg_mode = Constants.is_debug_mode();
 
@@ -94,15 +94,11 @@
       }
       for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
         pattern = _patterns[_i];
-        if (sequence.toString().indexOf(pattern.sequence.toString()) >= 0) {
+        if (has_suffix(sequence.toString(), pattern.sequence.toString())) {
           return pattern.name;
         }
       }
       return false;
-    };
-
-    get_current_ts = function() {
-      return new Date().getTime();
     };
 
     not_inside_timeout = function(current_time) {
@@ -111,6 +107,14 @@
       } else {
         return false;
       }
+    };
+
+    get_current_ts = function() {
+      return new Date().getTime();
+    };
+
+    has_suffix = function(str, suffix) {
+      return str.indexOf(suffix, str.length - suffix.length) !== -1;
     };
 
     return Recognizer;
