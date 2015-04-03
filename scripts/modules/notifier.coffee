@@ -27,32 +27,62 @@ class @Notifier
         iconUrl: 'images/reject.png'
     ]
 
+  revert_notification_options =
+    type: 'basic'
+    iconUrl: 'images/revert_notification.png'
+    title: 'Action was performed!'
+    message: 'Dont like what happened? Click revert to load previous state.'
+    buttons: [
+        title: 'Revert'
+        iconUrl: 'images/revert.png'
+    ]
+
   constructor: (user_id) ->
     _debug_mode = Constants.is_debug_mode()
     _uid = user_id
     chrome.notifications.onButtonClicked.addListener(notification_button_clicked)
     chrome.notifications.onClicked.addListener(notification_clicked)
 
-  notify: (pattern) ->
+  show_pattern: (pattern) ->
     _pattern = pattern
     console.log("Notification: pattern occured: #{_pattern}") if _debug_mode
-    chrome.notifications.create("#{_pattern}_#{new Date().getTime()}", multi_activate_notification_options, (id) -> )
+    chrome.notifications.create("pattern_#{new Date().getTime()}", multi_activate_notification_options, (id) -> )
+
+  # ===================================
+  # Private functions
+  # ===================================
+
+  show_revert = () ->
+    chrome.notifications.create("revert_#{new Date().getTime()}", revert_notification_options, (id) -> )
 
   # ===================================
   # Event handlers
   # ===================================
 
+  # Clicked on buttons
+  # ===================================
+
   notification_button_clicked = (notif_id, button_index) ->
-    if button_index == 0
-      send_resolution('ACCEPTED')
-      _executor.execute(_pattern)
-    else if button_index == 1
-      send_resolution('REJECTED')
+    # Pattern notification
+    if notif_id.indexOf('pattern') == 0
+      if button_index == 0
+        send_resolution('ACCEPTED')
+        _executor.execute(_pattern)
+        show_revert()
+      else if button_index == 1
+        send_resolution('REJECTED')
+    # Revert notification
+    else if notif_id.indexOf('revert') == 0
+      if button_index == 0
+        send_resolution('REVERTED')
+        _executor.revert(_pattern)
+    # Clear notification
     chrome.notifications.clear(notif_id, (cleared) ->)
 
+  # Clicking on non button area (clear)
+  # ===================================
+
   notification_clicked = (notif_id) ->
-    send_resolution('ACCEPTED')
-    _executor.execute(_pattern)
     chrome.notifications.clear(notif_id, (cleared) ->)
 
   # ===================================
