@@ -6,13 +6,13 @@
   user = new User();
 
   user.in_context(function(user_id, session_id) {
-    var logger, usage_logger;
+    var recognizer, usage_logger;
     if (Constants.usage_logging_on()) {
       usage_logger = new UsageLogger(user_id, session_id);
       usage_logger.start();
     }
-    logger = new Logger(user_id, session_id);
-    return logger.start();
+    recognizer = new Recognizer(user_id, session_id);
+    return recognizer.start();
   });
 
 }).call(this);
