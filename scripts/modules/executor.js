@@ -16,7 +16,7 @@
       if (_dbg_mode) {
         console.log("Executing action for: " + pattern);
       }
-      if (pattern === 'MULTI_ACTIVATE') {
+      if (pattern === 'MULTI_ACTIVATE_V2') {
         return handle_multi_activate_pattern();
       }
     };
@@ -25,7 +25,7 @@
       if (_dbg_mode) {
         console.log("Reverting action for: " + pattern);
       }
-      if (pattern === 'MULTI_ACTIVATE') {
+      if (pattern === 'MULTI_ACTIVATE_V2') {
         return revert_multi_activate_pattern();
       }
     };

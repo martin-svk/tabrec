@@ -16,12 +16,12 @@ class @Executor
 
   execute: (pattern) ->
     console.log("Executing action for: #{pattern}") if _dbg_mode
-    if pattern == 'MULTI_ACTIVATE'
+    if pattern == 'MULTI_ACTIVATE_V2'
       handle_multi_activate_pattern()
 
   revert: (pattern) ->
     console.log("Reverting action for: #{pattern}") if _dbg_mode
-    if pattern == 'MULTI_ACTIVATE'
+    if pattern == 'MULTI_ACTIVATE_V2'
       revert_multi_activate_pattern()
 
   # ===================================
