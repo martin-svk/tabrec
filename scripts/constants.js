@@ -38,6 +38,14 @@
       return 3000;
     };
 
+    Constants.get_rec_timeout = function() {
+      if (DEBUG_MODE) {
+        return 10000;
+      } else {
+        return 60000;
+      }
+    };
+
     return Constants;
 
   })();

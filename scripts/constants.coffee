@@ -31,3 +31,12 @@ class @Constants
   @get_max_gap: ->
     # 3 seconds
     3000
+
+  @get_rec_timeout: ->
+    if DEBUG_MODE
+      # 10 sec
+      10000
+    else
+      # 1 min
+      60000
+
