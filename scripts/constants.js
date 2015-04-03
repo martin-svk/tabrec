@@ -42,7 +42,7 @@
       if (DEBUG_MODE) {
         return 10000;
       } else {
-        return 60000;
+        return 3 * 60000;
       }
     };
 

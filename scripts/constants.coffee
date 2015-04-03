@@ -37,6 +37,6 @@ class @Constants
       # 10 sec
       10000
     else
-      # 1 min
-      60000
+      # 3 min
+      3 * 60000
 
