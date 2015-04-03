@@ -9,16 +9,18 @@ The fastest way is to install TabRec from [Google Chrome store](http://tabber.fi
 
 Current state
 ---
-At this moment TabRec is capable of gathering parallel browsing mechanisms usage and
-we focus on events like creating, navigation, closing and moving (rearranging) tabs in one or more windows.
+TabRec is capable of real-time pattern detection and action recommendation. Currently only one pattern
+is supported and only interactive recommendation mode is enabled.
+
+TabRec is also used for gathering parallel browsing mechanisms usage.
+We focus on events like creating, navigation, closing and moving (rearranging) tabs in one or more windows.
 We care strongly about privacy, so we don't collect any personal information about the users.
 All URLs are encrypted before they are sent and stored.
 
-From version 0.8 TabRec is capable of real-time detection and recommendation. Currently only one pattern
-is supported and only semi-interactive recommendation mode is enabled.
-
 Later (May 2015) TabRec release 1.0 is planned to support more patterns and recommendations based on collected
 usage patterns as well as support for all three recommendation modes.
+
+You can see detailed list of changes for each version [here](pages/changelog.html).
 
 Feature list
 ---
