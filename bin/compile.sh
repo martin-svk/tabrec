@@ -22,11 +22,3 @@ else
   echo "Can't compile sass styles, you need sass compiler to continue!"
   exit
 fi
-
-if command_exists pandoc; then
-  echo "Converting changelog to HTML."
-  pandoc CHANGELOG.md -f markdown -t html -s -o ./pages/changelog.html
-else
-  echo "Can't convert changelog to HTML, you need pandoc to continue!"
-  exit
-fi
