@@ -5,7 +5,7 @@ API_URL = Constants.get_api_url()
 # Reset options method
 reset_options = () ->
   $('#user-level-select').val('advanced')
-  $('#rec-mode-select').val('semi-interactive')
+  $('#rec-mode-select').val('interactive')
   $('#other-plugins-cb').prop('checked', false)
 
 # Load options from chrome storage
@@ -54,4 +54,17 @@ $('#reset-settings').click ->
 
 # Load saved options when options page open
 $(document).ready ->
+  substitute_for_new_modes()
   load_options()
+
+# Migration from old interactive -> semi-interactive -> aggressive
+# to interactive -> automatic
+substitute_for_new_modes = () ->
+  chrome.storage.sync.get ['rec_mode'], (result) ->
+    if result.rec_mode
+      if result.rec_mode == 'semi-interactive'
+        chrome.storage.sync.set
+          'rec_mode': 'interactive'
+      else if result.rec_mode == 'aggressive'
+        chrome.storage.sync.set
+          'rec_mode': 'automatic'
