@@ -1,6 +1,12 @@
 TabRec changelog
 ---
 
+0.9.0
+----
+
+* Add possibility to revert recommended action.
+* Add timout after accepting recommendation to prevent unexpected triggering.
+
 0.8.0
 ----
 
