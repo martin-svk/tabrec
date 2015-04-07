@@ -1,6 +1,12 @@
 TabRec changelog
 ---
 
+0.9.1
+----
+
+* Real-time calculated running average is now used in pattern recognition process.
+* Add prevention to not trigger activate pattern when focusing adjacent tabs (e.g. CTRL-TAB switching).
+
 0.9.0
 ----
 
