@@ -2,13 +2,17 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_is_pattern, get_current_ts, has_suffix, not_inside_timeout, not_next_to, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _activate_pattern, _current_ma_version, _current_sequence, _dbg_mode, _last_activated_tab_position, _last_event_time, _last_pattern_time, _max_gap, _notifier, _patterns, _rec_timeout;
+    var current_state_is_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, not_inside_timeout, not_next_to, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _activate_pattern, _current_ma_version, _current_sequence, _dbg_mode, _last_activated_tab_position, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _notifier, _patterns, _rec_timeout, _running_average_bucket;
 
     _dbg_mode = Constants.is_debug_mode();
 
     _rec_timeout = Constants.get_rec_timeout();
 
     _current_ma_version = Constants.get_current_activate_pattern_version();
+
+    _max_running_average_bucket_size = Constants.get_max_running_average_bucket_size();
+
+    _accuracy = 100;
 
     _notifier = null;
 
@@ -31,11 +35,13 @@
 
     _last_event_time = null;
 
-    _max_gap = Constants.get_max_gap();
+    _last_pattern_time = null;
+
+    _last_activated_tab_position = null;
 
     _current_sequence = [];
 
-    _last_pattern_time = null;
+    _running_average_bucket = [];
 
     _activate_pattern = {
       sequence: ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED'],
@@ -43,8 +49,6 @@
     };
 
     _patterns = [_activate_pattern];
-
-    _last_activated_tab_position = null;
 
     tab_activated = function(active_info) {
       var tab_id;
@@ -87,7 +91,8 @@
 
     process_event = function(event_name, time_occured) {
       var pattern;
-      if (_last_event_time === null || (time_occured - _last_event_time) < _max_gap) {
+      handle_running_average(time_occured);
+      if (_last_event_time === null || (time_occured - _last_event_time) < get_running_average()) {
         _current_sequence.push(event_name);
         if ((pattern = current_state_is_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())) {
           _notifier.show_pattern(pattern);
@@ -132,6 +137,37 @@
 
     not_next_to = function(pos1, pos2) {
       return Math.abs(pos1 - pos2) !== 1;
+    };
+
+    handle_running_average = function(new_event_ts) {
+      var last_gap;
+      if (_last_event_time === null) {
+        return;
+      }
+      last_gap = parseInt((new_event_ts - _last_event_time) / _accuracy, 10);
+      if (_dbg_mode) {
+        console.log("Current last gap: " + (last_gap / 10) + " seconds");
+      }
+      if (_running_average_bucket.length < _max_running_average_bucket_size) {
+        return _running_average_bucket.push(last_gap);
+      } else {
+        _running_average_bucket.shift();
+        return _running_average_bucket.push(last_gap);
+      }
+    };
+
+    get_running_average = function() {
+      var avg, i, sum;
+      i = _running_average_bucket.length;
+      sum = 0;
+      while (i--) {
+        sum += _running_average_bucket[i];
+      }
+      avg = parseInt((sum / _running_average_bucket.length) * _accuracy, 10);
+      if (_dbg_mode) {
+        console.log("Current running average: " + avg + " micro seconds.");
+      }
+      return avg;
     };
 
     return Recognizer;
