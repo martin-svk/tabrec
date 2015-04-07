@@ -9,6 +9,7 @@
 class @Constants
   DEBUG_MODE = false
   USAGE_LOGGING = true
+  CURRENT_MULTI_ACTIVATE_VERSION = 'V3'
 
   @is_debug_mode: ->
     DEBUG_MODE
@@ -40,3 +41,5 @@ class @Constants
       # 3 min
       3 * 60000
 
+  @get_current_activate_pattern_version: ->
+    CURRENT_MULTI_ACTIVATE_VERSION

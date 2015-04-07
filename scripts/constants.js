@@ -2,13 +2,15 @@
 (function() {
   'use strict';
   this.Constants = (function() {
-    var DEBUG_MODE, USAGE_LOGGING;
+    var CURRENT_MULTI_ACTIVATE_VERSION, DEBUG_MODE, USAGE_LOGGING;
 
     function Constants() {}
 
     DEBUG_MODE = false;
 
     USAGE_LOGGING = true;
+
+    CURRENT_MULTI_ACTIVATE_VERSION = 'V3';
 
     Constants.is_debug_mode = function() {
       return DEBUG_MODE;
@@ -44,6 +46,10 @@
       } else {
         return 3 * 60000;
       }
+    };
+
+    Constants.get_current_activate_pattern_version = function() {
+      return CURRENT_MULTI_ACTIVATE_VERSION;
     };
 
     return Constants;
