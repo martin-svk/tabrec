@@ -2,11 +2,13 @@
 (function() {
   'use strict';
   this.Executor = (function() {
-    var handle_multi_activate_pattern, revert_multi_activate_pattern, sort_tabs_by_domains, _dbg_mode, _tabs_backup;
+    var handle_multi_activate_pattern, revert_multi_activate_pattern, sort_tabs_by_domains, _current_ma_version, _dbg_mode, _tabs_backup;
 
     _dbg_mode = null;
 
     _tabs_backup = [];
+
+    _current_ma_version = Constants.get_current_activate_pattern_version();
 
     function Executor() {
       _dbg_mode = Constants.is_debug_mode();
@@ -16,7 +18,7 @@
       if (_dbg_mode) {
         console.log("Executing action for: " + pattern);
       }
-      if (pattern === 'MULTI_ACTIVATE_V2') {
+      if (pattern === ("MULTI_ACTIVATE_" + _current_ma_version)) {
         return handle_multi_activate_pattern();
       }
     };
@@ -25,7 +27,7 @@
       if (_dbg_mode) {
         console.log("Reverting action for: " + pattern);
       }
-      if (pattern === 'MULTI_ACTIVATE_V2') {
+      if (pattern === ("MULTI_ACTIVATE_" + _current_ma_version)) {
         return revert_multi_activate_pattern();
       }
     };

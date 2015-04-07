@@ -10,18 +10,19 @@
 class @Executor
   _dbg_mode = null
   _tabs_backup = []
+  _current_ma_version = Constants.get_current_activate_pattern_version()
 
   constructor: () ->
     _dbg_mode = Constants.is_debug_mode()
 
   execute: (pattern) ->
     console.log("Executing action for: #{pattern}") if _dbg_mode
-    if pattern == 'MULTI_ACTIVATE_V2'
+    if pattern == "MULTI_ACTIVATE_#{_current_ma_version}"
       handle_multi_activate_pattern()
 
   revert: (pattern) ->
     console.log("Reverting action for: #{pattern}") if _dbg_mode
-    if pattern == 'MULTI_ACTIVATE_V2'
+    if pattern == "MULTI_ACTIVATE_#{_current_ma_version}"
       revert_multi_activate_pattern()
 
   # ===================================

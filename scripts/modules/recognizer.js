@@ -2,11 +2,13 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_is_pattern, get_current_ts, has_suffix, not_inside_timeout, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _activate_pattern, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_gap, _notifier, _patterns, _rec_timeout;
+    var current_state_is_pattern, get_current_ts, has_suffix, not_inside_timeout, not_next_to, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _activate_pattern, _current_ma_version, _current_sequence, _dbg_mode, _last_activated_tab_position, _last_event_time, _last_pattern_time, _max_gap, _notifier, _patterns, _rec_timeout;
 
     _dbg_mode = Constants.is_debug_mode();
 
     _rec_timeout = Constants.get_rec_timeout();
+
+    _current_ma_version = Constants.get_current_activate_pattern_version();
 
     _notifier = null;
 
@@ -37,10 +39,25 @@
 
     _activate_pattern = {
       sequence: ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED'],
-      name: 'MULTI_ACTIVATE_V2'
+      name: "MULTI_ACTIVATE_" + _current_ma_version
     };
 
     _patterns = [_activate_pattern];
+
+    _last_activated_tab_position = null;
+
+    tab_activated = function(active_info) {
+      var tab_id;
+      tab_id = active_info.tabId;
+      return chrome.tabs.get(tab_id, function(tab) {
+        var position;
+        position = tab.index;
+        if (_last_activated_tab_position === null || not_next_to(position, _last_activated_tab_position)) {
+          process_event('TAB_ACTIVATED', get_current_ts());
+        }
+        return _last_activated_tab_position = position;
+      });
+    };
 
     tab_created = function(tab) {
       return process_event('TAB_CREATED', get_current_ts());
@@ -48,10 +65,6 @@
 
     tab_removed = function(tab_id, remove_info) {
       return process_event('TAB_REMOVED', get_current_ts());
-    };
-
-    tab_activated = function(active_info) {
-      return process_event('TAB_ACTIVATED', get_current_ts());
     };
 
     tab_moved = function(tab_id, move_info) {
@@ -115,6 +128,10 @@
 
     has_suffix = function(str, suffix) {
       return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    };
+
+    not_next_to = function(pos1, pos2) {
+      return Math.abs(pos1 - pos2) !== 1;
     };
 
     return Recognizer;

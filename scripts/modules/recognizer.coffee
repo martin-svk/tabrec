@@ -10,6 +10,7 @@
 class @Recognizer
   _dbg_mode = Constants.is_debug_mode()
   _rec_timeout = Constants.get_rec_timeout()
+  _current_ma_version = Constants.get_current_activate_pattern_version()
   _notifier = null
 
   constructor: (user_id, session_id) ->
@@ -41,7 +42,7 @@ class @Recognizer
   # This is activate pattern with sort advice
   _activate_pattern =
     sequence: ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED']
-    name: 'MULTI_ACTIVATE_V2'
+    name: "MULTI_ACTIVATE_#{_current_ma_version}"
 
   # TODO: load from API: conn.get_patterns()
   _patterns = [ _activate_pattern ]
@@ -50,14 +51,28 @@ class @Recognizer
   # Event handlers
   # ===================================
 
+  # Activate event handling
+
+  _last_activated_tab_position = null
+
+  tab_activated = (active_info) ->
+    tab_id = active_info.tabId
+    chrome.tabs.get(tab_id, (tab) ->
+      position = tab.index
+      if _last_activated_tab_position == null || not_next_to(position, _last_activated_tab_position)
+        process_event('TAB_ACTIVATED', get_current_ts())
+
+      # Update last tab position
+      _last_activated_tab_position = position
+    )
+
+  # Generic event handling
+
   tab_created = (tab) ->
     process_event('TAB_CREATED', get_current_ts())
 
   tab_removed = (tab_id, remove_info) ->
     process_event('TAB_REMOVED', get_current_ts())
-
-  tab_activated = (active_info) ->
-    process_event('TAB_ACTIVATED', get_current_ts())
 
   tab_moved = (tab_id, move_info) ->
     process_event('TAB_MOVED', get_current_ts())
@@ -112,3 +127,6 @@ class @Recognizer
 
   has_suffix = (str, suffix) ->
     str.indexOf(suffix, str.length - suffix.length) != -1
+
+  not_next_to = (pos1, pos2) ->
+    Math.abs(pos1 - pos2) != 1
