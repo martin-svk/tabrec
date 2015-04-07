@@ -58,45 +58,92 @@ class @Recognizer
   # Activate event handling
 
   tab_activated = (active_info) ->
+    # Update running average
+    time_occured = get_current_ts()
+    handle_running_average(time_occured)
+
     tab_id = active_info.tabId
     chrome.tabs.get(tab_id, (tab) ->
       position = tab.index
       if _last_activated_tab_position == null || not_next_to(position, _last_activated_tab_position)
-        process_event('TAB_ACTIVATED', get_current_ts())
+        record_event('TAB_ACTIVATED', time_occured)
 
       # Update last tab position
       _last_activated_tab_position = position
     )
 
+    # Updating last event time
+    _last_event_time = time_occured
+
+
   # Generic event handling
 
   tab_created = (tab) ->
-    process_event('TAB_CREATED', get_current_ts())
+    # Update running average
+    time_occured = get_current_ts()
+    handle_running_average(time_occured)
+
+    record_event('TAB_CREATED', time_occured)
+
+    # Updating last event time
+    _last_event_time = time_occured
 
   tab_removed = (tab_id, remove_info) ->
-    process_event('TAB_REMOVED', get_current_ts())
+    # Update running average
+    time_occured = get_current_ts()
+    handle_running_average(time_occured)
+
+    record_event('TAB_REMOVED', time_occured)
+
+    # Updating last event time
+    _last_event_time = time_occured
 
   tab_moved = (tab_id, move_info) ->
-    process_event('TAB_MOVED', get_current_ts())
+    # Update running average
+    time_occured = get_current_ts()
+    handle_running_average(time_occured)
+
+    record_event('TAB_MOVED', time_occured)
+
+    # Updating last event time
+    _last_event_time = time_occured
 
   tab_attached = (tab_id, attach_info) ->
-    process_event('TAB_ATTACHED', get_current_ts())
+    # Update running average
+    time_occured = get_current_ts()
+    handle_running_average(time_occured)
+
+    record_event('TAB_ATTACHED', time_occured)
+
+    # Updating last event time
+    _last_event_time = time_occured
 
   tab_detached = (tab_id, detach_info) ->
-    process_event('TAB_DETACHED', get_current_ts())
+    # Update running average
+    time_occured = get_current_ts()
+    handle_running_average(time_occured)
+
+    record_event('TAB_DETACHED', time_occured)
+
+    # Updating last event time
+    _last_event_time = time_occured
 
   tab_updated = (tab_id, change_info, tab) ->
     if change_info.status == 'complete'
-      process_event('TAB_UPDATED', get_current_ts())
+      # Update running average
+      time_occured = get_current_ts()
+      handle_running_average(time_occured)
+
+      record_event('TAB_UPDATED', time_occured)
+
+      # Updating last event time
+      _last_event_time = time_occured
 
   # ===================================
   # Pattern recognizing
   # ===================================
 
-  process_event = (event_name, time_occured) ->
-    # Update last event time
-    handle_running_average(time_occured)
-
+  record_event = (event_name, time_occured) ->
     # Check for pattern
     if _last_event_time == null || (time_occured - _last_event_time) < get_running_average()
       _current_sequence.push(event_name)
@@ -107,9 +154,6 @@ class @Recognizer
     else
       # Gap is wider
       _current_sequence = []
-
-    # Updating last event time
-    _last_event_time = time_occured
 
   # ===================================
   # Helper functions

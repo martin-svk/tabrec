@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_is_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, not_inside_timeout, not_next_to, process_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _activate_pattern, _current_ma_version, _current_sequence, _dbg_mode, _last_activated_tab_position, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _notifier, _patterns, _rec_timeout, _running_average_bucket;
+    var current_state_is_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, not_inside_timeout, not_next_to, record_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _activate_pattern, _current_ma_version, _current_sequence, _dbg_mode, _last_activated_tab_position, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _notifier, _patterns, _rec_timeout, _running_average_bucket;
 
     _dbg_mode = Constants.is_debug_mode();
 
@@ -51,58 +51,83 @@
     _patterns = [_activate_pattern];
 
     tab_activated = function(active_info) {
-      var tab_id;
+      var tab_id, time_occured;
+      time_occured = get_current_ts();
+      handle_running_average(time_occured);
       tab_id = active_info.tabId;
-      return chrome.tabs.get(tab_id, function(tab) {
+      chrome.tabs.get(tab_id, function(tab) {
         var position;
         position = tab.index;
         if (_last_activated_tab_position === null || not_next_to(position, _last_activated_tab_position)) {
-          process_event('TAB_ACTIVATED', get_current_ts());
+          record_event('TAB_ACTIVATED', time_occured);
         }
         return _last_activated_tab_position = position;
       });
+      return _last_event_time = time_occured;
     };
 
     tab_created = function(tab) {
-      return process_event('TAB_CREATED', get_current_ts());
+      var time_occured;
+      time_occured = get_current_ts();
+      handle_running_average(time_occured);
+      record_event('TAB_CREATED', time_occured);
+      return _last_event_time = time_occured;
     };
 
     tab_removed = function(tab_id, remove_info) {
-      return process_event('TAB_REMOVED', get_current_ts());
+      var time_occured;
+      time_occured = get_current_ts();
+      handle_running_average(time_occured);
+      record_event('TAB_REMOVED', time_occured);
+      return _last_event_time = time_occured;
     };
 
     tab_moved = function(tab_id, move_info) {
-      return process_event('TAB_MOVED', get_current_ts());
+      var time_occured;
+      time_occured = get_current_ts();
+      handle_running_average(time_occured);
+      record_event('TAB_MOVED', time_occured);
+      return _last_event_time = time_occured;
     };
 
     tab_attached = function(tab_id, attach_info) {
-      return process_event('TAB_ATTACHED', get_current_ts());
+      var time_occured;
+      time_occured = get_current_ts();
+      handle_running_average(time_occured);
+      record_event('TAB_ATTACHED', time_occured);
+      return _last_event_time = time_occured;
     };
 
     tab_detached = function(tab_id, detach_info) {
-      return process_event('TAB_DETACHED', get_current_ts());
+      var time_occured;
+      time_occured = get_current_ts();
+      handle_running_average(time_occured);
+      record_event('TAB_DETACHED', time_occured);
+      return _last_event_time = time_occured;
     };
 
     tab_updated = function(tab_id, change_info, tab) {
+      var time_occured;
       if (change_info.status === 'complete') {
-        return process_event('TAB_UPDATED', get_current_ts());
+        time_occured = get_current_ts();
+        handle_running_average(time_occured);
+        record_event('TAB_UPDATED', time_occured);
+        return _last_event_time = time_occured;
       }
     };
 
-    process_event = function(event_name, time_occured) {
+    record_event = function(event_name, time_occured) {
       var pattern;
-      handle_running_average(time_occured);
       if (_last_event_time === null || (time_occured - _last_event_time) < get_running_average()) {
         _current_sequence.push(event_name);
         if ((pattern = current_state_is_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())) {
           _notifier.show_pattern(pattern);
           _last_pattern_time = get_current_ts();
-          _current_sequence = [];
+          return _current_sequence = [];
         }
       } else {
-        _current_sequence = [];
+        return _current_sequence = [];
       }
-      return _last_event_time = time_occured;
     };
 
     current_state_is_pattern = function(sequence) {
