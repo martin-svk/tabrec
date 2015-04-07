@@ -36,8 +36,8 @@
       }
     };
 
-    Constants.get_max_gap = function() {
-      return 3000;
+    Constants.get_max_running_average_bucket_size = function() {
+      return 100;
     };
 
     Constants.get_rec_timeout = function() {

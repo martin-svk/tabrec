@@ -29,9 +29,9 @@ class @Constants
     else
       50
 
-  @get_max_gap: ->
-    # 3 seconds
-    3000
+  @get_max_running_average_bucket_size: ->
+    # Last 100 events
+    100
 
   @get_rec_timeout: ->
     if DEBUG_MODE
