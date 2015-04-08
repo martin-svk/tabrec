@@ -35,8 +35,8 @@ class @Constants
 
   @get_rec_timeout: ->
     if DEBUG_MODE
-      # 10 sec
-      10000
+      # 30 sec
+      30000
     else
       # 3 min
       3 * 60000

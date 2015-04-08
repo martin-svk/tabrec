@@ -42,7 +42,7 @@
 
     Constants.get_rec_timeout = function() {
       if (DEBUG_MODE) {
-        return 10000;
+        return 30000;
       } else {
         return 3 * 60000;
       }
