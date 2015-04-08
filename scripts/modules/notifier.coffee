@@ -42,6 +42,7 @@ class @Notifier
     _uid = user_id
     chrome.notifications.onButtonClicked.addListener(notification_button_clicked)
     chrome.notifications.onClicked.addListener(notification_clicked)
+    chrome.notifications.onClosed.addListener(notification_closed)
 
   show_pattern: (pattern) ->
     _pattern = pattern
@@ -76,14 +77,31 @@ class @Notifier
       if button_index == 0
         send_resolution('REVERTED')
         _executor.revert(_pattern)
-    # Clear notification
+
+    # Clear notifications
     chrome.notifications.clear(notif_id, (cleared) ->)
 
-  # Clicking on non button area (clear)
+  # Clicking on non button area (accept)
   # ===================================
 
   notification_clicked = (notif_id) ->
+    if notif_id.indexOf('pattern') == 0
+      send_resolution('ACCEPTED')
+      _executor.execute(_pattern)
+      show_revert()
+    else if notif_id.indexOf('revert') == 0
+      send_resolution('REVERTED')
+      _executor.revert(_pattern)
+
+    # Clear notifications
     chrome.notifications.clear(notif_id, (cleared) ->)
+
+  # Closing notification using the x (reject)
+  # ===================================
+
+  notification_closed = (notif_id, by_user) ->
+    if by_user && notif_id.indexOf('pattern') == 0
+      send_resolution('REJECTED')
 
   # ===================================
   # Helper functions

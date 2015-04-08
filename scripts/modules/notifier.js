@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Notifier = (function() {
-    var multi_activate_notification_options, notification_button_clicked, notification_clicked, revert_notification_options, send_resolution, show_revert, _conn, _debug_mode, _executor, _pattern, _uid;
+    var multi_activate_notification_options, notification_button_clicked, notification_clicked, notification_closed, revert_notification_options, send_resolution, show_revert, _conn, _debug_mode, _executor, _pattern, _uid;
 
     _conn = new Connection();
 
@@ -48,6 +48,7 @@
       _uid = user_id;
       chrome.notifications.onButtonClicked.addListener(notification_button_clicked);
       chrome.notifications.onClicked.addListener(notification_clicked);
+      chrome.notifications.onClosed.addListener(notification_closed);
     }
 
     Notifier.prototype.show_pattern = function(pattern) {
@@ -81,7 +82,21 @@
     };
 
     notification_clicked = function(notif_id) {
+      if (notif_id.indexOf('pattern') === 0) {
+        send_resolution('ACCEPTED');
+        _executor.execute(_pattern);
+        show_revert();
+      } else if (notif_id.indexOf('revert') === 0) {
+        send_resolution('REVERTED');
+        _executor.revert(_pattern);
+      }
       return chrome.notifications.clear(notif_id, function(cleared) {});
+    };
+
+    notification_closed = function(notif_id, by_user) {
+      if (by_user && notif_id.indexOf('pattern') === 0) {
+        return send_resolution('REJECTED');
+      }
     };
 
     send_resolution = function(resolution) {
