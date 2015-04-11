@@ -6,7 +6,7 @@ TabRec changelog
 
 * Added new version of activate pattern.
 * Improved running average handling.
-* Added reverted action to popup stats.
+* Added reverted actions to popup stats.
 * Improved handling of recommended actions execution.
 
 0.9.1
