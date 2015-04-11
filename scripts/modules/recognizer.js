@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, in_threshold, inside_running_average, no_last_event_or_is_outlier, not_inside_timeout, record_event, reset_all_pattern_states, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _max_running_average_event_gap, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket, _running_average_gap_threshold;
+    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, in_threshold, inside_running_average, no_last_event_or_is_outlier, not_inside_timeout, record_event, reset_all_pattern_states, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _max_running_average_event_gap, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket, _running_average_gap_inclusion_threshold;
 
     _dbg_mode = Constants.is_debug_mode();
 
@@ -10,7 +10,7 @@
 
     _max_running_average_bucket_size = Constants.get_max_running_average_bucket_size();
 
-    _running_average_gap_threshold = Constants.get_running_average_gap_threshold();
+    _running_average_gap_inclusion_threshold = Constants.get_running_average_gap_inclusion_threshold();
 
     _max_running_average_event_gap = Constants.get_max_running_average_event_gap();
 
@@ -197,7 +197,7 @@
     };
 
     in_threshold = function(time1, time2) {
-      return time1 < (time2 + time2 * _running_average_gap_threshold) || time1 < (time2 - time2 * _running_average_gap_threshold);
+      return time1 < (time2 + time2 * _running_average_gap_inclusion_threshold) || time1 < (time2 - time2 * _running_average_gap_inclusion_threshold);
     };
 
     get_current_ts = function() {

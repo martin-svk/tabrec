@@ -9,7 +9,6 @@
 class @Constants
   DEBUG_MODE = false
   USAGE_LOGGING = true
-  CURRENT_MULTI_ACTIVATE_VERSION = 'V4'
 
   @is_debug_mode: ->
     DEBUG_MODE
@@ -33,6 +32,10 @@ class @Constants
     # Last 100 events
     100
 
+  @get_running_average_gap_inclusion_threshold: ->
+    # +/- 10 percent
+    0.10
+
   @get_rec_timeout: ->
     if DEBUG_MODE
       # 30 sec
@@ -41,5 +44,13 @@ class @Constants
       # 3 min
       3 * 60000
 
+  @get_max_running_average_event_gap: ->
+    if DEBUG_MODE
+      # 10 sec
+      10000
+    else
+      # 1 min
+      60000
+
   @get_current_activate_pattern_version: ->
-    CURRENT_MULTI_ACTIVATE_VERSION
+    'V4'

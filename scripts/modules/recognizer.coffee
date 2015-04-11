@@ -11,7 +11,7 @@ class @Recognizer
   _dbg_mode = Constants.is_debug_mode()
   _rec_timeout = Constants.get_rec_timeout()
   _max_running_average_bucket_size = Constants.get_max_running_average_bucket_size()
-  _running_average_gap_threshold = Constants.get_running_average_gap_threshold()
+  _running_average_gap_inclusion_threshold = Constants.get_running_average_gap_inclusion_threshold()
   _max_running_average_event_gap = Constants.get_max_running_average_event_gap()
   _accuracy = 100
 
@@ -224,7 +224,7 @@ class @Recognizer
 
   # Check if time1 is < than time2 +/- some %
   in_threshold = (time1, time2) ->
-    time1 < (time2 + time2 * _running_average_gap_threshold) || time1 < (time2 - time2 * _running_average_gap_threshold)
+    time1 < (time2 + time2 * _running_average_gap_inclusion_threshold) || time1 < (time2 - time2 * _running_average_gap_inclusion_threshold)
 
   # Get current timestamp (in micro seconds)
   # ===================================

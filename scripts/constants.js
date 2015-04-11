@@ -2,15 +2,13 @@
 (function() {
   'use strict';
   this.Constants = (function() {
-    var CURRENT_MULTI_ACTIVATE_VERSION, DEBUG_MODE, USAGE_LOGGING;
+    var DEBUG_MODE, USAGE_LOGGING;
 
     function Constants() {}
 
     DEBUG_MODE = false;
 
     USAGE_LOGGING = true;
-
-    CURRENT_MULTI_ACTIVATE_VERSION = 'V4';
 
     Constants.is_debug_mode = function() {
       return DEBUG_MODE;
@@ -40,6 +38,10 @@
       return 100;
     };
 
+    Constants.get_running_average_gap_inclusion_threshold = function() {
+      return 0.10;
+    };
+
     Constants.get_rec_timeout = function() {
       if (DEBUG_MODE) {
         return 30000;
@@ -48,8 +50,16 @@
       }
     };
 
+    Constants.get_max_running_average_event_gap = function() {
+      if (DEBUG_MODE) {
+        return 10000;
+      } else {
+        return 60000;
+      }
+    };
+
     Constants.get_current_activate_pattern_version = function() {
-      return CURRENT_MULTI_ACTIVATE_VERSION;
+      return 'V4';
     };
 
     return Constants;
