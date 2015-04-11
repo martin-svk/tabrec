@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.MultiActivate = (function() {
-    var NAME, SEQUENCE, not_next_to, _current_ma_version, _dbg_mode, _last_activated_tab_position;
+    var NAME, SEQUENCE, not_next_to, _current_ma_version, _dbg_mode, _last_activated_tab_position, _recorded;
 
     SEQUENCE = null;
 
@@ -13,6 +13,8 @@
     _current_ma_version = null;
 
     _last_activated_tab_position = null;
+
+    _recorded = [];
 
     function MultiActivate() {
       _dbg_mode = Constants.is_debug_mode();
@@ -32,6 +34,7 @@
     MultiActivate.prototype.should_record_activate = function(tab_position, tab_id) {
       if (_last_activated_tab_position === null || not_next_to(tab_position, _last_activated_tab_position)) {
         _last_activated_tab_position = tab_position;
+        _recorded.push(tab_id);
         return true;
       } else {
         _last_activated_tab_position = tab_position;

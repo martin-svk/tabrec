@@ -60,10 +60,8 @@ class @Recognizer
     handle_running_average(time_occured)
 
     tab_id = active_info.tabId
-
     chrome.tabs.get(tab_id, (tab) ->
       position = tab.index
-
       # Ask multi activate class if this event should be recorded
       if _multi_activate.should_record_activate(position, tab_id)
         record_event('TAB_ACTIVATED', time_occured)

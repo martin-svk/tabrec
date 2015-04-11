@@ -16,7 +16,9 @@ class @MultiActivate
   # Local variables
   _dbg_mode = null
   _current_ma_version = null
+
   _last_activated_tab_position = null
+  _recorded = []
 
   constructor: () ->
     _dbg_mode = Constants.is_debug_mode()
@@ -33,6 +35,7 @@ class @MultiActivate
   should_record_activate: (tab_position, tab_id) ->
     if _last_activated_tab_position == null || not_next_to(tab_position, _last_activated_tab_position)
       _last_activated_tab_position = tab_position
+      _recorded.push(tab_id)
       return true
     else
       _last_activated_tab_position = tab_position
