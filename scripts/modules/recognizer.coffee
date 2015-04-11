@@ -148,6 +148,7 @@ class @Recognizer
     else
       # Outside running average gap
       _current_sequence = []
+      reset_all_pattern_states()
 
   # Will handle adding new timestamp to running average array or
   # replace oldest value when reaching maximum bucket size
@@ -181,11 +182,14 @@ class @Recognizer
 
     return avg
 
-  # ===================================
-  # Helper functions
+  # Will call reset methods on all active pattern recognizers
   # ===================================
 
-  # Check if current state contains some patterns sequence suffix
+  reset_all_pattern_states = () ->
+    for pattern in _patterns
+      pattern.reset_states()
+
+  # Current state matches some pattern
   # ===================================
 
   current_state_match_some_pattern = (sequence) ->
@@ -194,6 +198,10 @@ class @Recognizer
       if has_suffix(sequence.toString(), pattern.sequence().toString())
         return pattern.name()
     return false
+
+  # ===================================
+  # Helper functions
+  # ===================================
 
   # Check if we are inside thresholed gap timeout
   # ===================================

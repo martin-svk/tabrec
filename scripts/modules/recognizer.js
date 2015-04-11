@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, inside_running_average, not_inside_timeout, record_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket;
+    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, inside_running_average, not_inside_timeout, record_event, reset_all_pattern_states, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket;
 
     _dbg_mode = Constants.is_debug_mode();
 
@@ -120,7 +120,8 @@
           return _current_sequence = [];
         }
       } else {
-        return _current_sequence = [];
+        _current_sequence = [];
+        return reset_all_pattern_states();
       }
     };
 
@@ -153,6 +154,16 @@
         console.log("Current running average: " + avg + " micro seconds.");
       }
       return avg;
+    };
+
+    reset_all_pattern_states = function() {
+      var pattern, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
+        pattern = _patterns[_i];
+        _results.push(pattern.reset_states());
+      }
+      return _results;
     };
 
     current_state_match_some_pattern = function(sequence) {

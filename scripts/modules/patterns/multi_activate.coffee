@@ -41,6 +41,9 @@ class @MultiActivate
       _last_activated_tab_position = tab_position
       return false
 
+  reset_states: () ->
+    _recorded = []
+
   # Helper methods
   # ======================================
 

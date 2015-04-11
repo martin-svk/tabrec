@@ -42,6 +42,10 @@
       }
     };
 
+    MultiActivate.prototype.reset_states = function() {
+      return _recorded = [];
+    };
+
     not_next_to = function(pos1, pos2) {
       return Math.abs(pos1 - pos2) !== 1;
     };
