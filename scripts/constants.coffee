@@ -48,5 +48,9 @@ class @Constants
       # 1 min
       60000
 
+  @get_min_running_average_event_gap: ->
+      # 50 milliseconds
+      50
+
   @get_current_activate_pattern_version: ->
     'V4'

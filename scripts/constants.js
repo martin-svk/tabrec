@@ -54,6 +54,10 @@
       return 60000;
     };
 
+    Constants.get_min_running_average_event_gap = function() {
+      return 50;
+    };
+
     Constants.get_current_activate_pattern_version = function() {
       return 'V4';
     };
