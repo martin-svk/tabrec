@@ -12,14 +12,16 @@ class @Recognizer
   _rec_timeout = Constants.get_rec_timeout()
   _max_running_average_bucket_size = Constants.get_max_running_average_bucket_size()
   _accuracy = 100
-  _patterns = []
+
   _notifier = null
+  _multi_activate = null
+  _patterns = []
 
   constructor: (user_id, session_id) ->
     _notifier = new Notifier(user_id)
-
     # Add pattern classes which will be recognized
-    _patterns.push(new MultiActivate())
+    _multi_activate = new MultiActivate()
+    _patterns.push(_multi_activate)
 
   # ===================================
   # Public methods
@@ -41,7 +43,6 @@ class @Recognizer
 
   _last_event_time = null
   _last_pattern_time = null
-  _last_activated_tab_position = null
 
   _current_sequence = []
   _running_average_bucket = []
@@ -51,6 +52,7 @@ class @Recognizer
   # ===================================
 
   # Activate event handling
+  # ===================================
 
   tab_activated = (active_info) ->
     # Update running average
@@ -58,20 +60,20 @@ class @Recognizer
     handle_running_average(time_occured)
 
     tab_id = active_info.tabId
+
     chrome.tabs.get(tab_id, (tab) ->
       position = tab.index
-      if _last_activated_tab_position == null || not_next_to(position, _last_activated_tab_position)
-        record_event('TAB_ACTIVATED', time_occured)
 
-      # Update last tab position
-      _last_activated_tab_position = position
+      # Ask multi activate class if this event should be recorded
+      if _multi_activate.should_record_activate(position, tab_id)
+        record_event('TAB_ACTIVATED', time_occured)
     )
 
     # Updating last event time
     _last_event_time = time_occured
 
-
   # Generic event handling
+  # ===================================
 
   tab_created = (tab) ->
     # Update running average
@@ -139,50 +141,20 @@ class @Recognizer
   # ===================================
 
   record_event = (event_name, time_occured) ->
-    # Check for pattern
-    if _last_event_time == null || (time_occured - _last_event_time) < get_running_average()
+    if inside_running_average(time_occured)
       _current_sequence.push(event_name)
-      if (pattern_name = current_state_match_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())
+      if (pattern_name = current_state_match_some_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())
         _notifier.show_pattern(pattern_name)
         _last_pattern_time = get_current_ts()
         _current_sequence = []
     else
-      # Gap is wider
+      # Outside running average gap
       _current_sequence = []
-
-  # ===================================
-  # Helper functions
-  # ===================================
-
-  # Check if current state contains pattern sequence suffix
-  current_state_match_pattern = (sequence) ->
-    console.log("Current sequence: #{sequence}") if _dbg_mode
-    for pattern in _patterns
-      if has_suffix(sequence.toString(), pattern.sequence().toString())
-        return pattern.name()
-    return false
-
-  # Check if we are not inside disabled time period (after accepting or rejecting recommended action)
-  not_inside_timeout = (current_time) ->
-    if _last_pattern_time == null || current_time - _last_pattern_time > _rec_timeout
-      return true
-    else
-      return false
-
-  # Get current timestamp (in micro seconds)
-  get_current_ts = () ->
-    new Date().getTime()
-
-  # Check if str ends with suffix string
-  has_suffix = (str, suffix) ->
-    str.indexOf(suffix, str.length - suffix.length) != -1
-
-  # Check if tabs on pos1 and pos2 are adjacent
-  not_next_to = (pos1, pos2) ->
-    Math.abs(pos1 - pos2) != 1
 
   # Will handle adding new timestamp to running average array or
   # replace oldest value when reaching maximum bucket size
+  # ===================================
+
   handle_running_average = (new_event_ts) ->
     # Only work when we have first event
     return if _last_event_time == null
@@ -197,7 +169,8 @@ class @Recognizer
       _running_average_bucket.push(last_gap)
 
   # Will calculate and return current running average
-  # TODO: performance improve by some approximation...
+  # ===================================
+
   get_running_average = () ->
     i = _running_average_bucket.length
     sum = 0
@@ -209,3 +182,41 @@ class @Recognizer
     console.log("Current running average: #{avg} micro seconds.") if _dbg_mode
 
     return avg
+
+  # ===================================
+  # Helper functions
+  # ===================================
+
+  # Check if current state contains some patterns sequence suffix
+  # ===================================
+
+  current_state_match_some_pattern = (sequence) ->
+    console.log("Current sequence: #{sequence}") if _dbg_mode
+    for pattern in _patterns
+      if has_suffix(sequence.toString(), pattern.sequence().toString())
+        return pattern.name()
+    return false
+
+  # Check if we are inside thresholed gap timeout
+  # ===================================
+
+  inside_running_average = (time_occured) ->
+    _last_event_time == null || (time_occured - _last_event_time) < get_running_average()
+
+  # Check if we are not inside disabled time period (after accepting or rejecting recommended action)
+  # ===================================
+
+  not_inside_timeout = (current_time) ->
+    _last_pattern_time == null || (current_time - _last_pattern_time) > _rec_timeout
+
+  # Get current timestamp (in micro seconds)
+  # ===================================
+
+  get_current_ts = () ->
+    new Date().getTime()
+
+  # Check if str ends with suffix string
+  # ===================================
+
+  has_suffix = (str, suffix) ->
+    str.indexOf(suffix, str.length - suffix.length) != -1

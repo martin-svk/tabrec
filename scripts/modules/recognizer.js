@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_match_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, not_inside_timeout, not_next_to, record_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_activated_tab_position, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _notifier, _patterns, _rec_timeout, _running_average_bucket;
+    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, inside_running_average, not_inside_timeout, record_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket;
 
     _dbg_mode = Constants.is_debug_mode();
 
@@ -12,13 +12,16 @@
 
     _accuracy = 100;
 
-    _patterns = [];
-
     _notifier = null;
+
+    _multi_activate = null;
+
+    _patterns = [];
 
     function Recognizer(user_id, session_id) {
       _notifier = new Notifier(user_id);
-      _patterns.push(new MultiActivate());
+      _multi_activate = new MultiActivate();
+      _patterns.push(_multi_activate);
     }
 
     Recognizer.prototype.start = function() {
@@ -38,8 +41,6 @@
 
     _last_pattern_time = null;
 
-    _last_activated_tab_position = null;
-
     _current_sequence = [];
 
     _running_average_bucket = [];
@@ -52,10 +53,9 @@
       chrome.tabs.get(tab_id, function(tab) {
         var position;
         position = tab.index;
-        if (_last_activated_tab_position === null || not_next_to(position, _last_activated_tab_position)) {
-          record_event('TAB_ACTIVATED', time_occured);
+        if (_multi_activate.should_record_activate(position, tab_id)) {
+          return record_event('TAB_ACTIVATED', time_occured);
         }
-        return _last_activated_tab_position = position;
       });
       return _last_event_time = time_occured;
     };
@@ -112,9 +112,9 @@
 
     record_event = function(event_name, time_occured) {
       var pattern_name;
-      if (_last_event_time === null || (time_occured - _last_event_time) < get_running_average()) {
+      if (inside_running_average(time_occured)) {
         _current_sequence.push(event_name);
-        if ((pattern_name = current_state_match_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())) {
+        if ((pattern_name = current_state_match_some_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())) {
           _notifier.show_pattern(pattern_name);
           _last_pattern_time = get_current_ts();
           return _current_sequence = [];
@@ -122,40 +122,6 @@
       } else {
         return _current_sequence = [];
       }
-    };
-
-    current_state_match_pattern = function(sequence) {
-      var pattern, _i, _len;
-      if (_dbg_mode) {
-        console.log("Current sequence: " + sequence);
-      }
-      for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
-        pattern = _patterns[_i];
-        if (has_suffix(sequence.toString(), pattern.sequence().toString())) {
-          return pattern.name();
-        }
-      }
-      return false;
-    };
-
-    not_inside_timeout = function(current_time) {
-      if (_last_pattern_time === null || current_time - _last_pattern_time > _rec_timeout) {
-        return true;
-      } else {
-        return false;
-      }
-    };
-
-    get_current_ts = function() {
-      return new Date().getTime();
-    };
-
-    has_suffix = function(str, suffix) {
-      return str.indexOf(suffix, str.length - suffix.length) !== -1;
-    };
-
-    not_next_to = function(pos1, pos2) {
-      return Math.abs(pos1 - pos2) !== 1;
     };
 
     handle_running_average = function(new_event_ts) {
@@ -187,6 +153,36 @@
         console.log("Current running average: " + avg + " micro seconds.");
       }
       return avg;
+    };
+
+    current_state_match_some_pattern = function(sequence) {
+      var pattern, _i, _len;
+      if (_dbg_mode) {
+        console.log("Current sequence: " + sequence);
+      }
+      for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
+        pattern = _patterns[_i];
+        if (has_suffix(sequence.toString(), pattern.sequence().toString())) {
+          return pattern.name();
+        }
+      }
+      return false;
+    };
+
+    inside_running_average = function(time_occured) {
+      return _last_event_time === null || (time_occured - _last_event_time) < get_running_average();
+    };
+
+    not_inside_timeout = function(current_time) {
+      return _last_pattern_time === null || (current_time - _last_pattern_time) > _rec_timeout;
+    };
+
+    get_current_ts = function() {
+      return new Date().getTime();
+    };
+
+    has_suffix = function(str, suffix) {
+      return str.indexOf(suffix, str.length - suffix.length) !== -1;
     };
 
     return Recognizer;
