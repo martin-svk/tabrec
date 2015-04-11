@@ -11,6 +11,8 @@ class @Recognizer
   _dbg_mode = Constants.is_debug_mode()
   _rec_timeout = Constants.get_rec_timeout()
   _max_running_average_bucket_size = Constants.get_max_running_average_bucket_size()
+  _running_average_gap_threshold = Constants.get_running_average_gap_threshold()
+  _max_running_average_event_gap = Constants.get_max_running_average_event_gap()
   _accuracy = 100
 
   _notifier = null
@@ -165,8 +167,8 @@ class @Recognizer
   # ===================================
 
   handle_running_average = (new_event_ts) ->
-    # Only work when we have first event
-    return if _last_event_time == null
+    # Only work when we have first event and new_event_ts is not outlier
+    return if no_last_event_or_is_outlier(new_event_ts)
 
     last_gap = parseInt((new_event_ts - _last_event_time) / _accuracy, 10) # 0.1 seconds accuracy
     console.log("Current last gap: #{last_gap / 10} seconds") if _dbg_mode
@@ -199,21 +201,30 @@ class @Recognizer
     for pattern in _patterns
       pattern.reset_states()
 
-  # ===================================
-  # Helper functions
-  # ===================================
-
   # Check if we are inside thresholed gap timeout
   # ===================================
 
   inside_running_average = (time_occured) ->
-    _last_event_time == null || (time_occured - _last_event_time) < get_running_average()
+    _last_event_time == null || in_threshold((time_occured - _last_event_time), get_running_average())
 
   # Check if we are not inside disabled time period (after accepting or rejecting recommended action)
   # ===================================
 
   not_inside_timeout = (current_time) ->
     _last_pattern_time == null || (current_time - _last_pattern_time) > _rec_timeout
+
+  # Check if last event was recorded or new evets ts - last event ts is and upper outlier (defined in constants)
+  # ===================================
+  no_last_event_or_is_outlier = (new_event_ts) ->
+    _last_event_time == null || (new_event_ts - _last_event_time) > _max_running_average_event_gap
+
+  # ===================================
+  # Helper functions
+  # ===================================
+
+  # Check if time1 is < than time2 +/- some %
+  in_threshold = (time1, time2) ->
+    time1 < (time2 + time2 * _running_average_gap_threshold) || time1 < (time2 - time2 * _running_average_gap_threshold)
 
   # Get current timestamp (in micro seconds)
   # ===================================

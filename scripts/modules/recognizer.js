@@ -2,13 +2,17 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, inside_running_average, not_inside_timeout, record_event, reset_all_pattern_states, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket;
+    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, in_threshold, inside_running_average, no_last_event_or_is_outlier, not_inside_timeout, record_event, reset_all_pattern_states, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _max_running_average_event_gap, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket, _running_average_gap_threshold;
 
     _dbg_mode = Constants.is_debug_mode();
 
     _rec_timeout = Constants.get_rec_timeout();
 
     _max_running_average_bucket_size = Constants.get_max_running_average_bucket_size();
+
+    _running_average_gap_threshold = Constants.get_running_average_gap_threshold();
+
+    _max_running_average_event_gap = Constants.get_max_running_average_event_gap();
 
     _accuracy = 100;
 
@@ -141,7 +145,7 @@
 
     handle_running_average = function(new_event_ts) {
       var last_gap;
-      if (_last_event_time === null) {
+      if (no_last_event_or_is_outlier(new_event_ts)) {
         return;
       }
       last_gap = parseInt((new_event_ts - _last_event_time) / _accuracy, 10);
@@ -181,11 +185,19 @@
     };
 
     inside_running_average = function(time_occured) {
-      return _last_event_time === null || (time_occured - _last_event_time) < get_running_average();
+      return _last_event_time === null || in_threshold(time_occured - _last_event_time, get_running_average());
     };
 
     not_inside_timeout = function(current_time) {
       return _last_pattern_time === null || (current_time - _last_pattern_time) > _rec_timeout;
+    };
+
+    no_last_event_or_is_outlier = function(new_event_ts) {
+      return _last_event_time === null || (new_event_ts - _last_event_time) > _max_running_average_event_gap;
+    };
+
+    in_threshold = function(time1, time2) {
+      return time1 < (time2 + time2 * _running_average_gap_threshold) || time1 < (time2 - time2 * _running_average_gap_threshold);
     };
 
     get_current_ts = function() {
