@@ -51,11 +51,7 @@
     };
 
     Constants.get_max_running_average_event_gap = function() {
-      if (DEBUG_MODE) {
-        return 10000;
-      } else {
-        return 60000;
-      }
+      return 60000;
     };
 
     Constants.get_current_activate_pattern_version = function() {

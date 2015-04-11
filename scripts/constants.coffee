@@ -45,10 +45,6 @@ class @Constants
       3 * 60000
 
   @get_max_running_average_event_gap: ->
-    if DEBUG_MODE
-      # 10 sec
-      10000
-    else
       # 1 min
       60000
 
