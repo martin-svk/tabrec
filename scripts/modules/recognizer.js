@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, in_threshold, inside_running_average, no_last_event_or_is_outlier, not_inside_timeout, record_event, reset_all_pattern_states, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _max_running_average_event_gap, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket, _running_average_gap_inclusion_threshold;
+    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, in_threshold, inside_running_average, is_bottom_outlier, is_upper_outlier, not_inside_timeout, record_event, reset_all_pattern_states, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _max_running_average_event_gap, _min_running_average_event_gap, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket, _running_average_gap_inclusion_threshold;
 
     _dbg_mode = Constants.is_debug_mode();
 
@@ -13,6 +13,8 @@
     _running_average_gap_inclusion_threshold = Constants.get_running_average_gap_inclusion_threshold();
 
     _max_running_average_event_gap = Constants.get_max_running_average_event_gap();
+
+    _min_running_average_event_gap = Constants.get_min_running_average_event_gap();
 
     _accuracy = 100;
 
@@ -52,6 +54,10 @@
     tab_activated = function(active_info) {
       var tab_id, time_occured;
       time_occured = get_current_ts();
+      if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
+        _last_event_time = time_occured;
+        return;
+      }
       handle_running_average(time_occured);
       tab_id = active_info.tabId;
       chrome.tabs.get(tab_id, function(tab) {
@@ -67,6 +73,10 @@
     tab_created = function(tab) {
       var time_occured;
       time_occured = get_current_ts();
+      if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
+        _last_event_time = time_occured;
+        return;
+      }
       handle_running_average(time_occured);
       record_event('TAB_CREATED', time_occured);
       return _last_event_time = time_occured;
@@ -75,6 +85,10 @@
     tab_removed = function(tab_id, remove_info) {
       var time_occured;
       time_occured = get_current_ts();
+      if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
+        _last_event_time = time_occured;
+        return;
+      }
       handle_running_average(time_occured);
       record_event('TAB_REMOVED', time_occured);
       return _last_event_time = time_occured;
@@ -83,6 +97,10 @@
     tab_moved = function(tab_id, move_info) {
       var time_occured;
       time_occured = get_current_ts();
+      if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
+        _last_event_time = time_occured;
+        return;
+      }
       handle_running_average(time_occured);
       record_event('TAB_MOVED', time_occured);
       return _last_event_time = time_occured;
@@ -91,6 +109,10 @@
     tab_attached = function(tab_id, attach_info) {
       var time_occured;
       time_occured = get_current_ts();
+      if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
+        _last_event_time = time_occured;
+        return;
+      }
       handle_running_average(time_occured);
       record_event('TAB_ATTACHED', time_occured);
       return _last_event_time = time_occured;
@@ -99,6 +121,10 @@
     tab_detached = function(tab_id, detach_info) {
       var time_occured;
       time_occured = get_current_ts();
+      if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
+        _last_event_time = time_occured;
+        return;
+      }
       handle_running_average(time_occured);
       record_event('TAB_DETACHED', time_occured);
       return _last_event_time = time_occured;
@@ -108,6 +134,10 @@
       var time_occured;
       if (change_info.status === 'complete') {
         time_occured = get_current_ts();
+        if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
+          _last_event_time = time_occured;
+          return;
+        }
         handle_running_average(time_occured);
         record_event('TAB_UPDATED', time_occured);
         return _last_event_time = time_occured;
@@ -145,7 +175,7 @@
 
     handle_running_average = function(new_event_ts) {
       var last_gap;
-      if (no_last_event_or_is_outlier(new_event_ts)) {
+      if (_last_event_time === null) {
         return;
       }
       last_gap = parseInt((new_event_ts - _last_event_time) / _accuracy, 10);
@@ -192,8 +222,12 @@
       return _last_pattern_time === null || (current_time - _last_pattern_time) > _rec_timeout;
     };
 
-    no_last_event_or_is_outlier = function(new_event_ts) {
-      return _last_event_time === null || (new_event_ts - _last_event_time) > _max_running_average_event_gap;
+    is_upper_outlier = function(new_event_ts) {
+      return _last_event_time !== null && (new_event_ts - _last_event_time) > _max_running_average_event_gap;
+    };
+
+    is_bottom_outlier = function(new_event_ts) {
+      return _last_event_time !== null && (new_event_ts - _last_event_time) < _min_running_average_event_gap;
     };
 
     in_threshold = function(time1, time2) {

@@ -13,6 +13,7 @@ class @Recognizer
   _max_running_average_bucket_size = Constants.get_max_running_average_bucket_size()
   _running_average_gap_inclusion_threshold = Constants.get_running_average_gap_inclusion_threshold()
   _max_running_average_event_gap = Constants.get_max_running_average_event_gap()
+  _min_running_average_event_gap = Constants.get_min_running_average_event_gap()
   _accuracy = 100
 
   _notifier = null
@@ -57,9 +58,14 @@ class @Recognizer
   # ===================================
 
   tab_activated = (active_info) ->
-    # TODO: Ignore when event is from our own executor actions
-    # Update running average
     time_occured = get_current_ts()
+
+    # Filter outliers but save their event time
+    if is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)
+      _last_event_time = time_occured
+      return
+
+    # Update running average
     handle_running_average(time_occured)
 
     tab_id = active_info.tabId
@@ -77,9 +83,14 @@ class @Recognizer
   # ===================================
 
   tab_created = (tab) ->
-    # TODO: Ignore when event is from our own executor actions
-    # Update running average
     time_occured = get_current_ts()
+
+    # Filter outliers but save their event time
+    if is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)
+      _last_event_time = time_occured
+      return
+
+    # Update running average
     handle_running_average(time_occured)
 
     record_event('TAB_CREATED', time_occured)
@@ -88,9 +99,14 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_removed = (tab_id, remove_info) ->
-    # TODO: Ignore when event is from our own executor actions
-    # Update running average
     time_occured = get_current_ts()
+
+    # Filter outliers but save their event time
+    if is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)
+      _last_event_time = time_occured
+      return
+
+    # Update running average
     handle_running_average(time_occured)
 
     record_event('TAB_REMOVED', time_occured)
@@ -99,9 +115,14 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_moved = (tab_id, move_info) ->
-    #  TODO:Ignore when event is from our own executor actions
-    # Update running average
     time_occured = get_current_ts()
+
+    # Filter outliers but save their event time
+    if is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)
+      _last_event_time = time_occured
+      return
+
+    # Update running average
     handle_running_average(time_occured)
 
     record_event('TAB_MOVED', time_occured)
@@ -110,9 +131,14 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_attached = (tab_id, attach_info) ->
-    # TODO: Ignore when event is from our own executor actions
-    # Update running average
     time_occured = get_current_ts()
+
+    # Filter outliers but save their event time
+    if is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)
+      _last_event_time = time_occured
+      return
+
+    # Update running average
     handle_running_average(time_occured)
 
     record_event('TAB_ATTACHED', time_occured)
@@ -121,9 +147,14 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_detached = (tab_id, detach_info) ->
-    # TODO: Ignore when event is from our own executor actions
-    # Update running average
     time_occured = get_current_ts()
+
+    # Filter outliers but save their event time
+    if is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)
+      _last_event_time = time_occured
+      return
+
+    # Update running average
     handle_running_average(time_occured)
 
     record_event('TAB_DETACHED', time_occured)
@@ -132,10 +163,15 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_updated = (tab_id, change_info, tab) ->
-    #  TODO:Ignore when event is from our own executor actions
     if change_info.status == 'complete'
-      # Update running average
       time_occured = get_current_ts()
+
+      # Filter outliers but save their event time
+      if is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)
+        _last_event_time = time_occured
+        return
+
+      # Update running average
       handle_running_average(time_occured)
 
       record_event('TAB_UPDATED', time_occured)
@@ -169,13 +205,13 @@ class @Recognizer
         return pattern.name()
     return false
 
-  # Will handle adding new timestamp to running average array or
+  # Will handle adding new time stamp to running average array or
   # replace oldest value when reaching maximum bucket size
   # ===================================
 
   handle_running_average = (new_event_ts) ->
-    # Only work when we have first event and new_event_ts is not outlier
-    return if no_last_event_or_is_outlier(new_event_ts)
+    # Only work when we have first event
+    return if _last_event_time == null
 
     last_gap = parseInt((new_event_ts - _last_event_time) / _accuracy, 10) # 0.1 seconds accuracy
     console.log("Current last gap: #{last_gap / 10} seconds") if _dbg_mode
@@ -208,7 +244,7 @@ class @Recognizer
     for pattern in _patterns
       pattern.reset_states()
 
-  # Check if we are inside thresholed gap timeout
+  # Check if we are inside thresholded gap timeout
   # ===================================
 
   inside_running_average = (time_occured) ->
@@ -220,10 +256,15 @@ class @Recognizer
   not_inside_timeout = (current_time) ->
     _last_pattern_time == null || (current_time - _last_pattern_time) > _rec_timeout
 
-  # Check if last event was recorded or new evets ts - last event ts is and upper outlier (defined in constants)
+  # Check for outliers
   # ===================================
-  no_last_event_or_is_outlier = (new_event_ts) ->
-    _last_event_time == null || (new_event_ts - _last_event_time) > _max_running_average_event_gap
+  is_upper_outlier = (new_event_ts) ->
+    _last_event_time != null && (new_event_ts - _last_event_time) > _max_running_average_event_gap
+
+  is_bottom_outlier = (new_event_ts) ->
+    # If event lasts less than 50 milliseconds
+    _last_event_time != null && (new_event_ts - _last_event_time) < _min_running_average_event_gap
+
 
   # ===================================
   # Helper functions
@@ -233,7 +274,7 @@ class @Recognizer
   in_threshold = (time1, time2) ->
     time1 < (time2 + time2 * _running_average_gap_inclusion_threshold) || time1 < (time2 - time2 * _running_average_gap_inclusion_threshold)
 
-  # Get current timestamp (in micro seconds)
+  # Get current time stamp (in micro seconds)
   # ===================================
 
   get_current_ts = () ->
