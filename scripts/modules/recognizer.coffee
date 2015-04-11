@@ -10,13 +10,16 @@
 class @Recognizer
   _dbg_mode = Constants.is_debug_mode()
   _rec_timeout = Constants.get_rec_timeout()
-  _current_ma_version = Constants.get_current_activate_pattern_version()
   _max_running_average_bucket_size = Constants.get_max_running_average_bucket_size()
   _accuracy = 100
+  _patterns = []
   _notifier = null
 
   constructor: (user_id, session_id) ->
     _notifier = new Notifier(user_id)
+
+    # Add pattern classes which will be recognized
+    _patterns.push(new MultiActivate())
 
   # ===================================
   # Public methods
@@ -42,14 +45,6 @@ class @Recognizer
 
   _current_sequence = []
   _running_average_bucket = []
-
-  # This is activate pattern with sort advice
-  _activate_pattern =
-    sequence: ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED']
-    name: "MULTI_ACTIVATE_#{_current_ma_version}"
-
-  # TODO: load from API: conn.get_patterns()
-  _patterns = [ _activate_pattern ]
 
   # ===================================
   # Event handlers
@@ -147,8 +142,8 @@ class @Recognizer
     # Check for pattern
     if _last_event_time == null || (time_occured - _last_event_time) < get_running_average()
       _current_sequence.push(event_name)
-      if (pattern = current_state_is_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())
-        _notifier.show_pattern(pattern)
+      if (pattern_name = current_state_match_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())
+        _notifier.show_pattern(pattern_name)
         _last_pattern_time = get_current_ts()
         _current_sequence = []
     else
@@ -160,11 +155,11 @@ class @Recognizer
   # ===================================
 
   # Check if current state contains pattern sequence suffix
-  current_state_is_pattern = (sequence) ->
+  current_state_match_pattern = (sequence) ->
     console.log("Current sequence: #{sequence}") if _dbg_mode
     for pattern in _patterns
-      if has_suffix(sequence.toString(), pattern.sequence.toString())
-        return pattern.name
+      if has_suffix(sequence.toString(), pattern.sequence().toString())
+        return pattern.name()
     return false
 
   # Check if we are not inside disabled time period (after accepting or rejecting recommended action)

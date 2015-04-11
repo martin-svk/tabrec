@@ -2,22 +2,23 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_is_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, not_inside_timeout, not_next_to, record_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _activate_pattern, _current_ma_version, _current_sequence, _dbg_mode, _last_activated_tab_position, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _notifier, _patterns, _rec_timeout, _running_average_bucket;
+    var current_state_match_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, not_inside_timeout, not_next_to, record_event, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_activated_tab_position, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _notifier, _patterns, _rec_timeout, _running_average_bucket;
 
     _dbg_mode = Constants.is_debug_mode();
 
     _rec_timeout = Constants.get_rec_timeout();
 
-    _current_ma_version = Constants.get_current_activate_pattern_version();
-
     _max_running_average_bucket_size = Constants.get_max_running_average_bucket_size();
 
     _accuracy = 100;
+
+    _patterns = [];
 
     _notifier = null;
 
     function Recognizer(user_id, session_id) {
       _notifier = new Notifier(user_id);
+      _patterns.push(new MultiActivate());
     }
 
     Recognizer.prototype.start = function() {
@@ -42,13 +43,6 @@
     _current_sequence = [];
 
     _running_average_bucket = [];
-
-    _activate_pattern = {
-      sequence: ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED'],
-      name: "MULTI_ACTIVATE_" + _current_ma_version
-    };
-
-    _patterns = [_activate_pattern];
 
     tab_activated = function(active_info) {
       var tab_id, time_occured;
@@ -117,11 +111,11 @@
     };
 
     record_event = function(event_name, time_occured) {
-      var pattern;
+      var pattern_name;
       if (_last_event_time === null || (time_occured - _last_event_time) < get_running_average()) {
         _current_sequence.push(event_name);
-        if ((pattern = current_state_is_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())) {
-          _notifier.show_pattern(pattern);
+        if ((pattern_name = current_state_match_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())) {
+          _notifier.show_pattern(pattern_name);
           _last_pattern_time = get_current_ts();
           return _current_sequence = [];
         }
@@ -130,15 +124,15 @@
       }
     };
 
-    current_state_is_pattern = function(sequence) {
+    current_state_match_pattern = function(sequence) {
       var pattern, _i, _len;
       if (_dbg_mode) {
         console.log("Current sequence: " + sequence);
       }
       for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
         pattern = _patterns[_i];
-        if (has_suffix(sequence.toString(), pattern.sequence.toString())) {
-          return pattern.name;
+        if (has_suffix(sequence.toString(), pattern.sequence().toString())) {
+          return pattern.name();
         }
       }
       return false;
