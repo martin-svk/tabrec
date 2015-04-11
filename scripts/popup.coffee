@@ -23,8 +23,10 @@ $ ->
         success: (data, textStatus, jqXHR) ->
           $('#recs-accepted').html(data.accepted)
           $('#recs-rejected').html(data.rejected)
+          $('#recs-reverted').html(data.reverted)
         error: (jqXHR, textStatus, errorThrown) ->
           $('#recs-accepted').html('N/A')
+          $('#recs-rejected').html('N/A')
           $('#recs-rejected').html('N/A')
 
   $('#settings').on 'click', ->

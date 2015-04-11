@@ -25,10 +25,12 @@
           dataType: 'json',
           success: function(data, textStatus, jqXHR) {
             $('#recs-accepted').html(data.accepted);
-            return $('#recs-rejected').html(data.rejected);
+            $('#recs-rejected').html(data.rejected);
+            return $('#recs-reverted').html(data.reverted);
           },
           error: function(jqXHR, textStatus, errorThrown) {
             $('#recs-accepted').html('N/A');
+            $('#recs-rejected').html('N/A');
             return $('#recs-rejected').html('N/A');
           }
         });
