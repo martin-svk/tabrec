@@ -57,6 +57,7 @@ class @Recognizer
   # ===================================
 
   tab_activated = (active_info) ->
+    # TODO: Ignore when event is from our own executor actions
     # Update running average
     time_occured = get_current_ts()
     handle_running_average(time_occured)
@@ -76,6 +77,7 @@ class @Recognizer
   # ===================================
 
   tab_created = (tab) ->
+    # TODO: Ignore when event is from our own executor actions
     # Update running average
     time_occured = get_current_ts()
     handle_running_average(time_occured)
@@ -86,6 +88,7 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_removed = (tab_id, remove_info) ->
+    # TODO: Ignore when event is from our own executor actions
     # Update running average
     time_occured = get_current_ts()
     handle_running_average(time_occured)
@@ -96,6 +99,7 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_moved = (tab_id, move_info) ->
+    #  TODO:Ignore when event is from our own executor actions
     # Update running average
     time_occured = get_current_ts()
     handle_running_average(time_occured)
@@ -106,6 +110,7 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_attached = (tab_id, attach_info) ->
+    # TODO: Ignore when event is from our own executor actions
     # Update running average
     time_occured = get_current_ts()
     handle_running_average(time_occured)
@@ -116,6 +121,7 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_detached = (tab_id, detach_info) ->
+    # TODO: Ignore when event is from our own executor actions
     # Update running average
     time_occured = get_current_ts()
     handle_running_average(time_occured)
@@ -126,6 +132,7 @@ class @Recognizer
     _last_event_time = time_occured
 
   tab_updated = (tab_id, change_info, tab) ->
+    #  TODO:Ignore when event is from our own executor actions
     if change_info.status == 'complete'
       # Update running average
       time_occured = get_current_ts()
