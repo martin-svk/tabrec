@@ -2,15 +2,13 @@
 (function() {
   'use strict';
   this.Constants = (function() {
-    var DEBUG_MODE, EXECUTOR_WORKING, USAGE_LOGGING;
+    var DEBUG_MODE, USAGE_LOGGING;
 
     function Constants() {}
 
     DEBUG_MODE = false;
 
     USAGE_LOGGING = true;
-
-    EXECUTOR_WORKING = false;
 
     Constants.is_debug_mode = function() {
       return DEBUG_MODE;
@@ -62,18 +60,6 @@
 
     Constants.get_current_activate_pattern_version = function() {
       return 'V4';
-    };
-
-    Constants.is_executor_working = function() {
-      return EXECUTOR_WORKING;
-    };
-
-    Constants.start_executor_working = function() {
-      return EXECUTOR_WORKING = true;
-    };
-
-    Constants.stop_executor_working = function() {
-      return EXECUTOR_WORKING = false;
     };
 
     return Constants;
