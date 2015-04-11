@@ -2,11 +2,13 @@
 (function() {
   'use strict';
   this.MultiActivate = (function() {
-    var NAME, SEQUENCE, not_next_to, _current_ma_version, _dbg_mode, _last_activated_tab_position, _recorded;
+    var DIFF_ELEM_COUNT, NAME, SEQUENCE, contains_different_elements, not_next_to, _current_ma_version, _dbg_mode, _last_activated_tab_position, _recorded;
 
     SEQUENCE = null;
 
     NAME = null;
+
+    DIFF_ELEM_COUNT = 3;
 
     _dbg_mode = null;
 
@@ -42,12 +44,35 @@
       }
     };
 
+    MultiActivate.prototype.all_conditions_satisfied = function() {
+      return contains_different_elements(_recorded, DIFF_ELEM_COUNT);
+    };
+
     MultiActivate.prototype.reset_states = function() {
       return _recorded = [];
     };
 
     not_next_to = function(pos1, pos2) {
       return Math.abs(pos1 - pos2) !== 1;
+    };
+
+    contains_different_elements = function(array, number) {
+      var elem, tmp, _i, _len;
+      tmp = [];
+      for (_i = 0, _len = array.length; _i < _len; _i++) {
+        elem = array[_i];
+        if (tmp.indexOf(elem) === -1) {
+          tmp.push(elem);
+        }
+      }
+      if (_dbg_mode) {
+        console.log("Array contains " + tmp.length + " different elements");
+      }
+      if (tmp.length >= number) {
+        return true;
+      } else {
+        return false;
+      }
     };
 
     return MultiActivate;

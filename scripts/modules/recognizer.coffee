@@ -150,6 +150,16 @@ class @Recognizer
       _current_sequence = []
       reset_all_pattern_states()
 
+  # Current state matches some pattern
+  # ===================================
+
+  current_state_match_some_pattern = (sequence) ->
+    console.log("Current sequence: #{sequence}") if _dbg_mode
+    for pattern in _patterns
+      if has_suffix(sequence.toString(), pattern.sequence().toString()) && pattern.all_conditions_satisfied()
+        return pattern.name()
+    return false
+
   # Will handle adding new timestamp to running average array or
   # replace oldest value when reaching maximum bucket size
   # ===================================
@@ -188,16 +198,6 @@ class @Recognizer
   reset_all_pattern_states = () ->
     for pattern in _patterns
       pattern.reset_states()
-
-  # Current state matches some pattern
-  # ===================================
-
-  current_state_match_some_pattern = (sequence) ->
-    console.log("Current sequence: #{sequence}") if _dbg_mode
-    for pattern in _patterns
-      if has_suffix(sequence.toString(), pattern.sequence().toString())
-        return pattern.name()
-    return false
 
   # ===================================
   # Helper functions

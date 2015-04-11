@@ -125,6 +125,20 @@
       }
     };
 
+    current_state_match_some_pattern = function(sequence) {
+      var pattern, _i, _len;
+      if (_dbg_mode) {
+        console.log("Current sequence: " + sequence);
+      }
+      for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
+        pattern = _patterns[_i];
+        if (has_suffix(sequence.toString(), pattern.sequence().toString()) && pattern.all_conditions_satisfied()) {
+          return pattern.name();
+        }
+      }
+      return false;
+    };
+
     handle_running_average = function(new_event_ts) {
       var last_gap;
       if (_last_event_time === null) {
@@ -164,20 +178,6 @@
         _results.push(pattern.reset_states());
       }
       return _results;
-    };
-
-    current_state_match_some_pattern = function(sequence) {
-      var pattern, _i, _len;
-      if (_dbg_mode) {
-        console.log("Current sequence: " + sequence);
-      }
-      for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
-        pattern = _patterns[_i];
-        if (has_suffix(sequence.toString(), pattern.sequence().toString())) {
-          return pattern.name();
-        }
-      }
-      return false;
     };
 
     inside_running_average = function(time_occured) {
