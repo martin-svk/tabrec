@@ -9,7 +9,7 @@
 class @Constants
   DEBUG_MODE = false
   USAGE_LOGGING = true
-  CURRENT_MULTI_ACTIVATE_VERSION = 'V3'
+  CURRENT_MULTI_ACTIVATE_VERSION = 'V4'
 
   @is_debug_mode: ->
     DEBUG_MODE

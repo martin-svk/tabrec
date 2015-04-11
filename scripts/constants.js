@@ -10,7 +10,7 @@
 
     USAGE_LOGGING = true;
 
-    CURRENT_MULTI_ACTIVATE_VERSION = 'V3';
+    CURRENT_MULTI_ACTIVATE_VERSION = 'V4';
 
     Constants.is_debug_mode = function() {
       return DEBUG_MODE;
