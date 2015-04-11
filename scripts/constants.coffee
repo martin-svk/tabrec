@@ -9,6 +9,7 @@
 class @Constants
   DEBUG_MODE = false
   USAGE_LOGGING = true
+  EXECUTOR_WORKING = false
 
   @is_debug_mode: ->
     DEBUG_MODE
@@ -54,3 +55,12 @@ class @Constants
 
   @get_current_activate_pattern_version: ->
     'V4'
+
+  @is_executor_working: ->
+    EXECUTOR_WORKING
+
+  @start_executor_working: () ->
+    EXECUTOR_WORKING = true
+
+  @stop_executor_working: () ->
+    EXECUTOR_WORKING = false
