@@ -1,6 +1,11 @@
 TabRec changelog
 ---
 
+0.9.3
+----
+
+* Fix broken package. Add missing folder.
+
 0.9.2
 ----
 
