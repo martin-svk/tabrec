@@ -8,8 +8,10 @@ rm -rf ./dist/
 
 echo "Copying js files."
 mkdir -p ./dist/scripts/modules
+mkdir -p ./dist/scripts/modules/patterns
 cp ./scripts/*.js ./dist/scripts/
 cp ./scripts/modules/*.js ./dist/scripts/modules/
+cp ./scripts/modules/patterns/*.js ./dist/scripts/modules/patterns/
 
 echo "Copying css files."
 mkdir ./dist/styles/
