@@ -9,6 +9,7 @@
 
 class @Executor
   _dbg_mode = null
+  _tabs = []
   _tabs_backup = []
   _current_ma_version = Constants.get_current_activate_pattern_version()
 
@@ -30,9 +31,11 @@ class @Executor
   # ===================================
 
   handle_multi_activate_pattern = () ->
+    clear_arrays()
     chrome.tabs.query(windowId: chrome.windows.WINDOW_ID_CURRENT, sort_tabs_by_domains)
 
   revert_multi_activate_pattern = () ->
+    console.log(_tabs_backup)
     ids = _tabs_backup.map (tab) -> tab.id
     chrome.tabs.move(ids, index: 0)
 
@@ -47,7 +50,7 @@ class @Executor
     _tabs_ordered = []
 
     for tab in tabs
-      _tabs_ordered.push(
+      _tabs.push(
         id: tab.id
         domain: new URL(tab.url).hostname
       )
@@ -56,9 +59,17 @@ class @Executor
       )
 
     # Sort current tabs by domains
-    _tabs_ordered.sort (a, b) ->
-      a.domain.localeCompare(b.domain)
+    _tabs_ordered = sort_by_domains(_tabs)
 
     # Move them in browser accordingly
     ids = _tabs_ordered.map (tab) -> tab.id
     chrome.tabs.move(ids, index: 0)
+
+  sort_by_domains = (tabs) ->
+    tabs.sort (a, b) ->
+      a.domain.localeCompare(b.domain)
+
+  # Clear tab containers
+  clear_arrays = () ->
+    _tabs = []
+    _tabs_backup = []

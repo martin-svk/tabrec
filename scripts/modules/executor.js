@@ -2,9 +2,11 @@
 (function() {
   'use strict';
   this.Executor = (function() {
-    var handle_multi_activate_pattern, revert_multi_activate_pattern, sort_tabs_by_domains, _current_ma_version, _dbg_mode, _tabs_backup;
+    var clear_arrays, handle_multi_activate_pattern, revert_multi_activate_pattern, sort_by_domains, sort_tabs_by_domains, _current_ma_version, _dbg_mode, _tabs, _tabs_backup;
 
     _dbg_mode = null;
+
+    _tabs = [];
 
     _tabs_backup = [];
 
@@ -33,6 +35,7 @@
     };
 
     handle_multi_activate_pattern = function() {
+      clear_arrays();
       return chrome.tabs.query({
         windowId: chrome.windows.WINDOW_ID_CURRENT
       }, sort_tabs_by_domains);
@@ -40,6 +43,7 @@
 
     revert_multi_activate_pattern = function() {
       var ids;
+      console.log(_tabs_backup);
       ids = _tabs_backup.map(function(tab) {
         return tab.id;
       });
@@ -53,7 +57,7 @@
       _tabs_ordered = [];
       for (_i = 0, _len = tabs.length; _i < _len; _i++) {
         tab = tabs[_i];
-        _tabs_ordered.push({
+        _tabs.push({
           id: tab.id,
           domain: new URL(tab.url).hostname
         });
@@ -61,15 +65,24 @@
           id: tab.id
         });
       }
-      _tabs_ordered.sort(function(a, b) {
-        return a.domain.localeCompare(b.domain);
-      });
+      _tabs_ordered = sort_by_domains(_tabs);
       ids = _tabs_ordered.map(function(tab) {
         return tab.id;
       });
       return chrome.tabs.move(ids, {
         index: 0
       });
+    };
+
+    sort_by_domains = function(tabs) {
+      return tabs.sort(function(a, b) {
+        return a.domain.localeCompare(b.domain);
+      });
+    };
+
+    clear_arrays = function() {
+      _tabs = [];
+      return _tabs_backup = [];
     };
 
     return Executor;
