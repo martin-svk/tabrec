@@ -1,6 +1,12 @@
 TabRec changelog
 ---
 
+0.9.4
+----
+
+* Improve sorting for URLs with subdomains.
+* Fix issue in actions reverting.
+
 0.9.3
 ----
 
