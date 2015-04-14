@@ -272,7 +272,7 @@ class @Recognizer
 
   # Check if time1 is < than time2 +/- some %
   in_threshold = (time1, time2) ->
-    time1 < (time2 + time2 * _running_average_gap_inclusion_threshold) || time1 < (time2 - time2 * _running_average_gap_inclusion_threshold)
+    (time1 < (time2 + time2 * _running_average_gap_inclusion_threshold)) || (time1 < (time2 - time2 * _running_average_gap_inclusion_threshold))
 
   # Get current time stamp (in micro seconds)
   # ===================================

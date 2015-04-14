@@ -231,7 +231,7 @@
     };
 
     in_threshold = function(time1, time2) {
-      return time1 < (time2 + time2 * _running_average_gap_inclusion_threshold) || time1 < (time2 - time2 * _running_average_gap_inclusion_threshold);
+      return (time1 < (time2 + time2 * _running_average_gap_inclusion_threshold)) || (time1 < (time2 - time2 * _running_average_gap_inclusion_threshold));
     };
 
     get_current_ts = function() {
