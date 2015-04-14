@@ -50,9 +50,11 @@ class @Executor
     _tabs_ordered = []
 
     for tab in tabs
+      url = new URL(tab.url)
       _tabs.push(
         id: tab.id
-        domain: new URL(tab.url).hostname
+        domain: get_domain(url.hostname)
+        subdomain: url.hostname
       )
       _tabs_backup.push(
         id: tab.id
@@ -67,9 +69,17 @@ class @Executor
 
   sort_by_domains = (tabs) ->
     tabs.sort (a, b) ->
-      a.domain.localeCompare(b.domain)
+      if a.domain == b.domain
+        a.subdomain.localeCompare(b.subdomain)
+      else
+        a.domain.localeCompare(b.domain)
 
   # Clear tab containers
   clear_arrays = () ->
     _tabs = []
     _tabs_backup = []
+
+  get_domain = (subdomain) ->
+    array = subdomain.split('.')
+    top_level_domain = array.pop()
+    "#{array.pop()}.#{top_level_domain}"

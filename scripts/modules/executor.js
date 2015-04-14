@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Executor = (function() {
-    var clear_arrays, handle_multi_activate_pattern, revert_multi_activate_pattern, sort_by_domains, sort_tabs_by_domains, _current_ma_version, _dbg_mode, _tabs, _tabs_backup;
+    var clear_arrays, get_domain, handle_multi_activate_pattern, revert_multi_activate_pattern, sort_by_domains, sort_tabs_by_domains, _current_ma_version, _dbg_mode, _tabs, _tabs_backup;
 
     _dbg_mode = null;
 
@@ -53,13 +53,15 @@
     };
 
     sort_tabs_by_domains = function(tabs) {
-      var ids, tab, _i, _len, _tabs_ordered;
+      var ids, tab, url, _i, _len, _tabs_ordered;
       _tabs_ordered = [];
       for (_i = 0, _len = tabs.length; _i < _len; _i++) {
         tab = tabs[_i];
+        url = new URL(tab.url);
         _tabs.push({
           id: tab.id,
-          domain: new URL(tab.url).hostname
+          domain: get_domain(url.hostname),
+          subdomain: url.hostname
         });
         _tabs_backup.push({
           id: tab.id
@@ -76,13 +78,24 @@
 
     sort_by_domains = function(tabs) {
       return tabs.sort(function(a, b) {
-        return a.domain.localeCompare(b.domain);
+        if (a.domain === b.domain) {
+          return a.subdomain.localeCompare(b.subdomain);
+        } else {
+          return a.domain.localeCompare(b.domain);
+        }
       });
     };
 
     clear_arrays = function() {
       _tabs = [];
       return _tabs_backup = [];
+    };
+
+    get_domain = function(subdomain) {
+      var array, top_level_domain;
+      array = subdomain.split('.');
+      top_level_domain = array.pop();
+      return "" + (array.pop()) + "." + top_level_domain;
     };
 
     return Executor;
