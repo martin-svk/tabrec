@@ -10,10 +10,11 @@ reset_options = () ->
 
 # Load options from chrome storage
 load_options = () ->
-  chrome.storage.sync.get ['user_level', 'rec_mode', 'other_plugins'], (result) ->
-    if result.user_level and result.rec_mode
+  chrome.storage.sync.get ['user_id', 'user_level', 'rec_mode', 'other_plugins'], (result) ->
+    if result
       $('#user-level-select').val(result.user_level)
       $('#rec-mode-select').val(result.rec_mode)
+      $('#uid').text(result.user_id)
       $('#other-plugins-cb').prop('checked', result.other_plugins)
     else
       reset_options()

@@ -12,10 +12,11 @@
   };
 
   load_options = function() {
-    return chrome.storage.sync.get(['user_level', 'rec_mode', 'other_plugins'], function(result) {
-      if (result.user_level && result.rec_mode) {
+    return chrome.storage.sync.get(['user_id', 'user_level', 'rec_mode', 'other_plugins'], function(result) {
+      if (result) {
         $('#user-level-select').val(result.user_level);
         $('#rec-mode-select').val(result.rec_mode);
+        $('#uid').text(result.user_id);
         return $('#other-plugins-cb').prop('checked', result.other_plugins);
       } else {
         return reset_options();
