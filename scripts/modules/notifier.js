@@ -18,7 +18,7 @@
       type: 'basic',
       iconUrl: 'images/notification.png',
       title: 'Recommendation available!',
-      message: 'Are you looking for something? We can sort all your tabs by their domains.',
+      message: 'Are you looking for something? We can help. Note that executed action can be reverted.',
       buttons: [
         {
           title: 'Accept',
