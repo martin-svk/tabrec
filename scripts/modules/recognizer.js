@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var current_state_match_some_pattern, get_current_ts, get_running_average, handle_running_average, has_suffix, in_threshold, inside_running_average, is_bottom_outlier, is_upper_outlier, not_inside_timeout, record_event, reset_all_pattern_states, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, _accuracy, _current_sequence, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _max_running_average_event_gap, _min_running_average_event_gap, _multi_activate, _notifier, _patterns, _rec_timeout, _running_average_bucket, _running_average_gap_inclusion_threshold;
+    var get_current_ts, get_running_average, handle_running_average, has_suffix, in_threshold, inside_running_average, is_bottom_outlier, is_upper_outlier, not_inside_timeout, record_event, reset_all_pattern_states, some_pattern_occured, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, update_current_sequences, _accuracy, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _max_running_average_event_gap, _min_running_average_event_gap, _notifier, _pattern_recognizers, _rec_timeout, _running_average_bucket, _running_average_gap_inclusion_threshold;
 
     _dbg_mode = Constants.is_debug_mode();
 
@@ -20,14 +20,11 @@
 
     _notifier = null;
 
-    _multi_activate = null;
-
-    _patterns = [];
+    _pattern_recognizers = [];
 
     function Recognizer(user_id, session_id) {
       _notifier = new Notifier(user_id);
-      _multi_activate = new MultiActivate();
-      _patterns.push(_multi_activate);
+      _pattern_recognizers.push(new MultiActivatePattern(), new ComparePattern());
     }
 
     Recognizer.prototype.start = function() {
@@ -47,25 +44,24 @@
 
     _last_pattern_time = null;
 
-    _current_sequence = [];
-
     _running_average_bucket = [];
 
     tab_activated = function(active_info) {
-      var tab_id, time_occured;
+      var event_data, tab_id, time_occured;
       time_occured = get_current_ts();
+      tab_id = active_info.tabId;
       if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
         _last_event_time = time_occured;
         return;
       }
       handle_running_average(time_occured);
-      tab_id = active_info.tabId;
+      event_data = {
+        tab_id: tab_id,
+        tab_index: null
+      };
       chrome.tabs.get(tab_id, function(tab) {
-        var position;
-        position = tab.index;
-        if (_multi_activate.should_record_activate(position, tab_id)) {
-          return record_event('TAB_ACTIVATED', time_occured);
-        }
+        event_data.tab_index = tab.index;
+        return record_event('TAB_ACTIVATED', time_occured, event_data);
       });
       return _last_event_time = time_occured;
     };
@@ -78,7 +74,7 @@
         return;
       }
       handle_running_average(time_occured);
-      record_event('TAB_CREATED', time_occured);
+      record_event('TAB_CREATED', time_occured, {});
       return _last_event_time = time_occured;
     };
 
@@ -90,7 +86,7 @@
         return;
       }
       handle_running_average(time_occured);
-      record_event('TAB_REMOVED', time_occured);
+      record_event('TAB_REMOVED', time_occured, {});
       return _last_event_time = time_occured;
     };
 
@@ -102,7 +98,7 @@
         return;
       }
       handle_running_average(time_occured);
-      record_event('TAB_MOVED', time_occured);
+      record_event('TAB_MOVED', time_occured, {});
       return _last_event_time = time_occured;
     };
 
@@ -114,7 +110,7 @@
         return;
       }
       handle_running_average(time_occured);
-      record_event('TAB_ATTACHED', time_occured);
+      record_event('TAB_ATTACHED', time_occured, {});
       return _last_event_time = time_occured;
     };
 
@@ -126,7 +122,7 @@
         return;
       }
       handle_running_average(time_occured);
-      record_event('TAB_DETACHED', time_occured);
+      record_event('TAB_DETACHED', time_occured, {});
       return _last_event_time = time_occured;
     };
 
@@ -139,34 +135,29 @@
           return;
         }
         handle_running_average(time_occured);
-        record_event('TAB_UPDATED', time_occured);
+        record_event('TAB_UPDATED', time_occured, {});
         return _last_event_time = time_occured;
       }
     };
 
-    record_event = function(event_name, time_occured) {
+    record_event = function(event_name, time_occured, event_data) {
       var pattern_name;
       if (inside_running_average(time_occured)) {
-        _current_sequence.push(event_name);
-        if ((pattern_name = current_state_match_some_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())) {
+        update_current_sequences(event_name, event_data);
+        if ((pattern_name = some_pattern_occured()) && not_inside_timeout(get_current_ts())) {
           _notifier.show_pattern(pattern_name);
-          _last_pattern_time = get_current_ts();
-          return _current_sequence = [];
+          return _last_pattern_time = get_current_ts();
         }
       } else {
-        _current_sequence = [];
         return reset_all_pattern_states();
       }
     };
 
-    current_state_match_some_pattern = function(sequence) {
+    some_pattern_occured = function() {
       var pattern, _i, _len;
-      if (_dbg_mode) {
-        console.log("Current sequence: " + sequence);
-      }
-      for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
-        pattern = _patterns[_i];
-        if (has_suffix(sequence.toString(), pattern.sequence().toString()) && pattern.all_conditions_satisfied()) {
+      for (_i = 0, _len = _pattern_recognizers.length; _i < _len; _i++) {
+        pattern = _pattern_recognizers[_i];
+        if (has_suffix(pattern.current_sequence(), pattern.pattern_sequence()) && pattern.specific_conditions_satisfied()) {
           return pattern.name();
         }
       }
@@ -204,11 +195,21 @@
       return avg;
     };
 
+    update_current_sequences = function(event_name, event_data) {
+      var pattern, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = _pattern_recognizers.length; _i < _len; _i++) {
+        pattern = _pattern_recognizers[_i];
+        _results.push(pattern.register_event(event_name, event_data));
+      }
+      return _results;
+    };
+
     reset_all_pattern_states = function() {
       var pattern, _i, _len, _results;
       _results = [];
-      for (_i = 0, _len = _patterns.length; _i < _len; _i++) {
-        pattern = _patterns[_i];
+      for (_i = 0, _len = _pattern_recognizers.length; _i < _len; _i++) {
+        pattern = _pattern_recognizers[_i];
         _results.push(pattern.reset_states());
       }
       return _results;

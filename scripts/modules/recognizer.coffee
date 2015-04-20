@@ -14,17 +14,15 @@ class @Recognizer
   _running_average_gap_inclusion_threshold = Constants.get_running_average_gap_inclusion_threshold()
   _max_running_average_event_gap = Constants.get_max_running_average_event_gap()
   _min_running_average_event_gap = Constants.get_min_running_average_event_gap()
-  _accuracy = 100
+  _accuracy = 100 # Time accuracy when comparing gaps (100 means 0.1 sec)
 
   _notifier = null
-  _multi_activate = null
-  _patterns = []
+  _pattern_recognizers = []
 
   constructor: (user_id, session_id) ->
     _notifier = new Notifier(user_id)
     # Add pattern classes which will be recognized
-    _multi_activate = new MultiActivate()
-    _patterns.push(_multi_activate)
+    _pattern_recognizers.push(new MultiActivatePattern(), new ComparePattern())
 
   # ===================================
   # Public methods
@@ -46,8 +44,6 @@ class @Recognizer
 
   _last_event_time = null
   _last_pattern_time = null
-
-  _current_sequence = []
   _running_average_bucket = []
 
   # ===================================
@@ -59,6 +55,7 @@ class @Recognizer
 
   tab_activated = (active_info) ->
     time_occured = get_current_ts()
+    tab_id = active_info.tabId
 
     # Filter outliers but save their event time
     if is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)
@@ -68,12 +65,16 @@ class @Recognizer
     # Update running average
     handle_running_average(time_occured)
 
-    tab_id = active_info.tabId
+    # Activate event data needed by pattern recognizers
+    event_data =
+      tab_id: tab_id
+      tab_index: null
+
     chrome.tabs.get(tab_id, (tab) ->
-      position = tab.index
-      # Ask multi activate class if this event should be recorded
-      if _multi_activate.should_record_activate(position, tab_id)
-        record_event('TAB_ACTIVATED', time_occured)
+      event_data.tab_index = tab.index
+
+      # Record event
+      record_event('TAB_ACTIVATED', time_occured, event_data)
     )
 
     # Updating last event time
@@ -93,7 +94,8 @@ class @Recognizer
     # Update running average
     handle_running_average(time_occured)
 
-    record_event('TAB_CREATED', time_occured)
+    # Record event
+    record_event('TAB_CREATED', time_occured, {})
 
     # Updating last event time
     _last_event_time = time_occured
@@ -109,7 +111,8 @@ class @Recognizer
     # Update running average
     handle_running_average(time_occured)
 
-    record_event('TAB_REMOVED', time_occured)
+    # Record event
+    record_event('TAB_REMOVED', time_occured, {})
 
     # Updating last event time
     _last_event_time = time_occured
@@ -125,7 +128,8 @@ class @Recognizer
     # Update running average
     handle_running_average(time_occured)
 
-    record_event('TAB_MOVED', time_occured)
+    # Record event
+    record_event('TAB_MOVED', time_occured, {})
 
     # Updating last event time
     _last_event_time = time_occured
@@ -141,7 +145,8 @@ class @Recognizer
     # Update running average
     handle_running_average(time_occured)
 
-    record_event('TAB_ATTACHED', time_occured)
+    # Record event
+    record_event('TAB_ATTACHED', time_occured, {})
 
     # Updating last event time
     _last_event_time = time_occured
@@ -157,7 +162,8 @@ class @Recognizer
     # Update running average
     handle_running_average(time_occured)
 
-    record_event('TAB_DETACHED', time_occured)
+    # Record event
+    record_event('TAB_DETACHED', time_occured, {})
 
     # Updating last event time
     _last_event_time = time_occured
@@ -174,34 +180,39 @@ class @Recognizer
       # Update running average
       handle_running_average(time_occured)
 
-      record_event('TAB_UPDATED', time_occured)
+      # Record event
+      record_event('TAB_UPDATED', time_occured, {})
 
       # Updating last event time
       _last_event_time = time_occured
 
   # ===================================
-  # Pattern recognizing
+  # Recording events if they fit into
+  # running average
   # ===================================
 
-  record_event = (event_name, time_occured) ->
+  record_event = (event_name, time_occured, event_data) ->
     if inside_running_average(time_occured)
-      _current_sequence.push(event_name)
-      if (pattern_name = current_state_match_some_pattern(_current_sequence)) && not_inside_timeout(get_current_ts())
+      # Inside running average gap
+      update_current_sequences(event_name, event_data)
+      if (pattern_name = some_pattern_occured()) && not_inside_timeout(get_current_ts())
         _notifier.show_pattern(pattern_name)
         _last_pattern_time = get_current_ts()
-        _current_sequence = []
     else
       # Outside running average gap
-      _current_sequence = []
       reset_all_pattern_states()
 
   # Current state matches some pattern
+  # this checks the global condition:
+  # current sequence suffix must match
+  # pattern sequence (to not have to
+  # implement suffix matching in every
+  # pattern class)
   # ===================================
 
-  current_state_match_some_pattern = (sequence) ->
-    console.log("Current sequence: #{sequence}") if _dbg_mode
-    for pattern in _patterns
-      if has_suffix(sequence.toString(), pattern.sequence().toString()) && pattern.all_conditions_satisfied()
+  some_pattern_occured = () ->
+    for pattern in _pattern_recognizers
+      if has_suffix(pattern.current_sequence(), pattern.pattern_sequence()) && pattern.specific_conditions_satisfied()
         return pattern.name()
     return false
 
@@ -237,11 +248,17 @@ class @Recognizer
 
     return avg
 
+  # Will add event to every registered patterns sequence
+  # ===================================
+  update_current_sequences = (event_name, event_data) ->
+    for pattern in _pattern_recognizers
+      pattern.register_event(event_name, event_data)
+
   # Will call reset methods on all active pattern recognizers
   # ===================================
 
   reset_all_pattern_states = () ->
-    for pattern in _patterns
+    for pattern in _pattern_recognizers
       pattern.reset_states()
 
   # Check if we are inside thresholded gap timeout
