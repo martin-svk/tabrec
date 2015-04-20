@@ -54,7 +54,6 @@
 
     MultiActivatePattern.prototype.specific_conditions_satisfied = function() {
       if (contains_different_elements(_recorded, DIFF_ELEM_COUNT)) {
-        clear_arrays();
         return true;
       } else {
         return false;

@@ -48,7 +48,6 @@ class @MultiActivatePattern
   specific_conditions_satisfied: () ->
     # recorded array must contains at least 3 different ids
     if contains_different_elements(_recorded, DIFF_ELEM_COUNT)
-      clear_arrays()
       true
     else
       false
