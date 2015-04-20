@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.RefreshPattern = (function() {
-    var CURRENT_VERSION, DBG_MODE, NAME, PATTERN_SEQUENCE, clear_arrays, same_tab_reloading, should_record_update, _current_sequence, _last_update_url, _recorded;
+    var CURRENT_VERSION, DBG_MODE, NAME, PATTERN_SEQUENCE, clear_arrays, one_tab_refreshed_at_least_3_times, _current_sequence, _recorded;
 
     PATTERN_SEQUENCE = null;
 
@@ -15,8 +15,6 @@
     _recorded = [];
 
     _current_sequence = [];
-
-    _last_update_url = "";
 
     function RefreshPattern() {
       DBG_MODE = Constants.is_debug_mode();
@@ -39,9 +37,8 @@
 
     RefreshPattern.prototype.register_event = function(event_name, event_data) {
       if (event_name === 'TAB_UPDATED') {
-        if (should_record_update(event_data)) {
-          _current_sequence.push(event_name);
-        }
+        _current_sequence.push(event_name);
+        _recorded.push(event_data);
         if (DBG_MODE) {
           return console.log("Refresh: current sequence: " + _current_sequence);
         }
@@ -49,7 +46,11 @@
     };
 
     RefreshPattern.prototype.specific_conditions_satisfied = function() {
-      return true;
+      if (one_tab_refreshed_at_least_3_times()) {
+        return true;
+      } else {
+        return false;
+      }
     };
 
     RefreshPattern.prototype.reset_states = function() {
@@ -64,27 +65,27 @@
       return _current_sequence = [];
     };
 
-    should_record_update = function(data) {
-      var url;
-      url = data.url;
-      if (_recorded.length < 2 || same_tab_reloading(_recorded, url)) {
-        _recorded.push(url);
-        return true;
-      } else {
-        return false;
-      }
-    };
-
-    same_tab_reloading = function(array, url) {
-      var all_same, _i, _len, _url;
-      all_same = true;
-      for (_i = 0, _len = array.length; _i < _len; _i++) {
-        _url = array[_i];
-        if (_url !== url) {
-          all_same = false;
+    one_tab_refreshed_at_least_3_times = function() {
+      var counter, inner_obj, obj, tab_id, tab_url, _i, _j, _len, _len1;
+      counter = 0;
+      for (_i = 0, _len = _recorded.length; _i < _len; _i++) {
+        obj = _recorded[_i];
+        tab_id = obj.id;
+        tab_url = obj.url;
+        for (_j = 0, _len1 = _recorded.length; _j < _len1; _j++) {
+          inner_obj = _recorded[_j];
+          if (tab_id === inner_obj.id && tab_url === inner_obj.url) {
+            counter += 1;
+          }
+          if (counter === 3) {
+            console.log("Some tab was reloaded 3 times!");
+            return true;
+          }
         }
+        counter = 0;
       }
-      return all_same;
+      console.log("No tab was reloaded 3 times!");
+      return false;
     };
 
     return RefreshPattern;
