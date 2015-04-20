@@ -16,21 +16,20 @@ class @ComparePattern
   CURRENT_VERSION = null
 
   # Local variables
-  _last_activated_tab_id = null
   _recorded = []
   _current_sequence = []
 
   constructor: () ->
     DBG_MODE = Constants.is_debug_mode()
-    CURRENT_VERSION = Constants.get_current_activate_pattern_version()
+    CURRENT_VERSION = Constants.get_current_compare_pattern_version()
     PATTERN_SEQUENCE = ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED']
     NAME = "COMPARE_#{CURRENT_VERSION}"
 
   pattern_sequence: () ->
-    PATTERN_SEQUENCE
+    PATTERN_SEQUENCE.toString()
 
   current_sequence: () ->
-    _current_sequence
+    _current_sequence.toString()
 
   name: () ->
     NAME
@@ -44,8 +43,7 @@ class @ComparePattern
     console.log("Compare: current sequence: #{_current_sequence}") if DBG_MODE
 
   specific_conditions_satisfied: () ->
-    if contains_only_two_different_ids(_recorded)
-      clear_arrays()
+    return true # No more special conditions
 
   reset_states: () ->
     console.log("Compare: resetting states") if DBG_MODE
@@ -58,13 +56,16 @@ class @ComparePattern
     _recorded = []
     _current_sequence = []
 
-
   should_record_activate = (data) ->
-    _recorded.push(data.tab_id)
-    return true
+    id = data.tab_id
+    if _recorded.length < 3 || already_present(_recorded, id)
+      _recorded.push(id)
+      return true
+    else
+      return false
 
   # Helper methods
   # ======================================
 
-  contains_only_two_different_ids = (array) ->
-    false
+  already_present = (array, element) ->
+    array.indexOf(element) > -1

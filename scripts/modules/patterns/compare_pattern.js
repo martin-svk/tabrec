@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.ComparePattern = (function() {
-    var CURRENT_VERSION, DBG_MODE, NAME, PATTERN_SEQUENCE, clear_arrays, contains_only_two_different_ids, should_record_activate, _current_sequence, _last_activated_tab_id, _recorded;
+    var CURRENT_VERSION, DBG_MODE, NAME, PATTERN_SEQUENCE, already_present, clear_arrays, should_record_activate, _current_sequence, _recorded;
 
     PATTERN_SEQUENCE = null;
 
@@ -12,25 +12,23 @@
 
     CURRENT_VERSION = null;
 
-    _last_activated_tab_id = null;
-
     _recorded = [];
 
     _current_sequence = [];
 
     function ComparePattern() {
       DBG_MODE = Constants.is_debug_mode();
-      CURRENT_VERSION = Constants.get_current_activate_pattern_version();
+      CURRENT_VERSION = Constants.get_current_compare_pattern_version();
       PATTERN_SEQUENCE = ['TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED', 'TAB_ACTIVATED'];
       NAME = "COMPARE_" + CURRENT_VERSION;
     }
 
     ComparePattern.prototype.pattern_sequence = function() {
-      return PATTERN_SEQUENCE;
+      return PATTERN_SEQUENCE.toString();
     };
 
     ComparePattern.prototype.current_sequence = function() {
-      return _current_sequence;
+      return _current_sequence.toString();
     };
 
     ComparePattern.prototype.name = function() {
@@ -51,9 +49,7 @@
     };
 
     ComparePattern.prototype.specific_conditions_satisfied = function() {
-      if (contains_only_two_different_ids(_recorded)) {
-        return clear_arrays();
-      }
+      return true;
     };
 
     ComparePattern.prototype.reset_states = function() {
@@ -69,12 +65,18 @@
     };
 
     should_record_activate = function(data) {
-      _recorded.push(data.tab_id);
-      return true;
+      var id;
+      id = data.tab_id;
+      if (_recorded.length < 3 || already_present(_recorded, id)) {
+        _recorded.push(id);
+        return true;
+      } else {
+        return false;
+      }
     };
 
-    contains_only_two_different_ids = function(array) {
-      return false;
+    already_present = function(array, element) {
+      return array.indexOf(element) > -1;
     };
 
     return ComparePattern;
