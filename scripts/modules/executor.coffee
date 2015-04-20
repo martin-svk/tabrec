@@ -35,7 +35,6 @@ class @Executor
     chrome.tabs.query(windowId: chrome.windows.WINDOW_ID_CURRENT, sort_tabs_by_domains)
 
   revert_multi_activate_pattern = () ->
-    console.log(_tabs_backup)
     ids = _tabs_backup.map (tab) -> tab.id
     chrome.tabs.move(ids, index: 0)
 

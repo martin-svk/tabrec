@@ -43,7 +43,6 @@
 
     revert_multi_activate_pattern = function() {
       var ids;
-      console.log(_tabs_backup);
       ids = _tabs_backup.map(function(tab) {
         return tab.id;
       });
