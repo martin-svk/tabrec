@@ -36,15 +36,18 @@ class @MultiClosePattern
 
   register_event: (event_name, event_data) ->
     if event_name == 'TAB_REMOVED'
-      if should_record_remove_event(event_data)
-        _current_sequence.push(event_name)
-        console.log("Multi remove: current sequence: #{_current_sequence}") if DBG_MODE
+      _current_sequence.push(event_name)
+      record_remove_event_data(event_data)
+      console.log("Multi close: current sequence: #{_current_sequence}") if DBG_MODE
 
   specific_conditions_satisfied: () ->
-      return true # No specific conditions
+    if three_consecutive_tab_removes_on_same_domain()
+      return true
+    else
+      return false
 
   reset_states: () ->
-    console.log("Multi remove: resetting states") if DBG_MODE
+    console.log("Multi close: resetting states") if DBG_MODE
     clear_arrays()
 
   # Private methods
@@ -54,9 +57,20 @@ class @MultiClosePattern
     _recorded = []
     _current_sequence = []
 
+  record_remove_event_data = (event_data) ->
+    url = event_data.url
+    domain = get_domain(url)
+    _recorded.push(domain)
+
+  three_consecutive_tab_removes_on_same_domain = () ->
+    return false # Disable for now
+
   # Helper methods
   # ======================================
 
-  should_record_remove_event = (event_data) ->
-    _recorded.push(event_data)
-    return true
+  get_domain = (url) ->
+    url_obj = new URL(url)
+    subdomain = url_obj.hostname
+    array = subdomain.split('.')
+    top_level_domain = array.pop()
+    return "#{array.pop()}.#{top_level_domain}"

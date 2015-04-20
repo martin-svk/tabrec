@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.MultiClosePattern = (function() {
-    var CURRENT_VERSION, DBG_MODE, NAME, PATTERN_SEQUENCE, clear_arrays, should_record_remove_event, _current_sequence, _recorded;
+    var CURRENT_VERSION, DBG_MODE, NAME, PATTERN_SEQUENCE, clear_arrays, get_domain, record_remove_event_data, three_consecutive_tab_removes_on_same_domain, _current_sequence, _recorded;
 
     PATTERN_SEQUENCE = null;
 
@@ -37,22 +37,25 @@
 
     MultiClosePattern.prototype.register_event = function(event_name, event_data) {
       if (event_name === 'TAB_REMOVED') {
-        if (should_record_remove_event(event_data)) {
-          _current_sequence.push(event_name);
-          if (DBG_MODE) {
-            return console.log("Multi remove: current sequence: " + _current_sequence);
-          }
+        _current_sequence.push(event_name);
+        record_remove_event_data(event_data);
+        if (DBG_MODE) {
+          return console.log("Multi close: current sequence: " + _current_sequence);
         }
       }
     };
 
     MultiClosePattern.prototype.specific_conditions_satisfied = function() {
-      return true;
+      if (three_consecutive_tab_removes_on_same_domain()) {
+        return true;
+      } else {
+        return false;
+      }
     };
 
     MultiClosePattern.prototype.reset_states = function() {
       if (DBG_MODE) {
-        console.log("Multi remove: resetting states");
+        console.log("Multi close: resetting states");
       }
       return clear_arrays();
     };
@@ -62,9 +65,24 @@
       return _current_sequence = [];
     };
 
-    should_record_remove_event = function(event_data) {
-      _recorded.push(event_data);
-      return true;
+    record_remove_event_data = function(event_data) {
+      var domain, url;
+      url = event_data.url;
+      domain = get_domain(url);
+      return _recorded.push(domain);
+    };
+
+    three_consecutive_tab_removes_on_same_domain = function() {
+      return false;
+    };
+
+    get_domain = function(url) {
+      var array, subdomain, top_level_domain, url_obj;
+      url_obj = new URL(url);
+      subdomain = url_obj.hostname;
+      array = subdomain.split('.');
+      top_level_domain = array.pop();
+      return "" + (array.pop()) + "." + top_level_domain;
     };
 
     return MultiClosePattern;
