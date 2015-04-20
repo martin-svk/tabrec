@@ -24,7 +24,7 @@ class @RefreshPattern
     DBG_MODE = Constants.is_debug_mode()
     CURRENT_VERSION = Constants.get_current_refresh_pattern_version()
     PATTERN_SEQUENCE = ['TAB_UPDATED', 'TAB_UPDATED', 'TAB_UPDATED']
-    NAME = "COMPARE_#{CURRENT_VERSION}"
+    NAME = "REFRESH_#{CURRENT_VERSION}"
 
   pattern_sequence: () ->
     PATTERN_SEQUENCE.toString()
@@ -38,13 +38,13 @@ class @RefreshPattern
   register_event: (event_name, event_data) ->
     if event_name == 'TAB_UPDATED'
       _current_sequence.push(event_name) if should_record_update(event_data)
-      console.log("Compare: current sequence: #{_current_sequence}") if DBG_MODE
+      console.log("Refresh: current sequence: #{_current_sequence}") if DBG_MODE
 
   specific_conditions_satisfied: () ->
     return true # No more special conditions
 
   reset_states: () ->
-    console.log("Compare: resetting states") if DBG_MODE
+    console.log("Refresh: resetting states") if DBG_MODE
     clear_arrays()
 
   # Private methods

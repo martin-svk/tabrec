@@ -22,7 +22,7 @@
       DBG_MODE = Constants.is_debug_mode();
       CURRENT_VERSION = Constants.get_current_refresh_pattern_version();
       PATTERN_SEQUENCE = ['TAB_UPDATED', 'TAB_UPDATED', 'TAB_UPDATED'];
-      NAME = "COMPARE_" + CURRENT_VERSION;
+      NAME = "REFRESH_" + CURRENT_VERSION;
     }
 
     RefreshPattern.prototype.pattern_sequence = function() {
@@ -43,7 +43,7 @@
           _current_sequence.push(event_name);
         }
         if (DBG_MODE) {
-          return console.log("Compare: current sequence: " + _current_sequence);
+          return console.log("Refresh: current sequence: " + _current_sequence);
         }
       }
     };
@@ -54,7 +54,7 @@
 
     RefreshPattern.prototype.reset_states = function() {
       if (DBG_MODE) {
-        console.log("Compare: resetting states");
+        console.log("Refresh: resetting states");
       }
       return clear_arrays();
     };
