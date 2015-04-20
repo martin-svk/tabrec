@@ -21,8 +21,12 @@ class @Recognizer
 
   constructor: (user_id, session_id) ->
     _notifier = new Notifier(user_id)
+
     # Add pattern classes which will be recognized
-    _pattern_recognizers.push(new MultiActivatePattern(), new ComparePattern(), new RefreshPattern())
+    _pattern_recognizers.push(
+      new MultiActivatePattern(), new ComparePattern(),
+      new RefreshPattern(), new MultiClosePattern()
+    )
 
   # ===================================
   # Public methods
@@ -111,8 +115,16 @@ class @Recognizer
     # Update running average
     handle_running_average(time_occured)
 
-    # Record event
-    record_event('TAB_REMOVED', time_occured, {})
+    # Remove event data
+    event_data =
+      url: null
+
+    chrome.tabs.get(tab_id, (tab) ->
+      event_data.url = tab.url
+
+      # Record event
+      record_event('TAB_REMOVED', time_occured, event_data)
+    )
 
     # Updating last event time
     _last_event_time = time_occured

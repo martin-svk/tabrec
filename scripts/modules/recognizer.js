@@ -24,7 +24,7 @@
 
     function Recognizer(user_id, session_id) {
       _notifier = new Notifier(user_id);
-      _pattern_recognizers.push(new MultiActivatePattern(), new ComparePattern(), new RefreshPattern());
+      _pattern_recognizers.push(new MultiActivatePattern(), new ComparePattern(), new RefreshPattern(), new MultiClosePattern());
     }
 
     Recognizer.prototype.start = function() {
@@ -79,14 +79,20 @@
     };
 
     tab_removed = function(tab_id, remove_info) {
-      var time_occured;
+      var event_data, time_occured;
       time_occured = get_current_ts();
       if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
         _last_event_time = time_occured;
         return;
       }
       handle_running_average(time_occured);
-      record_event('TAB_REMOVED', time_occured, {});
+      event_data = {
+        url: null
+      };
+      chrome.tabs.get(tab_id, function(tab) {
+        event_data.url = tab.url;
+        return record_event('TAB_REMOVED', time_occured, event_data);
+      });
       return _last_event_time = time_occured;
     };
 
