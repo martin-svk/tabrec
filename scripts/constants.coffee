@@ -54,3 +54,6 @@ class @Constants
 
   @get_current_activate_pattern_version: ->
     'V4'
+
+  @get_current_compare_pattern_version: ->
+    'V0'
