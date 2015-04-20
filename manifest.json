@@ -19,6 +19,7 @@
             "scripts/modules/executor.js",
             "scripts/modules/notifier.js",
             "scripts/modules/patterns/multi_activate_pattern.js",
+            "scripts/modules/patterns/multi_close_pattern.js",
             "scripts/modules/patterns/compare_pattern.js",
             "scripts/modules/patterns/refresh_pattern.js",
             "scripts/modules/recognizer.js",
