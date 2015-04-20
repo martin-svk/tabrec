@@ -180,8 +180,12 @@ class @Recognizer
       # Update running average
       handle_running_average(time_occured)
 
+      # Update event data used by recognizers
+      event_data =
+        url: tab.url
+
       # Record event
-      record_event('TAB_UPDATED', time_occured, {})
+      record_event('TAB_UPDATED', time_occured, event_data)
 
       # Updating last event time
       _last_event_time = time_occured

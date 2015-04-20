@@ -127,7 +127,7 @@
     };
 
     tab_updated = function(tab_id, change_info, tab) {
-      var time_occured;
+      var event_data, time_occured;
       if (change_info.status === 'complete') {
         time_occured = get_current_ts();
         if (is_bottom_outlier(time_occured) || is_upper_outlier(time_occured)) {
@@ -135,7 +135,10 @@
           return;
         }
         handle_running_average(time_occured);
-        record_event('TAB_UPDATED', time_occured, {});
+        event_data = {
+          url: tab.url
+        };
+        record_event('TAB_UPDATED', time_occured, event_data);
         return _last_event_time = time_occured;
       }
     };
