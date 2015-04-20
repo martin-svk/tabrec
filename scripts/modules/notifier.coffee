@@ -29,7 +29,7 @@ class @Notifier
 
   compare_notification_options =
     type: 'basic'
-    iconUrl: 'images/notification.png'
+    iconUrl: 'images/notification_yesno.png'
     title: 'Pattern detected!'
     message: 'Are you comparing the contents of two tabs?'
     buttons: [
@@ -42,7 +42,7 @@ class @Notifier
 
   refresh_notification_options =
     type: 'basic'
-    iconUrl: 'images/notification.png'
+    iconUrl: 'images/notification_yesno.png'
     title: 'Pattern detected!'
     message: 'Are you watching for content updates in specific tab?'
     buttons: [
@@ -55,7 +55,7 @@ class @Notifier
 
   multi_close_notification_options =
     type: 'basic'
-    iconUrl: 'images/notification.png'
+    iconUrl: 'images/notification_yesno.png'
     title: 'Pattern detected!'
     message: 'Have you finished some task and closing all tabs from specific domain?'
     buttons: [
@@ -68,7 +68,7 @@ class @Notifier
 
   revert_notification_options =
     type: 'basic'
-    iconUrl: 'images/revert_notification.png'
+    iconUrl: 'images/revert_notification_yesno.png'
     title: 'Action was performed!'
     message: 'Dont like what happened? Click revert to load previous state.'
     buttons: [
