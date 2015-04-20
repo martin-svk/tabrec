@@ -22,7 +22,7 @@ class @Recognizer
   constructor: (user_id, session_id) ->
     _notifier = new Notifier(user_id)
     # Add pattern classes which will be recognized
-    _pattern_recognizers.push(new MultiActivatePattern(), new ComparePattern())
+    _pattern_recognizers.push(new MultiActivatePattern(), new ComparePattern(), new RefreshPattern())
 
   # ===================================
   # Public methods
