@@ -27,6 +27,45 @@ class @Notifier
         iconUrl: 'images/reject.png'
     ]
 
+  compare_notification_options =
+    type: 'basic'
+    iconUrl: 'images/notification.png'
+    title: 'Pattern detected!'
+    message: 'Are you comparing the contents of two tabs?'
+    buttons: [
+        title: 'Yes'
+        iconUrl: 'images/accept.png'
+      ,
+        title: 'No'
+        iconUrl: 'images/reject.png'
+    ]
+
+  refresh_notification_options =
+    type: 'basic'
+    iconUrl: 'images/notification.png'
+    title: 'Pattern detected!'
+    message: 'Are you watching for content updates in specific tab?'
+    buttons: [
+        title: 'Yes'
+        iconUrl: 'images/accept.png'
+      ,
+        title: 'No'
+        iconUrl: 'images/reject.png'
+    ]
+
+  multi_close_notification_options =
+    type: 'basic'
+    iconUrl: 'images/notification.png'
+    title: 'Pattern detected!'
+    message: 'Have you finished some task and closing all tabs from specific domain?'
+    buttons: [
+        title: 'Yes'
+        iconUrl: 'images/accept.png'
+      ,
+        title: 'No'
+        iconUrl: 'images/reject.png'
+    ]
+
   revert_notification_options =
     type: 'basic'
     iconUrl: 'images/revert_notification.png'
@@ -47,7 +86,7 @@ class @Notifier
   show_pattern: (pattern) ->
     _pattern = pattern
     console.log("Notification: pattern occured: #{_pattern}") if _debug_mode
-    chrome.notifications.create("pattern_#{new Date().getTime()}", multi_activate_notification_options, (id) -> )
+    show_pattern_notification()
 
   # ===================================
   # Private functions
@@ -55,6 +94,21 @@ class @Notifier
 
   show_revert = () ->
     chrome.notifications.create("revert_#{new Date().getTime()}", revert_notification_options, (id) -> )
+
+  show_pattern_notification = () ->
+    options = null
+
+    if _pattern.indexOf('MULTI_ACTIVATE') == 0
+      options = multi_activate_notification_options
+    else if _pattern.indexOf('COMPARE') == 0
+      options = compare_notification_options
+    else if _pattern.indexof('REFRESH') == 0
+      options = refresh_notification_options
+    else if _pattern.indexof('MULTI_CLOSE') == 0
+      options = multi_close_notification_options
+
+    # Creating notification
+    chrome.notifications.create("pattern_#{new Date().getTime()}", options, (id) -> )
 
   # ===================================
   # Event handlers
@@ -64,6 +118,22 @@ class @Notifier
   # ===================================
 
   notification_button_clicked = (notif_id, button_index) ->
+    if _pattern.indexOf('MULTI_ACTIVATE') == 0
+      handle_ma_button_clicked(notif_id, button_index)
+    else if _pattern.indexOf('COMPARE') == 0
+      handle_compare_button_clicked(notif_id, button_index)
+    else if _pattern.indexof('REFRESH') == 0
+      handle_refresh_button_clicked(notif_id, button_index)
+    else if _pattern.indexof('MULTI_CLOSE') == 0
+      handle_mc_button_clicked(notif_id, button_index)
+
+    # Clear notifications
+    chrome.notifications.clear(notif_id, (cleared) ->)
+
+  # Per pattern handlers
+  # ===================================
+
+  handle_ma_button_clicked = (notif_id, button_index) ->
     # Pattern notification
     if notif_id.indexOf('pattern') == 0
       if button_index == 0
@@ -78,8 +148,29 @@ class @Notifier
         send_resolution('REVERTED')
         _executor.revert(_pattern)
 
-    # Clear notifications
-    chrome.notifications.clear(notif_id, (cleared) ->)
+  handle_compare_button_clicked = (notif_id, button_index) ->
+    # Pattern notification
+    if notif_id.indexOf('pattern') == 0
+      if button_index == 0
+        send_resolution('YES')
+      else if button_index == 1
+        send_resolution('NO')
+
+  handle_refresh_button_clicked = (notif_id, button_index) ->
+    # Pattern notification
+    if notif_id.indexOf('pattern') == 0
+      if button_index == 0
+        send_resolution('YES')
+      else if button_index == 1
+        send_resolution('NO')
+
+  handle_mc_button_clicked = (notif_id, button_index) ->
+    # Pattern notification
+    if notif_id.indexOf('pattern') == 0
+      if button_index == 0
+        send_resolution('YES')
+      else if button_index == 1
+        send_resolution('NO')
 
   # Clicking on non button area (accept)
   # ===================================

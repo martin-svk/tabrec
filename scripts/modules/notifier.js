@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Notifier = (function() {
-    var multi_activate_notification_options, notification_button_clicked, notification_clicked, notification_closed, revert_notification_options, send_resolution, show_revert, _conn, _debug_mode, _executor, _pattern, _uid;
+    var compare_notification_options, handle_compare_button_clicked, handle_ma_button_clicked, handle_mc_button_clicked, handle_refresh_button_clicked, multi_activate_notification_options, multi_close_notification_options, notification_button_clicked, notification_clicked, notification_closed, refresh_notification_options, revert_notification_options, send_resolution, show_pattern_notification, show_revert, _conn, _debug_mode, _executor, _pattern, _uid;
 
     _conn = new Connection();
 
@@ -25,6 +25,54 @@
           iconUrl: 'images/accept.png'
         }, {
           title: 'Reject',
+          iconUrl: 'images/reject.png'
+        }
+      ]
+    };
+
+    compare_notification_options = {
+      type: 'basic',
+      iconUrl: 'images/notification.png',
+      title: 'Pattern detected!',
+      message: 'Are you comparing the contents of two tabs?',
+      buttons: [
+        {
+          title: 'Yes',
+          iconUrl: 'images/accept.png'
+        }, {
+          title: 'No',
+          iconUrl: 'images/reject.png'
+        }
+      ]
+    };
+
+    refresh_notification_options = {
+      type: 'basic',
+      iconUrl: 'images/notification.png',
+      title: 'Pattern detected!',
+      message: 'Are you watching for content updates in specific tab?',
+      buttons: [
+        {
+          title: 'Yes',
+          iconUrl: 'images/accept.png'
+        }, {
+          title: 'No',
+          iconUrl: 'images/reject.png'
+        }
+      ]
+    };
+
+    multi_close_notification_options = {
+      type: 'basic',
+      iconUrl: 'images/notification.png',
+      title: 'Pattern detected!',
+      message: 'Have you finished some task and closing all tabs from specific domain?',
+      buttons: [
+        {
+          title: 'Yes',
+          iconUrl: 'images/accept.png'
+        }, {
+          title: 'No',
           iconUrl: 'images/reject.png'
         }
       ]
@@ -56,29 +104,86 @@
       if (_debug_mode) {
         console.log("Notification: pattern occured: " + _pattern);
       }
-      return chrome.notifications.create("pattern_" + (new Date().getTime()), multi_activate_notification_options, function(id) {});
+      return show_pattern_notification();
     };
 
     show_revert = function() {
       return chrome.notifications.create("revert_" + (new Date().getTime()), revert_notification_options, function(id) {});
     };
 
+    show_pattern_notification = function() {
+      var options;
+      options = null;
+      if (_pattern.indexOf('MULTI_ACTIVATE') === 0) {
+        options = multi_activate_notification_options;
+      } else if (_pattern.indexOf('COMPARE') === 0) {
+        options = compare_notification_options;
+      } else if (_pattern.indexof('REFRESH') === 0) {
+        options = refresh_notification_options;
+      } else if (_pattern.indexof('MULTI_CLOSE') === 0) {
+        options = multi_close_notification_options;
+      }
+      return chrome.notifications.create("pattern_" + (new Date().getTime()), options, function(id) {});
+    };
+
     notification_button_clicked = function(notif_id, button_index) {
+      if (_pattern.indexOf('MULTI_ACTIVATE') === 0) {
+        handle_ma_button_clicked(notif_id, button_index);
+      } else if (_pattern.indexOf('COMPARE') === 0) {
+        handle_compare_button_clicked(notif_id, button_index);
+      } else if (_pattern.indexof('REFRESH') === 0) {
+        handle_refresh_button_clicked(notif_id, button_index);
+      } else if (_pattern.indexof('MULTI_CLOSE') === 0) {
+        handle_mc_button_clicked(notif_id, button_index);
+      }
+      return chrome.notifications.clear(notif_id, function(cleared) {});
+    };
+
+    handle_ma_button_clicked = function(notif_id, button_index) {
       if (notif_id.indexOf('pattern') === 0) {
         if (button_index === 0) {
           send_resolution('ACCEPTED');
           _executor.execute(_pattern);
-          show_revert();
+          return show_revert();
         } else if (button_index === 1) {
-          send_resolution('REJECTED');
+          return send_resolution('REJECTED');
         }
       } else if (notif_id.indexOf('revert') === 0) {
         if (button_index === 0) {
           send_resolution('REVERTED');
-          _executor.revert(_pattern);
+          return _executor.revert(_pattern);
         }
       }
-      return chrome.notifications.clear(notif_id, function(cleared) {});
+    };
+
+    handle_compare_button_clicked = function(notif_id, button_index) {
+      if (notif_id.indexOf('pattern') === 0) {
+        if (button_index === 0) {
+          return send_resolution('YES');
+        } else if (button_index === 1) {
+          return send_resolution('NO');
+        }
+      }
+    };
+
+    handle_refresh_button_clicked = function(notif_id, button_index) {
+      if (notif_id.indexOf('pattern') === 0) {
+        if (button_index === 0) {
+          return send_resolution('YES');
+        } else if (button_index === 1) {
+          return send_resolution('NO');
+        }
+      }
+    };
+
+    handle_mc_button_clicked = function(notif_id, button_index) {
+      if (notif_id.indexOf('pattern') === 0) {
+        if (button_index === 0) {
+          return send_resolution('YES');
+        } else if (button_index === 1) {
+          return send_resolution('NO');
+        }
+      }
     };
 
     notification_clicked = function(notif_id) {
