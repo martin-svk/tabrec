@@ -21,7 +21,8 @@
             "scripts/modules/executor.js",
             "scripts/modules/notifier.js",
 
-            "scripts/modules/patterns/multi_activate.js",
+            "scripts/modules/patterns/multi_activate_pattern.js",
+            "scripts/modules/patterns/compare_pattern.js",
             "scripts/modules/recognizer.js",
             "scripts/modules/usage_logger.js",
 
