@@ -182,6 +182,7 @@ class @Recognizer
 
       # Update event data used by recognizers
       event_data =
+        id: tab_id
         url: tab.url
 
       # Record event

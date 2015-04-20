@@ -136,6 +136,7 @@
         }
         handle_running_average(time_occured);
         event_data = {
+          id: tab_id,
           url: tab.url
         };
         record_event('TAB_UPDATED', time_occured, event_data);
