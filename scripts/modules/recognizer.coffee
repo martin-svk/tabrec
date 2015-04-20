@@ -198,6 +198,7 @@ class @Recognizer
       if (pattern_name = some_pattern_occured()) && not_inside_timeout(get_current_ts())
         _notifier.show_pattern(pattern_name)
         _last_pattern_time = get_current_ts()
+        reset_all_pattern_states()
     else
       # Outside running average gap
       reset_all_pattern_states()

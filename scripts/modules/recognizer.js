@@ -146,7 +146,8 @@
         update_current_sequences(event_name, event_data);
         if ((pattern_name = some_pattern_occured()) && not_inside_timeout(get_current_ts())) {
           _notifier.show_pattern(pattern_name);
-          return _last_pattern_time = get_current_ts();
+          _last_pattern_time = get_current_ts();
+          return reset_all_pattern_states();
         }
       } else {
         return reset_all_pattern_states();
