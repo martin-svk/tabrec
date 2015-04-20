@@ -102,9 +102,9 @@ class @Notifier
       options = multi_activate_notification_options
     else if _pattern.indexOf('COMPARE') == 0
       options = compare_notification_options
-    else if _pattern.indexof('REFRESH') == 0
+    else if _pattern.indexOf('REFRESH') == 0
       options = refresh_notification_options
-    else if _pattern.indexof('MULTI_CLOSE') == 0
+    else if _pattern.indexOf('MULTI_CLOSE') == 0
       options = multi_close_notification_options
 
     # Creating notification
@@ -122,9 +122,9 @@ class @Notifier
       handle_ma_button_clicked(notif_id, button_index)
     else if _pattern.indexOf('COMPARE') == 0
       handle_compare_button_clicked(notif_id, button_index)
-    else if _pattern.indexof('REFRESH') == 0
+    else if _pattern.indexOf('REFRESH') == 0
       handle_refresh_button_clicked(notif_id, button_index)
-    else if _pattern.indexof('MULTI_CLOSE') == 0
+    else if _pattern.indexOf('MULTI_CLOSE') == 0
       handle_mc_button_clicked(notif_id, button_index)
 
     # Clear notifications
