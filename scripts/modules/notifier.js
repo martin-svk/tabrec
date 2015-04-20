@@ -80,7 +80,7 @@
 
     revert_notification_options = {
       type: 'basic',
-      iconUrl: 'images/revert_notification_yesno.png',
+      iconUrl: 'images/revert_notification.png',
       title: 'Action was performed!',
       message: 'Dont like what happened? Click revert to load previous state.',
       buttons: [
