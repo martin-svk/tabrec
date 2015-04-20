@@ -57,3 +57,9 @@ class @Constants
 
   @get_current_compare_pattern_version: ->
     'V0'
+
+  @get_current_refresh_pattern_version: ->
+    'V0'
+
+  @get_current_close_pattern_version: ->
+    'V0'

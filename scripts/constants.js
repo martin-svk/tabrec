@@ -66,6 +66,14 @@
       return 'V0';
     };
 
+    Constants.get_current_refresh_pattern_version = function() {
+      return 'V0';
+    };
+
+    Constants.get_current_close_pattern_version = function() {
+      return 'V0';
+    };
+
     return Constants;
 
   })();
