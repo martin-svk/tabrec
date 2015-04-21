@@ -72,12 +72,10 @@ class @RefreshPattern
           counter += 1
         # Check if there are 3
         if counter == 3
-          console.log("Some tab was reloaded 3 times!")
           return true
 
       # Refresh counter for next object comparing
       counter = 0
 
     # No tab was refreshed 3 times
-    console.log("No tab was reloaded 3 times!")
     return false

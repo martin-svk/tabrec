@@ -78,13 +78,11 @@
             counter += 1;
           }
           if (counter === 3) {
-            console.log("Some tab was reloaded 3 times!");
             return true;
           }
         }
         counter = 0;
       }
-      console.log("No tab was reloaded 3 times!");
       return false;
     };
 
