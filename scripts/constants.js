@@ -6,9 +6,9 @@
 
     function Constants() {}
 
-    DEBUG_MODE = false;
+    DEBUG_MODE = true;
 
-    USAGE_LOGGING = true;
+    USAGE_LOGGING = false;
 
     Constants.is_debug_mode = function() {
       return DEBUG_MODE;
@@ -43,11 +43,7 @@
     };
 
     Constants.get_rec_timeout = function() {
-      if (DEBUG_MODE) {
-        return 30000;
-      } else {
-        return 3 * 60000;
-      }
+      return 10000;
     };
 
     Constants.get_max_running_average_event_gap = function() {

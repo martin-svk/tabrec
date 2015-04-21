@@ -7,8 +7,8 @@
 # ======================================
 
 class @Constants
-  DEBUG_MODE = false
-  USAGE_LOGGING = true
+  DEBUG_MODE = true
+  USAGE_LOGGING = false
 
   @is_debug_mode: ->
     DEBUG_MODE
@@ -37,12 +37,8 @@ class @Constants
     0.10
 
   @get_rec_timeout: ->
-    if DEBUG_MODE
-      # 30 sec
-      30000
-    else
-      # 3 min
-      3 * 60000
+    # 10 sec
+    10000
 
   @get_max_running_average_event_gap: ->
       # 1 min
