@@ -1,6 +1,15 @@
 TabRec changelog
 ---
 
+0.9.5-iitsrc
+----
+
+* Add three new patterns detection with no advice action for detection accuracy evaluation :
+  * refresh pattern (when user update specific tab for content updates),
+  * compare pattern (when user compare content of two tabs),
+  * multi close pattern (when user finished some task and is closing all related tabs).
+* Change after recommendation timeout to 10 seconds.
+
 0.9.4
 ----
 
@@ -30,7 +39,7 @@ TabRec changelog
 ----
 
 * Add possibility to revert recommended action.
-* Add timout after accepting recommendation to prevent unexpected triggering.
+* Add timeout after accepting recommendation to prevent unexpected triggering.
 
 0.8.0
 ----
@@ -59,7 +68,7 @@ TabRec changelog
 ----
 
 * Update to reflect API changes.
-* Fix usage logs losting bug.
+* Fix usage logs loosing bug.
 
 0.6.0
 ----
