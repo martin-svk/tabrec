@@ -57,7 +57,7 @@ class @Notifier
     type: 'basic'
     iconUrl: 'images/notification_yesno.png'
     title: 'Pattern detected!'
-    message: 'Have you finished some task and closing all tabs from specific domain?'
+    message: 'Have you just finished some browsing task?'
     buttons: [
         title: 'Yes'
         iconUrl: 'images/accept.png'
