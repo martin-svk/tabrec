@@ -95,6 +95,8 @@
       _debug_mode = Constants.is_debug_mode();
       _uid = user_id;
       chrome.notifications.onButtonClicked.addListener(notification_button_clicked);
+      chrome.notifications.onClicked.addListener(notification_clicked);
+      chrome.notifications.onClosed.addListener(notification_closed);
     }
 
     Notifier.prototype.show_pattern = function(pattern) {
@@ -186,9 +188,13 @@
 
     notification_clicked = function(notif_id) {
       if (notif_id.indexOf('pattern') === 0) {
-        send_resolution('ACCEPTED');
-        _executor.execute(_pattern);
-        show_revert();
+        if (_pattern.indexOf('MULTI_ACTIVATE') === 0) {
+          send_resolution('ACCEPTED');
+          _executor.execute(_pattern);
+          show_revert();
+        } else {
+          send_resolution('YES');
+        }
       } else if (notif_id.indexOf('revert') === 0) {
         send_resolution('REVERTED');
         _executor.revert(_pattern);
@@ -198,7 +204,11 @@
 
     notification_closed = function(notif_id, by_user) {
       if (by_user && notif_id.indexOf('pattern') === 0) {
-        return send_resolution('REJECTED');
+        if (_pattern.indexOf('MULTI_ACTIVATE') === 0) {
+          return send_resolution('REJECTED');
+        } else {
+          return send_resolution('NO');
+        }
       }
     };
 
