@@ -1,6 +1,12 @@
 TabRec changelog
 ---
 
+0.9.6-iitsrc
+----
+
+* Improve rec timeout to be per pattern based.
+* Improve handling of notification body and close button click events.
+
 0.9.5-iitsrc
 ----
 
