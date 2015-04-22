@@ -43,7 +43,7 @@
     };
 
     Constants.get_rec_timeout = function() {
-      return 10000;
+      return 30000;
     };
 
     Constants.get_max_running_average_event_gap = function() {
