@@ -48,6 +48,7 @@ class @Recognizer
 
   _last_event_time = null
   _last_pattern_time = null
+  _last_pattern_name = null
   _running_average_bucket = []
 
   # ===================================
@@ -204,9 +205,19 @@ class @Recognizer
     if inside_running_average(time_occured)
       # Inside running average gap
       update_current_sequences(event_name, event_data)
-      if (pattern_name = some_pattern_occured()) && not_inside_timeout(get_current_ts())
-        _notifier.show_pattern(pattern_name)
+
+      if pattern_name = some_pattern_occured()
+        # If same pattern occured again, check rec timeout
+        if same_pattern_again(pattern_name)
+          if not_inside_timeout(get_current_ts())
+            _notifier.show_pattern(pattern_name)
+        else
+          # If other pattern occured, proceed
+          _notifier.show_pattern(pattern_name)
+
+        # Record what happened in both cases
         _last_pattern_time = get_current_ts()
+        _last_pattern_name = pattern_name
         reset_all_pattern_states()
     else
       # Outside running average gap
@@ -292,6 +303,10 @@ class @Recognizer
     # If event lasts less than 50 milliseconds
     _last_event_time != null && (new_event_ts - _last_event_time) < _min_running_average_event_gap
 
+  # Check if last pattern is null or same as current
+  # ===================================
+  same_pattern_again = (new_pattern_name) ->
+    _last_pattern_name == null || _last_pattern_name == new_pattern_name
 
   # ===================================
   # Helper functions

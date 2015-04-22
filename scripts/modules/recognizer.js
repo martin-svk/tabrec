@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Recognizer = (function() {
-    var get_current_ts, get_running_average, handle_running_average, has_suffix, in_threshold, inside_running_average, is_bottom_outlier, is_upper_outlier, not_inside_timeout, record_event, reset_all_pattern_states, some_pattern_occured, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, update_current_sequences, _accuracy, _dbg_mode, _last_event_time, _last_pattern_time, _max_running_average_bucket_size, _max_running_average_event_gap, _min_running_average_event_gap, _notifier, _pattern_recognizers, _rec_timeout, _running_average_bucket, _running_average_gap_inclusion_threshold;
+    var get_current_ts, get_running_average, handle_running_average, has_suffix, in_threshold, inside_running_average, is_bottom_outlier, is_upper_outlier, not_inside_timeout, record_event, reset_all_pattern_states, same_pattern_again, some_pattern_occured, tab_activated, tab_attached, tab_created, tab_detached, tab_moved, tab_removed, tab_updated, update_current_sequences, _accuracy, _dbg_mode, _last_event_time, _last_pattern_name, _last_pattern_time, _max_running_average_bucket_size, _max_running_average_event_gap, _min_running_average_event_gap, _notifier, _pattern_recognizers, _rec_timeout, _running_average_bucket, _running_average_gap_inclusion_threshold;
 
     _dbg_mode = Constants.is_debug_mode();
 
@@ -43,6 +43,8 @@
     _last_event_time = null;
 
     _last_pattern_time = null;
+
+    _last_pattern_name = null;
 
     _running_average_bucket = [];
 
@@ -148,9 +150,16 @@
       var pattern_name;
       if (inside_running_average(time_occured)) {
         update_current_sequences(event_name, event_data);
-        if ((pattern_name = some_pattern_occured()) && not_inside_timeout(get_current_ts())) {
-          _notifier.show_pattern(pattern_name);
+        if (pattern_name = some_pattern_occured()) {
+          if (same_pattern_again(pattern_name)) {
+            if (not_inside_timeout(get_current_ts())) {
+              _notifier.show_pattern(pattern_name);
+            }
+          } else {
+            _notifier.show_pattern(pattern_name);
+          }
           _last_pattern_time = get_current_ts();
+          _last_pattern_name = pattern_name;
           return reset_all_pattern_states();
         }
       } else {
@@ -234,6 +243,10 @@
 
     is_bottom_outlier = function(new_event_ts) {
       return _last_event_time !== null && (new_event_ts - _last_event_time) < _min_running_average_event_gap;
+    };
+
+    same_pattern_again = function(new_pattern_name) {
+      return _last_pattern_name === null || _last_pattern_name === new_pattern_name;
     };
 
     in_threshold = function(time1, time2) {
