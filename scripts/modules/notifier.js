@@ -95,8 +95,6 @@
       _debug_mode = Constants.is_debug_mode();
       _uid = user_id;
       chrome.notifications.onButtonClicked.addListener(notification_button_clicked);
-      chrome.notifications.onClicked.addListener(notification_clicked);
-      chrome.notifications.onClosed.addListener(notification_closed);
     }
 
     Notifier.prototype.show_pattern = function(pattern) {
