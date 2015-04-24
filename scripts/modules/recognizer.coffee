@@ -24,8 +24,10 @@ class @Recognizer
 
     # Add pattern classes which will be recognized
     _pattern_recognizers.push(
-      new MultiActivatePattern(), new ComparePattern(),
-      new RefreshPattern(), new MultiClosePattern()
+      new MultiActivatePattern(),
+      new ComparePattern(),
+      new RefreshPattern(),
+      new MultiClosePattern()
     )
 
   # ===================================
