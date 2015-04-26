@@ -56,7 +56,7 @@
         }
       },
       success: function(data, textStatus, jqXHR) {
-        return swal('Success!', 'Your settings has been saved!', 'success');
+        return swal('Success!', 'Some changes will take effect after browser restart.', 'success');
       }
     });
   };

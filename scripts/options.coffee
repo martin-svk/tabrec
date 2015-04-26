@@ -46,7 +46,7 @@ update_user = (id, exp, rec, op) ->
       other_plugins: op
     } }
     success: (data, textStatus, jqXHR) ->
-      swal('Success!', 'Your settings has been saved!', 'success')
+      swal('Success!', 'Some changes will take effect after browser restart.', 'success')
 
 
 # On save button submit
