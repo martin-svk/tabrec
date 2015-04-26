@@ -1,6 +1,13 @@
 TabRec changelog
 ---
 
+1.0.0
+----
+
+* Add support for automatic recommendation mode added.
+* Remove refresh pattern due to misbehave in certain situations.
+* Minor fixes and refactoring.
+
 0.9.6-iitsrc
 ----
 
