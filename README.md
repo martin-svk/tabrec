@@ -36,7 +36,7 @@ TabRec is being developed as a part of my master thesis project at
 License
 --
 
-THE MIT LICENSE (MIT) Copyright © 2014 Martin Toma, martin.toma.svk@gmail.com
+THE MIT LICENSE (MIT) Copyright © 2015 Martin Toma, martin.toma.svk@gmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
