@@ -19,8 +19,8 @@ class @Recognizer
   _notifier = null
   _pattern_recognizers = []
 
-  constructor: (user_id, session_id) ->
-    _notifier = new Notifier(user_id)
+  constructor: (user_id, rec_mode) ->
+    _notifier = new Notifier(user_id, rec_mode)
 
     # Add pattern classes which will be recognized
     _pattern_recognizers.push(
@@ -212,10 +212,10 @@ class @Recognizer
         # If same pattern occured again, check rec timeout
         if same_pattern_again(pattern_name)
           if not_inside_timeout(get_current_ts())
-            _notifier.show_pattern(pattern_name)
+            _notifier.handle_pattern(pattern_name)
         else
           # If other pattern occured, proceed
-          _notifier.show_pattern(pattern_name)
+          _notifier.handle_pattern(pattern_name)
 
         # Record what happened in both cases
         _last_pattern_time = get_current_ts()

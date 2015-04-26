@@ -22,8 +22,8 @@
 
     _pattern_recognizers = [];
 
-    function Recognizer(user_id, session_id) {
-      _notifier = new Notifier(user_id);
+    function Recognizer(user_id, rec_mode) {
+      _notifier = new Notifier(user_id, rec_mode);
       _pattern_recognizers.push(new MultiActivatePattern(), new ComparePattern(), new RefreshPattern(), new MultiClosePattern());
     }
 
@@ -153,10 +153,10 @@
         if (pattern_name = some_pattern_occured()) {
           if (same_pattern_again(pattern_name)) {
             if (not_inside_timeout(get_current_ts())) {
-              _notifier.show_pattern(pattern_name);
+              _notifier.handle_pattern(pattern_name);
             }
           } else {
-            _notifier.show_pattern(pattern_name);
+            _notifier.handle_pattern(pattern_name);
           }
           _last_pattern_time = get_current_ts();
           _last_pattern_name = pattern_name;
