@@ -4,7 +4,7 @@ TabRec changelog
 1.0.0
 ----
 
-* Add support for automatic recommendation mode added.
+* Add support for automatic recommendation mode.
 * Remove refresh pattern due to misbehave in certain situations.
 * Minor fixes and refactoring.
 
