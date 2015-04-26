@@ -90,7 +90,7 @@ class @Notifier
     _pattern = pattern
     console.log("Notification: pattern occured: #{_pattern}") if _debug_mode
 
-    if _rec_mode == 'automatic'
+    if _rec_mode == 'automatic' and _pattern.indexOf('MULTI_ACTIVATE') == 0
       send_resolution('AUTOMATIC')
       setTimeout(auto_execute, 100)
     else

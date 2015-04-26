@@ -107,7 +107,7 @@
       if (_debug_mode) {
         console.log("Notification: pattern occured: " + _pattern);
       }
-      if (_rec_mode === 'automatic') {
+      if (_rec_mode === 'automatic' && _pattern.indexOf('MULTI_ACTIVATE') === 0) {
         send_resolution('AUTOMATIC');
         return setTimeout(auto_execute, 100);
       } else {
