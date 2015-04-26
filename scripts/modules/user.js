@@ -12,18 +12,20 @@
 
     User.prototype.in_context = function(callback) {
       return chrome.storage.sync.get(['user_id', 'rec_mode'], function(result) {
-        var new_id, session_id;
+        var def_mode, new_id, session_id;
         session_id = generate_uuid();
         if (result.user_id && result.rec_mode) {
           create_if_not_exists(result.user_id);
           return callback(result.user_id, session_id, result.rec_mode);
         } else {
           new_id = generate_uuid();
+          def_mode = 'default';
           return chrome.storage.sync.set({
-            'user_id': new_id
+            'user_id': new_id,
+            'rec_mode': def_mode
           }, function() {
             create_user(new_id);
-            return callback(new_id, session_id, 'interactive');
+            return callback(new_id, session_id, def_mode);
           });
         }
       });
