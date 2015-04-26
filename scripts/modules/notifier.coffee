@@ -13,6 +13,7 @@ class @Notifier
   _debug_mode = null
   _pattern = null
   _uid = null
+  _rec_mode = null
 
   multi_activate_notification_options =
     type: 'basic'
@@ -76,21 +77,32 @@ class @Notifier
         iconUrl: 'images/revert.png'
     ]
 
-  constructor: (user_id) ->
+  constructor: (user_id, rec_mode) ->
     _debug_mode = Constants.is_debug_mode()
     _uid = user_id
+    _rec_mode = rec_mode
+
     chrome.notifications.onButtonClicked.addListener(notification_button_clicked)
     chrome.notifications.onClicked.addListener(notification_clicked)
     chrome.notifications.onClosed.addListener(notification_closed)
 
-  show_pattern: (pattern) ->
+  handle_pattern: (pattern) ->
     _pattern = pattern
     console.log("Notification: pattern occured: #{_pattern}") if _debug_mode
-    show_pattern_notification()
+
+    if _rec_mode == 'automatic'
+      send_resolution('AUTOMATIC')
+      setTimeout(auto_execute, 100)
+    else
+      show_pattern_notification()
 
   # ===================================
   # Private functions
   # ===================================
+
+  auto_execute = () ->
+    _executor.execute(_pattern)
+    show_revert()
 
   show_revert = () ->
     chrome.notifications.create("revert_#{new Date().getTime()}", revert_notification_options, (id) -> )

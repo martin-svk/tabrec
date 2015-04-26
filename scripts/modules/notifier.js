@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   this.Notifier = (function() {
-    var compare_notification_options, handle_compare_button_clicked, handle_ma_button_clicked, handle_mc_button_clicked, handle_refresh_button_clicked, multi_activate_notification_options, multi_close_notification_options, notification_button_clicked, notification_clicked, notification_closed, refresh_notification_options, revert_notification_options, send_resolution, show_pattern_notification, show_revert, _conn, _debug_mode, _executor, _pattern, _uid;
+    var auto_execute, compare_notification_options, handle_compare_button_clicked, handle_ma_button_clicked, handle_mc_button_clicked, handle_refresh_button_clicked, multi_activate_notification_options, multi_close_notification_options, notification_button_clicked, notification_clicked, notification_closed, refresh_notification_options, revert_notification_options, send_resolution, show_pattern_notification, show_revert, _conn, _debug_mode, _executor, _pattern, _rec_mode, _uid;
 
     _conn = new Connection();
 
@@ -13,6 +13,8 @@
     _pattern = null;
 
     _uid = null;
+
+    _rec_mode = null;
 
     multi_activate_notification_options = {
       type: 'basic',
@@ -91,20 +93,31 @@
       ]
     };
 
-    function Notifier(user_id) {
+    function Notifier(user_id, rec_mode) {
       _debug_mode = Constants.is_debug_mode();
       _uid = user_id;
+      _rec_mode = rec_mode;
       chrome.notifications.onButtonClicked.addListener(notification_button_clicked);
       chrome.notifications.onClicked.addListener(notification_clicked);
       chrome.notifications.onClosed.addListener(notification_closed);
     }
 
-    Notifier.prototype.show_pattern = function(pattern) {
+    Notifier.prototype.handle_pattern = function(pattern) {
       _pattern = pattern;
       if (_debug_mode) {
         console.log("Notification: pattern occured: " + _pattern);
       }
-      return show_pattern_notification();
+      if (_rec_mode === 'automatic') {
+        send_resolution('AUTOMATIC');
+        return setTimeout(auto_execute, 100);
+      } else {
+        return show_pattern_notification();
+      }
+    };
+
+    auto_execute = function() {
+      _executor.execute(_pattern);
+      return show_revert();
     };
 
     show_revert = function() {
