@@ -39,7 +39,8 @@
       'rec_mode': recMode
     }, function() {
       return chrome.storage.sync.get(['user_id'], function(result) {
-        return update_user(result.user_id, userLevel, recMode, otherPlugins);
+        update_user(result.user_id, userLevel, recMode, otherPlugins);
+        return swal('Success!', 'Some changes will take effect after browser restart.', 'success');
       });
     });
   };
@@ -54,9 +55,6 @@
           experience: exp,
           other_plugins: op
         }
-      },
-      success: function(data, textStatus, jqXHR) {
-        return swal('Success!', 'Some changes will take effect after browser restart.', 'success');
       }
     });
   };

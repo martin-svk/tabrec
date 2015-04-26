@@ -34,6 +34,7 @@ save_option = () ->
     'rec_mode': recMode, ->
       chrome.storage.sync.get ['user_id'], (result) ->
         update_user(result.user_id, userLevel, recMode, otherPlugins)
+        swal('Success!', 'Some changes will take effect after browser restart.', 'success')
 
 # Update user record on server
 update_user = (id, exp, rec, op) ->
@@ -45,9 +46,6 @@ update_user = (id, exp, rec, op) ->
       experience: exp
       other_plugins: op
     } }
-    success: (data, textStatus, jqXHR) ->
-      swal('Success!', 'Some changes will take effect after browser restart.', 'success')
-
 
 # On save button submit
 $('#save-settings').click ->
