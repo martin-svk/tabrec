@@ -24,7 +24,7 @@
 
     function Recognizer(user_id, rec_mode) {
       _notifier = new Notifier(user_id, rec_mode);
-      _pattern_recognizers.push(new MultiActivatePattern(), new ComparePattern(), new RefreshPattern(), new MultiClosePattern());
+      _pattern_recognizers.push(new ComparePattern(), new MultiClosePattern(), new MultiActivatePattern());
     }
 
     Recognizer.prototype.start = function() {
