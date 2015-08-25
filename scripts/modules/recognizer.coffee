@@ -26,7 +26,7 @@ class @Recognizer
     _pattern_recognizers.push(
       new ComparePattern(),
       new MultiClosePattern(),
-      # new RefreshPattern(),
+      new RefreshPattern(),
       new MultiActivatePattern()
     )
 
